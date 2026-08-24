@@ -19,7 +19,6 @@ course syllabus, and laboratory/problem-set materials.
     `-- PS02/
         |-- CPE333_PS2_2026.pdf
         |-- 3-Nor_CPE333 Operating-Systems PS02.pdf
-        |-- CPE333_PS2_Linux_Terminal.zip
         `-- CPE333_PS2_Linux_Terminal/
             `-- fig01-fig20 evidence screenshots
 ```
@@ -47,7 +46,6 @@ course syllabus, and laboratory/problem-set materials.
 | --- | --- |
 | [PS02 assignment](labs/PS02/CPE333_PS2_2026.pdf) | Original CPE333 Problem Set 2, 2026 |
 | [Completed PS02 report](<labs/PS02/3-Nor_CPE333 Operating-Systems PS02.pdf>) | Completed report for Problem Session 2 |
-| [Linux terminal evidence ZIP](labs/PS02/CPE333_PS2_Linux_Terminal.zip) | Compressed archive of the terminal evidence |
 | [Linux terminal evidence](labs/PS02/CPE333_PS2_Linux_Terminal/) | Extracted folder containing 20 PNG screenshots |
 
 ## Updating this repository
