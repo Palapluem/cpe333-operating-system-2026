@@ -1,0 +1,1409 @@
+CPE333 Operating Systems — Problem Session 08 (PS08)
+สรุปเนื้อหา Lecture 8 + แนวทางทำงานสำหรับส่งต่อให้เพื่อน
+หัวข้อ: Lock Mechanisms
+ภาคการศึกษา 1/2026
+
+======================================================================
+0. ไฟล์ที่ใช้เป็นหลัก
+======================================================================
+
+1) CPE333_PS8_2026.pdf
+   - ใช้เป็น "โจทย์หลัก / Source of Truth" ของ PS08
+   - ระบุสิ่งที่อาจารย์ให้ทำจริง
+
+2) Lecture8_LocksMechanism.pdf
+   - ใช้เป็น "เนื้อหาที่อาจารย์สอน"
+   - ใช้ดูแนวคิดพื้นฐานเรื่อง Lock
+   - ใช้ดูเกณฑ์ที่อาจารย์ใช้วิเคราะห์ Correctness และ Performance
+   - ใช้เช็กว่ากลไกใด "ถูกพูดถึง/สอนไปแล้ว" เพื่อไม่เลือกซ้ำเป็น Additional Mechanism
+
+3) ข้อความที่วาง (1).txt
+   - เป็น Research / Handoff Notes เพิ่มเติมของเรา
+   - ไม่ใช่เอกสารอาจารย์
+   - ใช้ช่วยตรวจความถูกต้องทางเทคนิค โดยเฉพาะ Peterson และ LL/SC
+
+4) Kernel_module_intro.pdf
+   - เป็นเนื้อหา Kernel Module
+   - ไม่ใช่ Requirement หลักของ PS08
+   - ตอนนี้ยังไม่จำเป็นสำหรับการทำงานนี้
+
+
+======================================================================
+1. จุดเริ่มต้นของ Lecture: Multiple Threads และ Shared Data
+======================================================================
+
+เวลาโปรแกรมมีหลาย Thread ทำงานพร้อมกัน แต่ละ Thread สามารถทำงานสลับกันได้
+และถ้าหลาย Thread ต้องใช้ตัวแปรหรือข้อมูลร่วมกัน เช่น counter, balance, stock
+ลำดับการทำงานที่เกิดขึ้นจริงอาจไม่เป็นแบบที่เราคาดไว้
+
+ตัวอย่างเชิงแนวคิด:
+
+Thread A ต้องการเพิ่ม counter
+Thread B ก็ต้องการเพิ่ม counter
+
+การเพิ่มค่า 1 ครั้งไม่ได้หมายความว่า CPU ทำทุกอย่างในคำสั่งเดียวเสมอไป
+โดยแนวคิดสามารถมองเป็น:
+
+1. Load ค่า counter
+2. Add 1
+3. Store ค่าใหม่กลับไป
+
+ถ้า Thread A และ Thread B ทำขั้นตอนเหล่านี้สลับกันในจังหวะที่ไม่เหมาะสม
+ค่าที่ได้สุดท้ายอาจผิด
+
+สิ่งนี้เรียกว่า:
+
+    Race Condition
+
+ความหมายแบบง่าย:
+ผลลัพธ์ของโปรแกรมขึ้นอยู่กับ "ใครทำก่อน ใครแทรกเมื่อไร"
+ทั้งที่เราต้องการให้ผลลัพธ์ถูกต้องเสมอ
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 2 และ 6]
+
+
+======================================================================
+2. Critical Section คืออะไร
+======================================================================
+
+Critical Section คือส่วนของโปรแกรมที่เข้าไปอ่าน/แก้ไข Shared Data
+ซึ่งถ้ามีหลาย Thread เข้าไปพร้อมกันอาจทำให้ข้อมูลผิด
+
+ตัวอย่าง:
+
+    counter = counter + 1;
+
+ถ้า counter เป็น Shared Variable
+ส่วนนี้อาจถือเป็น Critical Section
+
+เป้าหมายสำคัญคือ:
+
+    ห้ามหลาย Thread เข้า Critical Section เดียวกันพร้อมกัน
+    ในกรณีที่การทำพร้อมกันทำให้ข้อมูลผิด
+
+แนวคิดนี้เรียกว่า:
+
+    Mutual Exclusion
+
+จำเป็นต้องเข้าใจคำ 4 คำนี้ก่อนทำ PS08:
+
+- Shared Data
+- Race Condition
+- Critical Section
+- Mutual Exclusion
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 2, 5, 6]
+
+
+======================================================================
+3. Lock / Unlock และ Mutex
+======================================================================
+
+อาจารย์ใช้แนวคิด Lock เพื่อควบคุมการเข้า Critical Section
+
+ภาพง่าย ๆ:
+
+    Thread
+      |
+      v
+    lock()
+      |
+      v
+    Critical Section
+      |
+      v
+    unlock()
+
+ความหมาย:
+
+- lock()
+  Thread พยายามขอสิทธิ์เข้า Critical Section
+
+- unlock()
+  Thread ที่ทำงานเสร็จคืนสิทธิ์ให้ Thread อื่น
+
+สถานะหลักของ Lock:
+
+1. Available / Free
+   = ยังไม่มี Thread ถือ Lock
+
+2. Acquired / Held
+   = มี Thread หนึ่งถือ Lock อยู่
+
+ใน POSIX จะใช้คำว่า:
+
+    Mutex
+
+มาจากแนวคิด Mutual Exclusion
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 3]
+
+
+======================================================================
+4. เกณฑ์สำคัญที่อาจารย์ใช้ประเมิน Lock
+======================================================================
+
+ส่วนนี้สำคัญมาก เพราะ PS08 ระบุว่าให้วิเคราะห์ Correctness และ Performance
+"using metrics discussed in class"
+
+จาก Lecture 8 อาจารย์ให้เกณฑ์หลักไว้ดังนี้
+
+----------------------------------------------------------------------
+4.1 Mutual Exclusion
+----------------------------------------------------------------------
+
+คำถาม:
+
+    Lock ป้องกันไม่ให้หลาย Thread เข้า Critical Section พร้อมกันได้หรือไม่?
+
+ถ้าสอง Thread เข้า Critical Section พร้อมกันได้
+แปลว่า Lock นั้นมีปัญหาด้าน Correctness
+
+----------------------------------------------------------------------
+4.2 Absence of Deadlock
+----------------------------------------------------------------------
+
+คำถาม:
+
+    ถ้ามีหลาย Thread ต้องการเข้า Critical Section
+    ระบบยังมี Thread อย่างน้อยหนึ่งตัวที่สามารถเดินหน้าต่อได้หรือไม่?
+
+ถ้าทุก Thread รอกันหมดและไม่มีใครไปต่อได้
+เรียกว่าเกิด Deadlock
+
+----------------------------------------------------------------------
+4.3 Fairness
+----------------------------------------------------------------------
+
+คำถาม:
+
+    Thread ที่กำลังรอมีโอกาสได้ Lock อย่างเหมาะสมหรือไม่?
+
+ถ้ามี Thread หนึ่งรอนานมากหรือไม่ได้เข้า Critical Section เลย
+ในขณะที่ Thread อื่นได้ Lock ซ้ำ ๆ
+เกี่ยวข้องกับปัญหา:
+
+    Starvation
+
+----------------------------------------------------------------------
+4.4 Performance
+----------------------------------------------------------------------
+
+ดู Overhead ของ Lock เช่น:
+
+- ตอนที่ไม่มีใครแย่ง Lock
+- ตอนที่มีหลาย Thread แย่ง Lock
+- ใช้ CPU วนรอหรือไม่
+- มี Context Switch / Scheduling overhead หรือไม่
+- มี Retry มากหรือไม่
+- เมื่อ Contention สูงแล้วทำงานแย่ลงแค่ไหน
+
+คำว่า:
+
+    Contention
+
+หมายถึงหลาย Thread กำลังแข่งขันกันเพื่อ Resource/Lock เดียวกัน
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 4]
+
+
+======================================================================
+5. Software Lock แบบง่าย ๆ ทำไมถึงผิด
+======================================================================
+
+Lecture ยกตัวอย่าง Lock แบบ Software ง่าย ๆ:
+
+    flag = 0  -> Lock ว่าง
+    flag = 1  -> Lock ถูกถืออยู่
+
+แนวคิด:
+
+    while (flag == 1);
+    flag = 1;
+
+ปัญหาคือ:
+
+    "ตรวจค่า" และ "เปลี่ยนค่า" ไม่ได้เกิดพร้อมกันแบบ Atomic
+
+ตัวอย่าง Interleaving:
+
+1. Thread 0 ตรวจ flag
+   พบว่า flag = 0
+
+2. ก่อน Thread 0 จะตั้ง flag = 1
+   เกิด Context Switch
+
+3. Thread 1 เข้ามา
+   ตรวจ flag และยังพบว่า flag = 0
+
+4. Thread 1 ตั้ง flag = 1
+   และเข้า Critical Section
+
+5. กลับไป Thread 0
+
+6. Thread 0 ตั้ง flag = 1
+   แล้วเข้า Critical Section เช่นกัน
+
+ผล:
+
+    Thread 0 และ Thread 1 สามารถอยู่ใน Critical Section พร้อมกัน
+
+ดังนั้น:
+
+    Mutual Exclusion ไม่ได้ถูก Guarantee
+
+นี่เป็นเหตุผลว่าทำไมการสร้าง Lock ต้องการ Operation ที่เป็น Atomic
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 8-11]
+
+
+======================================================================
+6. Atomic Operation คืออะไร
+======================================================================
+
+Atomic Operation คือ Operation ที่ระบบรับประกันว่า
+มองได้เหมือนเป็นการทำงาน "หนึ่งก้อนที่แบ่งแทรกไม่ได้"
+
+สิ่งที่เราต้องการคือแทนที่จะทำ:
+
+    Check
+    แล้วค่อย
+    Set
+
+แยกจากกัน
+
+เราต้องการ:
+
+    Check + Set แบบ Atomic
+
+Hardware จึงมี Primitive / Instruction สำหรับช่วยสร้าง Lock
+
+Lecture กล่าวถึง:
+
+1. Test-and-Set
+2. Compare-and-Swap
+3. Fetch-and-Add
+4. Load-Linked / Store-Conditional
+5. อื่น ๆ
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 12]
+
+
+======================================================================
+7. Test-and-Set
+======================================================================
+
+Test-and-Set เป็น Hardware Instruction ที่ทำแนวคิดประมาณว่า:
+
+1. อ่านค่าเก่าที่ Memory
+2. เขียนค่าใหม่
+3. ทำทั้งหมดแบบ Atomic
+
+จึงนำมาสร้าง Lock ได้
+
+ตัวอย่างแนวคิด:
+
+    while (TestAndSet(lock) == 1) {
+        // wait
+    }
+
+ถ้า Lock ถูกถืออยู่ TestAndSet จะทำให้ Thread รอต่อ
+
+เมื่อใช้การวนรอแบบนี้เรียกว่า:
+
+    Spin Lock
+
+ข้อดี:
+
+- ทำ Mutual Exclusion ได้
+- Implementation ค่อนข้างตรงไปตรงมา
+
+ข้อเสีย:
+
+- Thread ที่กำลังรอใช้ CPU cycle
+- บน Single Processor อาจเสียประสิทธิภาพมาก
+- Fairness ไม่ถูก Guarantee
+- Waiting Thread บางตัวอาจเกิด Starvation
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 13-15]
+
+
+======================================================================
+8. Spin Waiting / Busy Waiting
+======================================================================
+
+Spin Waiting คือการที่ Thread รอ Lock โดยการวนเช็กซ้ำ ๆ
+
+เช่น:
+
+    while (lock ยังไม่ว่าง) {
+        เช็กต่อไป
+    }
+
+Thread ยัง Running อยู่
+ดังนั้นยังใช้ CPU
+
+ข้อเสียหลัก:
+
+    ใช้ CPU แต่ไม่ได้ทำ Useful Work
+
+ถ้ามี Thread จำนวนมากแย่ง Lock เดียวกัน
+หลาย Thread อาจใช้ Time Slice ไปกับการ Spin
+
+ดังนั้นเวลาทำ PS08
+ถ้า Algorithm มี Busy Waiting หรือ Spin Waiting
+ต้องพูดเรื่องนี้ใน Performance Analysis ด้วย
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 10, 14, 15, 24]
+
+
+======================================================================
+9. Compare-and-Swap (CAS)
+======================================================================
+
+CAS เป็น Hardware Atomic Primitive อีกชนิด
+
+แนวคิด:
+
+    ตรวจว่าค่าปัจจุบัน == Expected หรือไม่
+
+ถ้าใช่:
+    เปลี่ยนเป็น New Value
+
+ถ้าไม่ใช่:
+    ไม่เปลี่ยน
+
+ทุกขั้นตอนเกิดแบบ Atomic
+
+ตัวอย่างแนวคิด:
+
+    Current value = 0
+    Expected = 0
+    New = 1
+
+ถ้าค่าใน Memory ยังเป็น 0
+CAS สามารถเปลี่ยนเป็น 1
+
+ถ้ามี Thread อื่นเปลี่ยนค่าไปแล้ว
+CAS จะไม่ทำการเปลี่ยนตามเงื่อนไข
+
+CAS ใช้สร้าง Lock ได้คล้าย Test-and-Set
+แต่แนวคิด Compare ก่อน Update ทำให้ใช้ประโยชน์ได้กว้างกว่าการสร้าง Lock อย่างเดียว
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 16-18]
+
+
+======================================================================
+10. Fetch-and-Add และ Ticket Lock
+======================================================================
+
+Fetch-and-Add เป็น Atomic Operation ที่:
+
+1. อ่านค่าเดิม
+2. เพิ่มค่า
+3. คืนค่าเดิมให้ Thread
+
+อาจารย์ใช้แนวคิดนี้สร้าง:
+
+    Ticket Lock
+
+คิดเหมือนระบบกดบัตรคิว
+
+ตัวอย่าง:
+
+    Thread A ได้ Ticket 0
+    Thread B ได้ Ticket 1
+    Thread C ได้ Ticket 2
+
+มีตัวแปร Global:
+
+    turn
+
+แต่ละ Thread รอจน:
+
+    myturn == turn
+
+เมื่อเลขตรงกัน
+Thread นั้นเข้า Critical Section
+
+ตอน Unlock:
+
+    turn เพิ่มขึ้น
+
+แล้ว Thread คนถัดไปจึงได้เข้า
+
+ข้อสำคัญ:
+
+- ช่วยควบคุมลำดับการเข้าได้ดีขึ้น
+- Fairness ชัดกว่า Test-and-Set แบบธรรมดา
+- แต่ Waiting Thread ยังสามารถ Spin อยู่ได้
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 19-23]
+
+
+======================================================================
+11. ปัญหา "So Much Spinning"
+======================================================================
+
+แม้ Hardware-based Lock จะทำ Correctness ได้ดีขึ้น
+แต่ถ้ารอแบบ Spin อย่างเดียว
+Performance ยังมีปัญหา
+
+ถ้ามี N Threads แย่ง Lock เดียวกัน
+
+Thread ที่ได้ Lock:
+    ทำ Critical Section
+
+อีก N-1 Threads:
+    อาจวนรอและใช้ CPU ไปเรื่อย ๆ
+
+ถ้า Thread ที่ถือ Lock ถูก Context Switch ออก
+Thread อื่นที่ Spin อยู่ก็ไม่สามารถทำให้ Lock ว่างได้เอง
+
+จึงเกิดคำถามว่า:
+
+    มีวิธีไม่ให้ Thread เสีย CPU ไปกับการรอหรือไม่?
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 24]
+
+
+======================================================================
+12. Yield
+======================================================================
+
+แนวคิดต่อมาคือ:
+
+    ถ้ายังไม่ได้ Lock
+    แทนที่จะ Spin ต่อ
+    ให้ Thread Yield CPU
+
+yield() ทำให้ Thread:
+
+    Running -> Ready
+
+แล้วเปิดโอกาสให้ Scheduler เลือก Thread อื่นมาทำงาน
+
+ข้อดี:
+
+- ลดการ Spin ตรง ๆ
+
+ข้อจำกัด:
+
+- ถ้ามี Thread จำนวนมาก อาจเกิด Run-and-Yield ซ้ำ ๆ
+- ยังมี Scheduling overhead
+- ยังเสีย Cycle ได้
+- Lecture ระบุว่ายังมีกรณีที่ Starvation เกิดได้
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 25-26]
+
+
+======================================================================
+13. Sleep Instead of Spin + Queue
+======================================================================
+
+แนวคิดถัดมา:
+
+    ถ้า Lock ไม่ว่าง
+    ไม่ต้อง Spin
+    แต่ให้ Thread Sleep
+
+และใช้ Queue เก็บ Thread ที่กำลังรอ
+
+Lock:
+
+    ถ้า Lock ว่าง
+        -> ได้ Lock
+        -> เข้า Critical Section
+
+    ถ้า Lock ไม่ว่าง
+        -> เข้า Waiting Queue
+        -> Sleep
+
+Unlock:
+
+    ถ้าไม่มี Thread รอ
+        -> ปล่อย Lock
+
+    ถ้ามี Thread รอ
+        -> ส่ง Lock / ปลุก Thread ถัดไป
+
+ข้อดี:
+
+- ลด CPU Waste จาก Busy Waiting
+- Queue ช่วยควบคุมว่าใครได้ Lock ต่อ
+- สามารถช่วยเรื่อง Fairness / Starvation ได้
+
+แต่การ Sleep/Wake ต้องใช้ OS Support
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 27-29]
+
+
+======================================================================
+14. park(), unpark() และ setpark()
+======================================================================
+
+Lecture ใช้ Solaris เป็นตัวอย่างของ OS Support
+
+มี Primitive:
+
+    park()
+    = ทำให้ Calling Thread Sleep
+
+    unpark(threadID)
+    = ปลุก Thread ที่ระบุ
+
+แต่เกิดปัญหาหนึ่งได้ คือ:
+
+    Waiting Race
+
+ตัวอย่างแนวคิด:
+
+1. Thread A กำลังจะ park()
+2. ก่อนที่จะ park จริง เกิด Context Switch
+3. Thread B ปลด Lock และ unpark(A)
+4. Wake-up เกิดขึ้นไปแล้ว
+5. Thread A กลับมาแล้ว park()
+6. Thread A อาจ Sleep ต่อโดยไม่มีใครมาปลุกอีก
+
+Solaris ใช้:
+
+    setpark()
+
+เพื่อบอกล่วงหน้าว่า Thread กำลังจะ park
+และช่วยจัดการ Race ระหว่าง park/unpark
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 27, 30-32]
+
+
+======================================================================
+15. Futex และ Two-phase Lock ใน Linux
+======================================================================
+
+Lecture กล่าวถึง Linux:
+
+    futex
+
+เป็นกลไกที่ให้ OS ช่วยจัดการ Waiting/Wakeup
+โดยแนวคิดสามารถใช้ประกอบการสร้าง Lock ที่ไม่ต้อง Spin อย่างเดียว
+
+Lecture ยังกล่าวถึง:
+
+    Two-phase Lock
+
+Phase 1:
+    Spin ช่วงสั้น ๆ ก่อน
+
+เหตุผล:
+    บางครั้ง Lock อาจกำลังจะถูกปล่อยเร็ว
+    การ Spin สั้น ๆ อาจถูกกว่าการ Sleep/Wake
+
+Phase 2:
+    ถ้ายังไม่ได้ Lock
+    -> Sleep
+    -> รอถูก Wake เมื่อ Lock ว่าง
+
+ภาพรวมสำคัญ:
+
+    Lock ที่ดีในระบบจริง
+    มักไม่ได้อาศัย Software Algorithm อย่างเดียว
+
+แต่เป็นการใช้ร่วมกันของ:
+
+    Software
+    + Hardware Atomic Support
+    + Operating System Support
+
+[อ้างอิง: Lecture8_LocksMechanism.pdf หน้า 33-34]
+
+
+======================================================================
+16. Peterson's Algorithm อยู่ตรงไหนของเนื้อหา
+======================================================================
+
+Lecture กล่าวถึง Peterson's Algorithm ในฐานะตัวอย่างของ:
+
+    Pure Software Solution
+
+จุดสำคัญคือ Peterson พยายามทำ Mutual Exclusion
+โดยใช้ Shared Variables และ Protocol ระหว่าง 2 Threads
+แทนการใช้ Atomic Hardware Instruction แบบ Test-and-Set/CAS
+
+Lecture ไม่ได้ลงรายละเอียด Peterson เต็มในชุดนี้
+แต่ PS08 กำหนดให้ Research Peterson โดยตรง
+
+ดังนั้นสิ่งที่ต้องศึกษาเพิ่มสำหรับ PS08:
+
+- Peterson's Algorithm คืออะไร
+- Shared Variables ที่ใช้
+- flag[]
+- turn
+- Entry Protocol
+- Critical Section
+- Exit Protocol
+- ทำไม Mutual Exclusion จึงเกิดขึ้น
+- Progress
+- Bounded Waiting / Fairness
+- Busy Waiting
+- Performance
+- ข้อจำกัดเรื่องรองรับ 2 Participants ใน Classical Version
+- ข้อควรระวังเมื่อมองใน Modern Memory Model
+
+หมายเหตุจาก Research Notes ของเรา:
+Classical Peterson ภายใต้สมมติฐานที่เหมาะสม เช่น Sequential Consistency
+ถูกออกแบบให้ตอบ Mutual Exclusion, Progress และ Bounded Waiting
+
+ไม่ควรเขียนว่า Peterson "มี Starvation โดยธรรมชาติ" โดยไม่มีเงื่อนไขรองรับ
+
+อีกประเด็น:
+ถ้าทำ Implementation ใน Modern C จริง
+ห้ามถือว่า int/volatile ธรรมดาเป็น Synchronization Primitive ที่ถูกต้องโดยอัตโนมัติ
+
+[Lecture Source: Lecture8_LocksMechanism.pdf หน้า 12]
+[Supplemental Research: ข้อความที่วาง (1).txt]
+
+
+======================================================================
+17. Load-Linked / Store-Conditional (LL/SC) อยู่ตรงไหน
+======================================================================
+
+Lecture กล่าวชื่อ:
+
+    Load-Linked / Store-Conditional
+
+เป็นหนึ่งใน Hardware Support for Locking
+
+PS08 กำหนดให้เรา Research ตัวนี้โดยตรง
+
+แนวคิดจาก Research Notes ของเรา:
+
+LL/SC หรือในบาง ISA ใช้ชื่อ:
+
+    LR/SC
+    Load-Reserved / Store-Conditional
+
+แนวทางทั่วไป:
+
+1. LL / LR
+   อ่านค่าจาก Memory
+   และสร้าง Reservation
+
+2. Software คำนวณค่าใหม่
+
+3. SC
+   พยายาม Store ค่าใหม่
+
+4. ถ้า Reservation ยัง Valid
+   SC สามารถสำเร็จ
+
+5. ถ้า Reservation ถูก Invalidated
+   SC ล้มเหลว
+   และ Store ไม่เกิดขึ้น
+
+6. Software มัก Retry
+
+Pseudo-idea:
+
+    do {
+        old = LL(address);
+        new = old + 1;
+    } while (SC(address, new) == FAIL);
+
+สิ่งสำคัญ:
+
+    LL/SC ไม่ใช่ Mutex โดยตัวมันเอง
+
+มันเป็น Hardware Primitive
+ที่สามารถนำไปสร้าง Atomic Read-Modify-Write / Synchronization Mechanism ได้
+
+ตัวอย่างสิ่งที่สามารถสร้างจาก LL/SC:
+
+- Spin Lock
+- Atomic Counter
+- Lock-free Data Structure
+- Synchronization Primitive อื่น ๆ
+
+สิ่งที่ต้องวิเคราะห์ใน PS08:
+
+- Reservation
+- Success / Failure ของ SC
+- Retry
+- Contention
+- Reservation Invalidation
+- Correctness ของ Lock ที่สร้างบน LL/SC
+- Fairness
+- Performance
+- Progress / Livelock concern ตาม Algorithm/ISA
+- Memory Ordering
+
+หมายเหตุ:
+อย่าเขียนว่า "LL/SC รับประกัน Deadlock Freedom" แบบกว้าง ๆ
+เพราะ Deadlock/Progress ต้องดู Algorithm ที่สร้างบน Primitive นี้ด้วย
+
+[Lecture Source: Lecture8_LocksMechanism.pdf หน้า 12]
+[Supplemental Research: ข้อความที่วาง (1).txt]
+
+
+======================================================================
+18. โจทย์ PS08 กำหนดให้ทำอะไรจริง
+======================================================================
+
+ชื่อโจทย์:
+
+    Problem Session 08 — Lock Mechanisms
+
+Requirement หลักจาก CPE333_PS8_2026.pdf:
+
+1. Explore more locks that are not included in the lecture
+
+2. เป็น Group Work
+   โจทย์ใช้ข้อความว่า:
+       "up to 6-8 students"
+
+   หมายเหตุ:
+   ข้อความนี้ค่อนข้างกำกวม
+   จึงไม่ควรตีความจำนวนสมาชิกเพิ่มเองเกินจากที่เอกสารเขียน
+
+3. Research:
+
+   3.1 Peterson's Algorithm
+
+   3.2 Load-Linked and Store-Conditional
+
+   3.3 One additional mechanism not mentioned in the lecture
+
+4. Analyze:
+
+   - Correctness
+   - Performance
+
+   โดยใช้ Metrics ที่ Discussed in Class
+
+5. Create Slides
+   แสดงข้อมูลของแต่ละ Lock/Mechanism
+
+6. ส่ง:
+
+   - Presentation Slides เป็น PDF
+   - Presentation Video เป็น Link
+
+7. ส่งผ่าน:
+
+   - LEB2
+
+[อ้างอิง: CPE333_PS8_2026.pdf หน้า 1]
+
+
+======================================================================
+19. สิ่งที่โจทย์ "ไม่ได้ระบุว่าบังคับ"
+======================================================================
+
+จากไฟล์โจทย์ที่มีตอนนี้ ยังไม่พบข้อบังคับเรื่อง:
+
+- ต้องเขียน C Program
+- ต้อง Compile
+- ต้อง Run Experiment
+- ต้อง Capture Screenshot
+- ต้อง Benchmark จริง
+- ต้อง Run หลายรอบ
+- ต้องทำ Kernel Module
+- ต้องมีจำนวน Slide แน่นอน
+- ต้องพูดกี่นาที
+- Deadline ในตัว PDF นี้
+
+ดังนั้น:
+
+    ห้ามเดาข้อกำหนดเหล่านี้ขึ้นมาเอง
+
+ถ้าจะทำ Code/Pseudocode/Diagram
+ทำเพื่อช่วยอธิบาย Mechanism ได้
+แต่ไม่ควรเรียกว่าเป็น Requirement ของอาจารย์
+ถ้าโจทย์ไม่ได้ระบุ
+
+[อ้างอิง: CPE333_PS8_2026.pdf]
+
+
+======================================================================
+20. Template ในโจทย์หมายถึงอะไร
+======================================================================
+
+ในหน้า Template ของ PS08 มีตัวอย่างชื่อ:
+
+- Peterson's algorithm
+- Dekker's algorithm
+- X's algorithm
+- Y's algorithm
+
+และมีข้อความตัวอย่างประมาณ:
+
+    4-5 Algorithms of Software based Locks Mechanism
+    With 3-6 Pages per Algorithm
+
+ต้องแยกให้ชัด:
+
+- หน้าเหล่านี้เป็น Template Example
+- ไม่ควรตีความ 3-6 หน้า/Algorithm เป็น Mandatory Requirement
+  ถ้าโจทย์หน้า 1 ไม่ได้กำหนดอย่างชัดเจน
+
+อย่างไรก็ตาม:
+Dekker's Algorithm ถูกยกชื่อใน Template
+จึงเป็น Candidate ที่น่าสนใจสำหรับ Additional Mechanism
+
+[อ้างอิง: CPE333_PS8_2026.pdf หน้า 2]
+
+
+======================================================================
+21. Additional Mechanism — ตัวเลือกที่แนะนำตอนนี้
+======================================================================
+
+Working Candidate:
+
+    Dekker's Algorithm
+
+สถานะ:
+
+    เป็น "ข้อเสนอของเรา"
+    ไม่ใช่ Requirement ที่อาจารย์บังคับ
+
+เหตุผล:
+
+1. ใน Lecture8_LocksMechanism.pdf
+   ไม่พบ Section ที่สอน Dekker โดยตรง
+
+2. ใน PS08 Template
+   มีชื่อ Dekker's Algorithm เป็นตัวอย่าง
+
+3. เป็น Software Mutual Exclusion Algorithm
+   ทำให้เทียบกับ Peterson ได้ดี
+
+ถ้าเลือก Dekker
+สิ่งที่ควร Research:
+
+- Concept
+- Shared Variables
+- Algorithm / Pseudocode
+- Entry Section
+- Critical Section
+- Exit Section
+- Mutual Exclusion
+- Progress
+- Fairness / Starvation
+- Busy Waiting
+- Performance
+- Limitations
+- Comparison with Peterson
+
+ข้อควรระวัง:
+ต้อง Research จากแหล่งข้อมูลที่เชื่อถือได้ก่อนทำ Final Slide
+อย่าใช้ชื่อใน Template เป็นหลักฐานแทน Technical Source
+
+
+======================================================================
+22. กรอบวิเคราะห์ที่ทุกคนในกลุ่มควรใช้เหมือนกัน
+======================================================================
+
+ไม่ว่าใครรับผิดชอบ Peterson, LL/SC หรือ Additional Mechanism
+ควรตอบคำถามเดียวกันนี้เพื่อให้ Slide ทั้งชุดไปในทิศทางเดียวกัน
+
+----------------------------------------------------------------------
+A. Mechanism คืออะไร?
+----------------------------------------------------------------------
+
+- เป็น Software Algorithm หรือ Hardware Primitive?
+- มีเป้าหมายอะไร?
+- ใช้ Shared State / Instruction อะไร?
+
+----------------------------------------------------------------------
+B. ทำงานอย่างไร?
+----------------------------------------------------------------------
+
+- ลำดับขั้นตอน
+- Entry
+- Wait / Retry
+- Critical Section
+- Exit / Unlock
+
+----------------------------------------------------------------------
+C. Mutual Exclusion
+----------------------------------------------------------------------
+
+- ป้องกันหลาย Thread เข้า Critical Section พร้อมกันได้อย่างไร?
+- จุดไหนของ Algorithm ที่ทำให้เกิด Mutual Exclusion?
+
+----------------------------------------------------------------------
+D. Deadlock / Progress
+----------------------------------------------------------------------
+
+- ถ้ามีหลาย Thread ขอเข้า
+  มี Thread ที่เดินหน้าต่อได้หรือไม่?
+- มีเงื่อนไขไหนทำให้ทุกตัวค้างหรือไม่?
+
+----------------------------------------------------------------------
+E. Fairness / Starvation
+----------------------------------------------------------------------
+
+- Thread ที่รอมีโอกาสได้ Lock หรือไม่?
+- มี Bounded Waiting หรือไม่?
+- Thread อาจถูกแซงไม่จำกัดหรือไม่?
+
+----------------------------------------------------------------------
+F. Performance
+----------------------------------------------------------------------
+
+- Busy Waiting หรือไม่?
+- Spin หรือไม่?
+- Retry หรือไม่?
+- ถ้า Contention สูงจะเกิดอะไร?
+- ใช้ CPU ระหว่าง Waiting หรือไม่?
+- Scaling กับจำนวน Thread เป็นอย่างไร?
+
+----------------------------------------------------------------------
+G. Requirement / Support
+----------------------------------------------------------------------
+
+ต้องพึ่ง:
+
+- Software only?
+- Atomic Hardware Instruction?
+- OS Support?
+- Memory Ordering Assumption?
+
+----------------------------------------------------------------------
+H. Limitations
+----------------------------------------------------------------------
+
+ตัวอย่างหัวข้อ:
+
+- จำนวน Thread ที่รองรับ
+- Busy Waiting
+- Fairness
+- Scalability
+- Hardware Dependency
+- Memory Ordering
+- Practicality ในระบบจริง
+
+
+======================================================================
+23. วิธีแบ่ง Research ในกลุ่ม
+======================================================================
+
+แนะนำแบ่งเป็น Work Package ตาม Mechanism
+
+----------------------------------------------------------------------
+WP1 — Peterson's Algorithm
+----------------------------------------------------------------------
+
+สิ่งที่คนรับผิดชอบควรหา:
+
+1. Definition / Concept
+2. Shared State
+3. flag[]
+4. turn
+5. Pseudocode
+6. Step-by-step Example
+7. Mutual Exclusion
+8. Progress
+9. Bounded Waiting / Fairness
+10. Busy Waiting
+11. Performance
+12. Limitations
+13. Classical Assumptions
+14. Modern Memory Model Caveat
+15. Reference Sources
+
+----------------------------------------------------------------------
+WP2 — Load-Linked / Store-Conditional
+----------------------------------------------------------------------
+
+สิ่งที่คนรับผิดชอบควรหา:
+
+1. LL / LR คืออะไร
+2. SC คืออะไร
+3. Reservation คืออะไร
+4. Reservation invalidation
+5. Success / Failure ของ SC
+6. Retry Loop
+7. Atomic Read-Modify-Write
+8. วิธีใช้ LL/SC สร้าง Lock
+9. Mutual Exclusion
+10. Progress
+11. Fairness
+12. Contention
+13. Performance
+14. Memory Ordering
+15. Limitations
+16. Architecture Example (ถ้าจำเป็น)
+17. Reference Sources
+
+----------------------------------------------------------------------
+WP3 — Additional Mechanism
+----------------------------------------------------------------------
+
+Working Candidate:
+
+    Dekker's Algorithm
+
+สิ่งที่ควรหา:
+
+1. Definition / Concept
+2. Shared State
+3. Pseudocode
+4. Step-by-step Operation
+5. Mutual Exclusion
+6. Progress
+7. Fairness
+8. Starvation
+9. Busy Waiting
+10. Performance
+11. Limitations
+12. Comparison with Peterson
+13. Reference Sources
+
+
+======================================================================
+24. โครงสร้าง Slide ที่แนะนำ
+======================================================================
+
+หมายเหตุ:
+นี่เป็น "แผนของเรา"
+ไม่ใช่จำนวนหน้าที่อาจารย์บังคับ
+
+Slide 1
+    Title / Group / Members
+
+Slide 2
+    What Makes a Good Lock?
+    - Mutual Exclusion
+    - Absence of Deadlock
+    - Fairness
+    - Performance
+
+Peterson Section
+
+Slide 3
+    Peterson's Algorithm — Concept
+
+Slide 4
+    How Peterson Works
+
+Slide 5
+    Peterson — Correctness
+
+Slide 6
+    Peterson — Performance & Limitations
+
+LL/SC Section
+
+Slide 7
+    LL/SC — Concept / Hardware Primitive
+
+Slide 8
+    How LL/SC Works
+
+Slide 9
+    Building Synchronization / Lock with LL/SC
+
+Slide 10
+    LL/SC — Correctness & Performance
+
+Additional Mechanism Section
+
+Slide 11
+    Additional Mechanism — Concept
+
+Slide 12
+    How It Works
+
+Slide 13
+    Correctness
+
+Slide 14
+    Performance & Limitations
+
+Comparison
+
+Slide 15
+    Comparison Table
+
+Slide 16
+    Conclusion
+
+Slide 17
+    References
+
+
+======================================================================
+25. Comparison Table ที่ควรมีตอนท้าย
+======================================================================
+
+สามารถเปรียบเทียบอย่างน้อยหัวข้อเหล่านี้:
+
+- Type
+  Software / Hardware Primitive
+
+- Participants / Threads
+
+- Mutual Exclusion
+
+- Deadlock / Progress
+
+- Fairness
+
+- Starvation
+
+- Busy Waiting
+
+- Retry Behavior
+
+- Hardware Support
+
+- OS Support
+
+- Performance under Contention
+
+- Scalability
+
+- Main Limitation
+
+สำคัญ:
+ทุกช่องต้องเขียนจาก Technical Source ที่ตรวจแล้ว
+ไม่เดาค่าเอง
+
+
+======================================================================
+26. สิ่งที่ต้องระวังเรื่อง Peterson
+======================================================================
+
+จาก Research Notes ของเรา:
+
+1. Classical Peterson เป็น Algorithm สำหรับ 2 Threads/Processes
+
+2. Shared State หลัก:
+
+       flag[2]
+       turn
+
+3. Classical Properties ภายใต้สมมติฐานที่เหมาะสม:
+
+       Mutual Exclusion
+       Progress
+       Bounded Waiting
+
+4. อย่าเขียนว่า:
+       "Peterson มี Starvation"
+   แบบเป็นข้อเสียทั่วไปโดยไม่อธิบายเงื่อนไข
+
+5. Performance Limitation:
+
+   - Busy Waiting
+   - 2 Participants ใน Classical Version
+   - Poor Scalability
+   - Educational มากกว่า Production Lock ทั่วไป
+
+6. Modern C:
+
+   ห้ามใช้ ordinary int/volatile แล้วสรุปว่า Correct โดยอัตโนมัติ
+   เพราะภาษา C สมัยใหม่มี Memory Model / Data Race Rules
+
+ถ้าต้องทำ Implementation จริง
+Research Notes แนะนำเริ่มจาก C11 Atomics + Sequential Consistency
+เพื่อให้ใกล้กับ Classical Model ก่อน
+
+[Supplemental Research: ข้อความที่วาง (1).txt]
+
+
+======================================================================
+27. สิ่งที่ต้องระวังเรื่อง LL/SC
+======================================================================
+
+1. LL/SC เป็น Hardware Primitive
+   ไม่ใช่ Mutex โดยตัวมันเอง
+
+2. SC สามารถ Fail ได้
+
+3. เมื่อ SC Fail
+   Software มัก Retry
+
+4. Contention สูง
+   อาจทำให้ Retry บ่อยขึ้น
+
+5. ต้องดู Reservation Rules ของ Architecture
+
+6. อย่าสรุปว่า:
+       "LL/SC Guarantee Deadlock Freedom"
+   โดยไม่บอก Algorithm ที่ใช้สร้าง Lock
+
+7. เรื่อง ABA:
+   อย่าคัดข้อมูลเก่าว่า LL/SC "โดน ABA เหมือน CAS" แบบตรง ๆ
+
+   Research Notes ระบุว่า
+   Classical LR/SC สามารถตรวจพบ Intervening Store ผ่าน Reservation Invalidation ได้
+   แม้ค่าจะกลับมาเป็นค่าเดิม
+
+   แต่รายละเอียดต้องอิง ISA/Architecture ที่นำมาอธิบายจริง
+
+[Supplemental Research: ข้อความที่วาง (1).txt]
+
+
+======================================================================
+28. ไฟล์ที่ควรส่งให้เพื่อนอ่าน
+======================================================================
+
+ส่งแน่นอน:
+
+1. CPE333_PS8_2026.pdf
+   ใช้เข้าใจ "โจทย์จริง"
+
+2. Lecture8_LocksMechanism.pdf
+   ใช้เข้าใจ "สิ่งที่อาจารย์สอน"
+   และ Evaluation Metrics
+
+ส่งเพิ่มให้คนทำ Technical Research:
+
+3. ข้อความที่วาง (1).txt
+   แจ้งเพื่อนให้ชัดว่า:
+       "เป็น Research Notes เพิ่มเติม ไม่ใช่เอกสารอาจารย์"
+
+ไม่จำเป็นสำหรับ PS08 ตอนนี้:
+
+4. Kernel_module_intro.pdf
+
+
+======================================================================
+29. Checklist ก่อนส่ง Research ของแต่ละคน
+======================================================================
+
+คนที่รับผิดชอบแต่ละ Mechanism
+ก่อนส่งข้อมูลกลับเข้ากลุ่มควรเช็ก:
+
+[ ] บอกได้ว่า Mechanism คืออะไร
+
+[ ] อธิบาย Flow การทำงานได้
+
+[ ] มี Pseudocode / Algorithm ที่เข้าใจง่าย
+
+[ ] อธิบาย Critical Section Protection ได้
+
+[ ] วิเคราะห์ Mutual Exclusion
+
+[ ] วิเคราะห์ Deadlock / Progress
+
+[ ] วิเคราะห์ Fairness / Starvation
+
+[ ] วิเคราะห์ Performance
+
+[ ] บอกว่ามี Busy Waiting / Spin / Retry หรือไม่
+
+[ ] บอก Hardware / OS Requirement ถ้ามี
+
+[ ] บอก Limitations
+
+[ ] แยก Correctness ออกจาก Performance ชัดเจน
+
+[ ] มีแหล่ง Reference ที่เชื่อถือได้
+
+[ ] ไม่คัดข้อมูลจากงานเก่าโดยไม่ตรวจ
+
+[ ] ไม่สร้างข้อสรุปที่ Source ไม่รองรับ
+
+
+======================================================================
+30. ภาพรวม Lecture 8 แบบเส้นเดียว
+======================================================================
+
+Multiple Threads
+    ↓
+Shared Data
+    ↓
+Race Condition
+    ↓
+Critical Section
+    ↓
+ต้องการ Mutual Exclusion
+    ↓
+Lock / Unlock
+    ↓
+Software Lock แบบง่ายมี Race
+    ↓
+ต้องการ Atomic Operation
+    ↓
+Test-and-Set / CAS / Fetch-and-Add / LL-SC
+    ↓
+เกิด Busy Waiting / Spin
+    ↓
+ต้องวิเคราะห์ Performance + Fairness
+    ↓
+Yield
+    ↓
+Sleep + Queue
+    ↓
+park / unpark / setpark
+    ↓
+Waiting Race
+    ↓
+OS Support
+    ↓
+Linux Futex / Two-phase Lock
+
+
+======================================================================
+31. ภาพรวม PS08 แบบสั้นที่สุด
+======================================================================
+
+พวกเราต้อง Research:
+
+1. Peterson's Algorithm
+
+2. Load-Linked / Store-Conditional (LL/SC)
+
+3. Additional Mechanism ที่ไม่ได้อยู่ใน Lecture
+   - Working Candidate ตอนนี้: Dekker's Algorithm
+
+แต่ละ Mechanism ต้องตอบว่า:
+
+1. คืออะไร?
+2. ทำงานอย่างไร?
+3. ทำ Mutual Exclusion ได้อย่างไร?
+4. มี Deadlock / Progress อย่างไร?
+5. Fairness / Starvation เป็นอย่างไร?
+6. Performance เป็นอย่างไร?
+7. Busy Waiting / Retry / Contention เป็นอย่างไร?
+8. มีข้อจำกัดอะไร?
+9. ต้องพึ่ง Software / Hardware / OS อะไร?
+
+สุดท้าย:
+
+- ทำ Presentation Slides
+- Export เป็น PDF
+- ทำ Presentation Video
+- ส่ง PDF + Video Link ผ่าน LEB2
+
+[อ้างอิง: CPE333_PS8_2026.pdf หน้า 1]
+
+
+======================================================================
+32. ประโยคเดียวที่ทุกคนในกลุ่มควรเข้าใจ
+======================================================================
+
+PS08 ไม่ได้ให้เราแค่บอกว่า Peterson, LL/SC หรือ Algorithm อื่น "คืออะไร"
+
+แต่ต้องใช้ความรู้จาก Lecture 8 มาวิเคราะห์ว่า:
+
+    "กลไกนั้นสามารถควบคุมการเข้า Critical Section
+     ให้ถูกต้อง เป็นธรรม และมีประสิทธิภาพได้อย่างไร"
+
+โดยเฉพาะต้องคิดตามกรอบ:
+
+    Mutual Exclusion
+    + Absence of Deadlock / Progress
+    + Fairness / Starvation
+    + Performance
+
+
+======================================================================
+END OF TEAMMATE GUIDE
+======================================================================
+
+หมายเหตุ:
+เอกสารนี้เป็นสรุปเพื่อช่วยทำความเข้าใจและวางแผนงาน
+Source of Truth ของ Requirement ยังเป็น CPE333_PS8_2026.pdf
+และ Source หลักของเนื้อหาที่อาจารย์สอนคือ Lecture8_LocksMechanism.pdf
