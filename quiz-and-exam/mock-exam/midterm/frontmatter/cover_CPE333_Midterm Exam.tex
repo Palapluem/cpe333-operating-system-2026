@@ -1,0 +1,195 @@
+\documentclass[a4paper,12pt]{article}
+
+% --- ตั้งค่าขอบกระดาษ ---
+\usepackage[top=1cm, bottom=1cm, left=1cm, right=1cm]{geometry}
+
+% --- ฟอนต์ภาษาไทย ---
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\defaultfontfeatures{Mapping=tex-text}
+\setmainfont[
+    Path = ../fonts/,
+    Extension = .ttf,
+    BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+    BoldItalicFont = *-BoldItalic
+]{THSarabunNew}
+
+% --- ตั้งค่าการตัดคำภาษาไทย ---
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+% --- แพ็กเกจจัดหน้า ---
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{pdfpages} % แพ็กเกจสำหรับรวม PDF
+
+% --- สร้างคำสั่งทำ Checkbox ---
+\newcommand{\boxsize}{1.1em}
+\newcommand{\checkbox}{%
+  \begin{tikzpicture}[baseline={([yshift=-.6ex]current bounding box.center)}]
+    \draw[line width=0.8pt] (0,0) rectangle (\boxsize,\boxsize);
+  \end{tikzpicture}%
+}
+\newcommand{\checkedbox}{%
+  \begin{tikzpicture}[baseline={([yshift=-.6ex]current bounding box.center)}]
+    \draw[line width=0.8pt] (0,0) rectangle (\boxsize,\boxsize);
+    \draw[thick] (0.2em,0.2em) -- (\boxsize-0.2em,\boxsize-0.2em);
+    \draw[thick] (0.2em,\boxsize-0.2em) -- (\boxsize-0.2em,0.2em);
+  \end{tikzpicture}%
+}
+
+% --- สร้างคำสั่งขีดเส้นใต้เติมเต็มพื้นที่ ---
+\newcommand{\fillrule}{%
+  \leavevmode\leaders\hrule height -3pt depth 3.4pt\hfill\kern0pt%
+}
+
+\begin{document}
+\pagestyle{empty}
+
+% ================= HEADER SECTION =================
+\noindent
+% --- โลโก้ (จัดกึ่งกลางหน้ากระดาษแบบ Absolute) ---
+\makebox[\textwidth][c]{\raisebox{-2.5cm}[0pt][0pt]{\includesvg[width=2.5cm]{../images/KMUTT_Logo.svg}}}%
+\vspace{-\baselineskip}
+
+\noindent
+% --- คอลัมน์ซ้าย (Publish Box + วิชา) ---
+\begin{minipage}[t]{0.54\textwidth}
+    \vspace{0pt}
+    % กล่องเผยแพร่
+    \begin{tikzpicture}
+        \node[draw, line width=0.8pt, minimum width=6.8cm, minimum height=2.5cm, inner sep=5pt] {
+            \begin{minipage}{6.2cm}
+                \centering
+                \vspace*{-0.3em}
+                \textbf{\fontsize{18}{18}\selectfont \underline{การเผยแพร่ข้อสอบ}}\\[0.8em]
+                \raggedright
+                \fontsize{16}{16}\selectfont
+                \hspace{0.5cm}\checkbox\ \raisebox{0pt}{อนุญาต} \hspace{0.8cm} \checkedbox\ \raisebox{0pt}{ไม่อนุญาต}
+            \end{minipage}
+        };
+    \end{tikzpicture}
+
+    \vspace{0.3cm}
+
+    % ชื่อวิชา (อยู่ใต้กล่องซ้าย)
+    \raggedright
+    {\fontsize{24}{28}\selectfont \underline{วิชา}} \\[0.6cm]
+    {\fontsize{85}{85}\selectfont \textbf{CPE333}} \\[1.0cm]
+    {\fontsize{50}{60}\selectfont Operating System}
+\end{minipage}%
+\hfill
+% --- คอลัมน์ขวา (ข้อมูลการสอบ) ---
+\begin{minipage}[t]{0.42\textwidth}
+    \raggedleft % ดันเนื้อหาไปขวาสุดของคอลัมน์นี้
+    \begin{minipage}[t]{0.8\linewidth} % สร้างกล่องย่อยเพื่อจัดกลุ่มข้อความ (ขยายความกว้างขึ้นเล็กน้อยแก้ปัญหาตกบรรทัด)
+        \vspace{0pt}
+        \raggedright % ข้อความภายในยังคงชิดซ้าย
+        \fontsize{24}{28}\selectfont
+
+        \textbf{เลขที่นั่งสอบ} \rule[-2pt]{2.5cm}{0.5pt} \\[0.3em]
+
+        \textbf{\underline{วันที่สอบ}} \\
+        26 ตุลาคม 2569 \\[0.3em]
+
+        \textbf{\underline{เวลาสอบ}} \\
+        09.00 - 12.00 (3 ชั่วโมง) \\[0.3em]
+
+        \textbf{\underline{กลุ่มนักศึกษา}} \\
+        \checkedbox\ \raisebox{0pt}{ปกติ} \\
+        \vspace{0.1em}
+        \checkbox\ \raisebox{0pt}{International} \\[0.3em]
+
+        \textbf{\underline{ชุดข้อสอบ (Optional)}} : 1
+    \end{minipage}
+\end{minipage}
+
+\vspace{0.1cm}
+
+% ================= STUDENT INFO BOX =================
+\begin{center}
+\setlength{\fboxsep}{6pt}
+\setlength{\fboxrule}{0.8pt}
+\fbox{%
+    \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+        \fontsize{20}{26}\selectfont
+        \begin{tabular}{@{} p{0.62\linewidth} @{\hspace{1ex}} p{\dimexpr0.38\linewidth-1ex\relax} @{}}
+            \textbf{ชื่อ-นามสกุล :} \hrulefill & \textbf{รหัสนักศึกษา :} \hrulefill \\
+            \textbf{ภาควิชา/สาขาวิชา :} \hrulefill & \textbf{กลุ่ม :} \hrulefill \\
+        \end{tabular}
+    \end{minipage}%
+}
+\end{center}
+
+\vspace{0.1cm}
+
+% ================= INSTRUCTIONS =================
+\noindent
+\begin{tabular}{@{} p{2.8cm} p{\dimexpr\linewidth-2.8cm-0.5cm\relax} @{}}
+    \fontsize{16}{20}\selectfont \textbf{\underline{คำชี้แจง}} & \fontsize{16}{20}\selectfont 1. ข้อสอบมี 3 ส่วน 12 หน้า (รวมหน้าปก) คะแนนรวม 50 คะแนน \\[0.4em]
+    & \fontsize{16}{20}\selectfont \hspace{0.4cm}ส่วนที่ 1 ข้อสอบปรนัย 41 ข้อ คะแนนเต็ม 20 คะแนน \\[0.4em]
+    & \fontsize{16}{20}\selectfont \hspace{0.4cm}ส่วนที่ 2 ข้อสอบเติมคำ 10 ข้อ คะแนนเต็ม 10 คะแนน \\[0.4em]
+    & \fontsize{16}{20}\selectfont \hspace{0.4cm}ส่วนที่ 3 ข้อสอบอัตนัย 3 ข้อ คะแนนเต็ม 20 คะแนน \\[0.4em]
+    & \fontsize{16}{20}\selectfont 2. ให้ทำข้อสอบส่วนที่ 1 และ 2 ลงในตัวข้อสอบ ส่วนที่ 3 ทำลงในสมุดคำตอบ \\[0.4em]
+    & \fontsize{16}{20}\selectfont 3. เขียนชื่อและรหัสประจำตัวลงในตัวข้อสอบทุกแผ่น
+\end{tabular}
+
+\vspace{0.1cm}
+
+% ================= CONDITIONS =================
+\noindent
+\begin{tabular}{@{} p{2.8cm} p{\dimexpr\linewidth-2.8cm-0.5cm\relax} @{}}
+    \fontsize{16}{20}\selectfont \smash{\textbf{\underline{เงื่อนไขการสอบ}}} & \fontsize{16}{20}\selectfont 1. \vphantom{ที่จุ}\textbf{ให้นักศึกษาปฏิบัติแนวปฏิบัติการสอบอย่างเคร่งครัด} \\[0.4em]
+    & \fontsize{16}{20}\selectfont 2. \vphantom{ที่จุ}อนุญาตให้ใช้เครื่องคำนวณ รุ่นและยี่ห้อที่มหาวิทยาลัยกำหนดได้ \\[0.4em]
+    & \fontsize{16}{20}\selectfont 3. \vphantom{ที่จุ}\textbf{ไม่อนุญาต}ให้นำตำราและเอกสารใด ๆ เข้าห้องสอบ \\[0.4em]
+    & \fontsize{16}{20}\selectfont 4. \vphantom{ที่จุ}\textbf{ห้าม}ประพฤติปฏิบัติอันเป็นเหตุแห่งการทุจริตทุกรูปแบบในระหว่างการสอบโดยเด็ดขาด
+\end{tabular}
+
+\vspace{0.1cm}
+\noindent
+{\fontsize{16}{20}\selectfont \textbf{\underline{หมายเหตุ (Optional)}}}
+
+\vfill
+
+% ================= FOOTER =================
+\begin{center}
+    \fontsize{16}{20}\selectfont * ข้อสอบได้ผ่านการพิจารณาจากคณะกรรมการประจำภาควิชาวิศวกรรมคอมพิวเตอร์แล้ว *
+\end{center}
+
+\vspace{-0.2cm}
+
+\begin{center}
+\begin{tikzpicture}
+    % กล่องซ้าย
+    \node[draw, line width=0.8pt, minimum width=9cm, minimum height=3.0cm] (box1) at (0,0) {};
+    \node[anchor=north] at (box1.north) [yshift=-8pt] {\fontsize{16}{16}\selectfont \textbf{\underline{หัวหน้าภาควิชา}}};
+    % เส้นประเซ็นชื่อ (ปรับให้เท่ากับกล่องขวา)
+    \draw[dotted, thick] ([yshift=-0.3cm, xshift=-3.5cm]box1.center) -- ([yshift=-0.3cm, xshift=3.5cm]box1.center);
+
+    % กล่องขวา
+    \node[draw, line width=0.8pt, minimum width=9cm, minimum height=3.0cm, anchor=west] (box2) at ([xshift=0.5cm]box1.east) {};
+    \node[anchor=north] at (box2.north) [yshift=-8pt] {\fontsize{16}{16}\selectfont \textbf{\underline{อาจารย์ผู้สอน / ผู้ประสานงานรายวิชา}}};
+    % เส้นประเซ็นชื่อ
+    \draw[dotted, thick] ([yshift=-0.3cm, xshift=-3.5cm]box2.center) -- ([yshift=-0.3cm, xshift=3.5cm]box2.center);
+
+    % เบอร์โทรศัพท์
+    % วางข้อความเริ่มที่ขอบซ้ายของเส้นประ (-3.5cm จากตรงกลาง)
+    \node[anchor=west, inner sep=0pt] (phoneLabel) at ([yshift=-1.0cm, xshift=-3.5cm]box2.center) {\fontsize{14}{14}\selectfont เบอร์โทรศัพท์ : \hspace{1ex}};
+    % ลากเส้นจุดจากท้ายข้อความ ไปจนถึงขอบขวาของเส้นประ (+3.5cm จากตรงกลาง)
+    % ใช้ coordinate calculation (phoneLabel.base east) -- (phoneLabel.base east -| rightEdge) เพื่อให้เส้นตรงเป๊ะและอยู่ระดับเดียวกับตัวหนังสือ
+    \path ([xshift=3.5cm]box2.center) coordinate (rightEdge);
+    \draw[dotted, thick] (phoneLabel.base east) -- (phoneLabel.base east -| rightEdge);
+\end{tikzpicture}
+\end{center}
+
+% ================= INCLUDE PDF =================
+% The published reference cover PDF has one page. Do not append an extra cover.
+
+\end{document}

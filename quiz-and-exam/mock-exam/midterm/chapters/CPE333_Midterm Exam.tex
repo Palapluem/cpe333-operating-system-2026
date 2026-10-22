@@ -1,0 +1,51 @@
+\documentclass[12pt, a4paper]{exam}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{lastpage}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\setmainlanguage{thai}
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+\linespread{1.25}
+% Original CPE222 chapter geometry, font and header layout.
+\geometry{top=0.8in, bottom=1in, left=0.8in, right=0.8in}
+\newfontfamily\thaifont[Scale=1.33,Script=Thai,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\newfontfamily\thaifonttt[Scale=1.33,Script=Thai,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\setmainfont[Scale=1.33,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\pagestyle{headandfoot}
+\extraheadheight{0.2in}
+\pointname{}
+\pointformat{\textbf{(\thepoints\ \ifnum\thepoints=1\relax point\else points\fi)}}
+\newcommand{\examheader}{%
+ \makebox[\textwidth][l]{Name \hrulefill\quad Student ID \makebox[2.0in]{\hrulefill}}}
+\firstpageheader{\examheader}{}{}
+\runningheader{\examheader}{}{}
+\firstpagefooter{\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}{}{\textit{หน้าที่ \thepage/12}}
+\runningfooter{\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}{}{\textit{หน้าที่ \thepage/12}}
+% Content-only helpers: the document class and standard layout stay unchanged.
+\newenvironment{verticalchoices}{%
+ \begin{enumerate}[label=(\alph*),leftmargin=1.8em,itemsep=0pt,parsep=0pt,topsep=2pt]
+}{\end{enumerate}}
+\newcommand{\sectiontitle}[1]{\noindent\textbf{\underline{#1}}\par\smallskip}
+\begin{document}
+\sloppy
+\setcounter{page}{2}
+\input{questions.generated.tex}
+\end{document}

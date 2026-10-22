@@ -1,0 +1,19 @@
+# Derived TeX noise; keep editable sources, generated inputs, and publishable PDFs.
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.xdv
+*.fls
+*.fdb_latexmk
+__pycache__/
+frontmatter/svg-inkscape/
+# Space-free internal build jobs (public component filenames retain spaces).
+CPE333_Midterm_Exam_main.pdf
+chapters/CPE333_Midterm_Exam.pdf
+frontmatter/cover_CPE333_Midterm_Exam.pdf
+*.w18
+# Duplicate assembly/key intermediates; final deliverables live in output/pdf/.
+/CPE333_Midterm Exam_main.pdf
+/solutions/CPE333_Midterm_Solutions.pdf

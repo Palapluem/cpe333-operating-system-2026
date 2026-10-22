@@ -1,0 +1,359 @@
+\sectiontitle{Part I: Multiple Choice (20 points)}
+\noindent Circle the one correct answer in each question.\par\smallskip
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{0}
+\question What is a trap in an operating system?
+\begin{verticalchoices}
+\item A queue for blocked processes
+\item A synchronous transfer to an OS handler, as used for a system call
+\item An interrupt generated only by an external device
+\item A page selected for replacement
+\end{verticalchoices}
+\question What could happen without separation between user mode and privileged mode?
+\begin{verticalchoices}
+\item The OS could no longer create any child process
+\item All memory accesses would automatically become safe
+\item A process could directly access protected data or devices
+\item Every process would have to remain blocked
+\end{verticalchoices}
+\question In UNIX, which numeric identifier identifies a live process on the system?
+\begin{verticalchoices}
+\item Process Control Block
+\item Device queue
+\item Process Identifier (PID)
+\item Page-frame number
+\end{verticalchoices}
+\question Which register holds the address of the next instruction to execute?
+\begin{verticalchoices}
+\item A general-purpose data register
+\item The program counter
+\item The stack pointer
+\item The page-table base register
+\end{verticalchoices}
+\question Which OS concern protects one application from unauthorized access by another?
+\begin{verticalchoices}
+\item Mobility
+\item Throughput
+\item Isolation
+\item Convenience
+\end{verticalchoices}
+\question Which listed facility is required specifically for voluntary process switching in a non-preemptive system?
+\begin{verticalchoices}
+\item A timer that periodically forces a context switch
+\item A TLB
+\item A cache
+\item None; cooperative switching does not require timer-driven preemption
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{6}
+\question Which part of a process is normally maintained in kernel space?
+\begin{verticalchoices}
+\item The user stack
+\item The process descriptor
+\item The user text segment
+\item The user heap
+\end{verticalchoices}
+\question In the conventional address-space layout, the heap grows upward. Which region typically grows in the opposite direction?
+\begin{verticalchoices}
+\item The text segment
+\item The static data segment
+\item The stack
+\item The executable file header
+\end{verticalchoices}
+\question In the basic three-state model, when can a ready process move directly to blocked?
+\begin{verticalchoices}
+\item When it reads a file before being dispatched
+\item Whenever a timer interrupt occurs
+\item Whenever the ready queue is nonempty
+\item It cannot; it must first run and request an event or I/O
+\end{verticalchoices}
+\question The state of a process is defined by which of the following?
+\begin{verticalchoices}
+\item Its final activity
+\item The activity it completed previously
+\item The activity it will perform next
+\item Its current activity
+\end{verticalchoices}
+\question A process is blocked on a disk read. What is it waiting for?
+\begin{verticalchoices}
+\item The disk I/O to complete
+\item Its next time quantum to expire
+\item The OS to delete its executable file
+\item Its priority to become the highest
+\end{verticalchoices}
+\question What does it mean when a process is a zombie?
+\begin{verticalchoices}
+\item It is running and cannot be preempted
+\item It has exited, but its exit status has not yet been reaped
+\item It is ready but has never been dispatched
+\item It is waiting indefinitely for disk I/O
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{12}
+\question Which data structure keeps a process's state, saved registers, and scheduling information?
+\begin{verticalchoices}
+\item A translation lookaside buffer
+\item A user stack alone
+\item A process control block
+\item A page frame
+\end{verticalchoices}
+\question A child prints before exiting. Its parent successfully waits for that child and then prints. Which order is guaranteed?
+\begin{verticalchoices}
+\item The parent's print precedes the child's print
+\item Both prints occur simultaneously
+\item The child restarts at the beginning of main()
+\item The child's print precedes the parent's print
+\end{verticalchoices}
+\question Which non-preemptive policy executes ready jobs in their arrival order?
+\begin{verticalchoices}
+\item FIFO (FCFS)
+\item SJF
+\item STCF
+\item Priority scheduling
+\end{verticalchoices}
+\question Starting with one process, every process executes two successful calls: fork(); fork(); then prints once. How many prints occur in total? Assume no earlier buffered output.
+\begin{verticalchoices}
+\item One
+\item Two
+\item Three
+\item Four
+\end{verticalchoices}
+\question Which statement about standard MLFQ is NOT true?
+\begin{verticalchoices}
+\item A new job enters at the lowest priority
+\item Different queues can have different priorities
+\item Jobs at the same priority can use RR
+\item A ready job belongs to one priority queue at a time
+\end{verticalchoices}
+\question Which statement about virtual memory is NOT true?
+\begin{verticalchoices}
+\item Processes need protection from one another
+\item A virtual address is translated to a physical address
+\item Physical memory must exceed the combined virtual address spaces
+\item Backing storage can hold pages that are not resident
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{18}
+\question Which statement describes CPU virtualization provided by a modern operating system?
+\begin{verticalchoices}
+\item Each process appears to have its own CPU
+\item A single CPU core physically executes all processes at once
+\item A CPU executes user instructions directly from disk
+\item Every process must always have the same program-counter value
+\end{verticalchoices}
+\question Which statement about memory allocation is true?
+\begin{verticalchoices}
+\item Variable-size partitions cannot suffer external fragmentation
+\item Fixed-size partitions can suffer internal fragmentation
+\item Compaction removes unused space inside every allocated block
+\item Single-partition allocation always uses memory best
+\end{verticalchoices}
+\question What does a CPU process-selection algorithm select?
+\begin{verticalchoices}
+\item A virtual page to bring into RAM
+\item A program file to remove from disk
+\item A ready process to run next
+\item A physical frame to evict
+\end{verticalchoices}
+\question What does a page-replacement algorithm select?
+\begin{verticalchoices}
+\item A resident page to evict when a frame is needed
+\item A process to execute next
+\item An instruction to fetch from the ready queue
+\item A new virtual address for the program counter
+\end{verticalchoices}
+\question Which of the following calls does not return to the original calling point when it succeeds?
+\begin{verticalchoices}
+\item fork()
+\item exec()
+\item wait()
+\item None of these
+\end{verticalchoices}
+\question What is a disadvantage of basic segmentation?
+\begin{verticalchoices}
+\item Every segment must have the same fixed size
+\item It can suffer external fragmentation
+\item It cannot provide bounds checking
+\item It eliminates all memory-management overhead
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{24}
+\question What does demand paging mean?
+\begin{verticalchoices}
+\item Loading all pages before the process starts
+\item Keeping every page permanently in physical memory
+\item Bringing in a page when it is referenced and not resident
+\item Preloading only pages explicitly named by malloc()
+\end{verticalchoices}
+\question Which is NOT a normal step in handling a legal, not-present page fault?
+\begin{verticalchoices}
+\item Locate the page on backing storage
+\item Obtain a frame, replacing a page if necessary
+\item Update the page table after the page is read
+\item Always terminate the process without attempting a page-in
+\end{verticalchoices}
+\question Which pair is used to relocate and bounds-check an address in a segment?
+\begin{verticalchoices}
+\item Virtual page number and page-fault count
+\item Time quantum and process priority
+\item Physical frame number and CPU burst time
+\item Segment base address and segment limit
+\end{verticalchoices}
+\question For a fixed virtual-address-space size and fixed PTE size, what is an effect of increasing the page size?
+\begin{verticalchoices}
+\item A smaller single-level page table
+\item More virtual pages
+\item Fewer page-offset bits
+\item External fragmentation between fixed-size frames
+\end{verticalchoices}
+\question Which scheduling policy does not require timer-driven preemption?
+\begin{verticalchoices}
+\item STCF
+\item RR
+\item Preemptive MLFQ
+\item Non-preemptive FIFO
+\end{verticalchoices}
+\question Where can virtual-memory pages be kept when they are not resident in RAM?
+\begin{verticalchoices}
+\item Only in the CPU registers
+\item On backing storage such as a disk
+\item Only in the TLB
+\item Inside the page-table entries themselves
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{30}
+\question What is response time in CPU scheduling?
+\begin{verticalchoices}
+\item Completion time minus arrival time
+\item The sum of all time spent in the ready queue
+\item First CPU start time minus arrival time
+\item Time spent performing disk I/O
+\end{verticalchoices}
+\question What is turnaround time?
+\begin{verticalchoices}
+\item Completion time minus arrival time
+\item First CPU start time minus arrival time
+\item The length of one RR time slice
+\item CPU burst time minus total waiting time
+\end{verticalchoices}
+\question Which problem can arise with variable-size contiguous partitions?
+\begin{verticalchoices}
+\item All requests must waste exactly one full frame
+\item No two adjacent holes can ever be merged
+\item Every process must use the same-sized partition
+\item External fragmentation can require compaction
+\end{verticalchoices}
+\question With a fixed page size and PTE size, what happens to a full single-level page table when the virtual address space becomes larger?
+\begin{verticalchoices}
+\item It needs fewer entries
+\item It needs more memory for page-table entries
+\item The page offset becomes zero bits
+\item It no longer requires address translation
+\end{verticalchoices}
+\question Why can a multilevel page table save memory?
+\begin{verticalchoices}
+\item Unused lower-level page tables need not be allocated
+\item All virtual pages become physically adjacent
+\item Every PTE is kept inside a CPU register
+\item Every second-level page table is always empty
+\end{verticalchoices}
+\question What is a possible disadvantage of SJF when short jobs keep arriving?
+\begin{verticalchoices}
+\item It always has the largest average turnaround time
+\item It must execute jobs in arrival order
+\item A long waiting job can starve
+\item It cannot run without equal-length bursts
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\begin{questions}\setlength{\itemsep}{0.12cm}\setcounter{question}{36}
+\question Which statement about basic segmentation is NOT true?
+\begin{verticalchoices}
+\item A program can be divided into logical segments
+\item Different segments can have different sizes
+\item Each segment can use its own base and bound
+\item All segments must be equal-sized units like pages
+\end{verticalchoices}
+\question Which statement about paging is true?
+\begin{verticalchoices}
+\item A virtual page and a physical frame must differ in size
+\item A page is a virtual-memory unit; a frame is a physical-memory unit
+\item Smaller pages always produce a smaller full page table
+\item Demand paging loads every page before execution
+\end{verticalchoices}
+\question Which replacement policy requires future page references to make its ideal decisions?
+\begin{verticalchoices}
+\item FIFO
+\item LRU
+\item OPT
+\item LFU
+\end{verticalchoices}
+\question When does a demand-paging page fault occur?
+\begin{verticalchoices}
+\item When a referenced legal virtual page is not present in RAM
+\item Whenever a resident page is read twice
+\item Whenever an updated page is found in RAM
+\item Whenever a translation is found in the TLB
+\end{verticalchoices}
+\question Which policy rotates equal-priority ready jobs using a fixed time quantum?
+\begin{verticalchoices}
+\item Non-preemptive FIFO
+\item Non-preemptive SJF
+\item Round robin (RR)
+\item OPT page replacement
+\end{verticalchoices}
+\end{questions}\vfill\newpage
+\sectiontitle{Part II: Short Answer (10 points)}
+\noindent Answer all questions briefly in the spaces provided. (1 point each.)\par\smallskip
+\begin{questions}\setlength{\itemsep}{0.12cm}
+\question Write the full names of MLFQ and STCF.\par\vspace{0.90cm}
+\question What is the difference between a process and a program?\par\vspace{0.90cm}
+\question Expand MMU and state its address-translation function.\par\vspace{0.90cm}
+\question Give two examples of CPU state saved during a context switch.\par\vspace{0.90cm}
+\question Give two types of information stored in a PCB, other than CPU register values.\par\vspace{0.90cm}
+\question What is an exited child process called before its living parent reaps its exit status?\par\vspace{0.90cm}
+\question Give one example each of an I/O-bound task and a CPU-bound task.\par\vspace{0.90cm}
+\question Why is longest-job-first usually a poor policy for reducing average turnaround time?\par\vspace{0.90cm}
+\question With base = 16 KiB and bound = 4 KiB, is virtual byte address 4200 valid? Why?\par\vspace{0.90cm}
+\question Expand TLB and explain why a TLB miss need not cause a page fault.\par\vspace{0.90cm}
+\end{questions}\vfill\newpage
+
+\sectiontitle{Part III: Written Questions (20 points)}
+\noindent Answer all three questions in the answer booklet. Show your work.\par\smallskip
+\begin{questions}
+\question \textbf{(8 points)} Consider the following set of processes (jobs), where the run time of each process is given in milliseconds (ms):
+\begin{center}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular}{c|c|c}
+Process & Run time (ms) & Priority \\\hline
+$P_1$ & 10 & 3 \\
+$P_2$ & 1 & 1 \\
+$P_3$ & 2 & 3 \\
+$P_4$ & 1 & 4 \\
+$P_5$ & 5 & 2
+\end{tabular}
+\end{center}
+The processes arrive in the order $P_1,P_2,P_3,P_4,P_5$, all at time 0. Assume zero context-switch overhead; break SJF ties by arrival order.
+\begin{parts}
+\part[3] Draw execution diagrams for FIFO, SJF, and RR scheduling with time slice = 1 ms.
+\part[2] Find the turnaround time of each process under each policy.
+\part[2] Find the response time of each process under each policy.
+\part[1] Which policy gives (i) the minimum average turnaround time and (ii) the minimum average response time? Calculate both averages for all three policies.
+\end{parts}
+
+\question \textbf{(4 points)} Explain how a commercial bank handles customers during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
+
+\question \textbf{(8 points)} Use three initially empty frames and this page-reference string (20 references):
+\begin{center}
+\textbf{7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1}
+\end{center}
+Assume memory-access time is 10 ns and disk-access time is 10 ms. For EAT, treat 10 ms as the complete fault-path cost (including restart) and ignore other costs.
+\begin{parts}
+\part \textbf{(4.5 points)} Draw FIFO, LRU, and OPT frame tables; mark each reference as a hit or fault.
+\part \textbf{(1.5 points)} Find each policy's total faults, total hits, and fault probability.
+\part[2] Calculate the effective access time (EAT) of each policy in milliseconds.
+\end{parts}
+\end{questions}
+\vfill\newpage
+% Pages 11 and 12 are intentionally blank scratch pages. Written answers still
+% belong in the separate answer booklet, as specified on the unchanged cover.
+\null\vfill\newpage
+\null\vfill

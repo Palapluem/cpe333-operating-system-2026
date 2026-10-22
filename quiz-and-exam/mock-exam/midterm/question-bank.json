@@ -1,0 +1,847 @@
+{
+  "title": "CPE333 Operating Systems - Mock Midterm 1",
+  "scope": "Lecture 1-6",
+  "mcq_points": 20,
+  "short_points": 10,
+  "essay_points": [
+    8,
+    4,
+    8
+  ],
+  "mcq": [
+    {
+      "n": 1,
+      "lecture": 1,
+      "ref": "E05 p3 Q1; E09 Q1",
+      "q": "What is a trap in an operating system?",
+      "choices": [
+        "A queue for blocked processes",
+        "A synchronous transfer to an OS handler, as used for a system call",
+        "An interrupt generated only by an external device",
+        "A page selected for replacement"
+      ],
+      "answer": "b",
+      "why": "Trap ส่งการควบคุมแบบ synchronous เข้า OS handler เช่นการร้องขอ system call ไม่ใช่ asynchronous hardware interrupt",
+      "source_year": 2022,
+      "source_question": 1,
+      "source_page": 3
+    },
+    {
+      "n": 2,
+      "lecture": 1,
+      "ref": "E05 p3 Q2; E09 Q2",
+      "q": "What could happen without separation between user mode and privileged mode?",
+      "choices": [
+        "The OS could no longer create any child process",
+        "All memory accesses would automatically become safe",
+        "A process could directly access protected data or devices",
+        "Every process would have to remain blocked"
+      ],
+      "answer": "c",
+      "why": "หากไม่มีการแยก privilege ผู้ใช้/process อาจเข้าถึงข้อมูลของ process อื่นหรืออุปกรณ์โดยข้ามการป้องกัน",
+      "source_year": 2022,
+      "source_question": 2,
+      "source_page": 3
+    },
+    {
+      "n": 3,
+      "lecture": 2,
+      "ref": "E03 p4 Q14",
+      "q": "In UNIX, which numeric identifier identifies a live process on the system?",
+      "choices": [
+        "Process Control Block",
+        "Device queue",
+        "Process Identifier (PID)",
+        "Page-frame number"
+      ],
+      "answer": "c",
+      "why": "PID เป็น identifier ของ process; PCB เป็นโครงสร้างเก็บข้อมูล ไม่ใช่เลข identifier ส่วน device queue และ PFN อ้างคนละทรัพยากร",
+      "source_year": 2561,
+      "source_question": 14,
+      "source_page": 4
+    },
+    {
+      "n": 4,
+      "lecture": 2,
+      "ref": "E03 p2 Q5",
+      "q": "Which register holds the address of the next instruction to execute?",
+      "choices": [
+        "A general-purpose data register",
+        "The program counter",
+        "The stack pointer",
+        "The page-table base register"
+      ],
+      "answer": "b",
+      "why": "Program counter ระบุตำแหน่งคำสั่งถัดไป; stack pointer ชี้ stack, page-table base ชี้ตาราง และ data register ไม่ใช่ตัวติดตามคำสั่งถัดไป",
+      "source_year": 2561,
+      "source_question": 5,
+      "source_page": 2
+    },
+    {
+      "n": 5,
+      "lecture": 1,
+      "ref": "E05 p3 Q5; E09 Q5",
+      "q": "Which OS concern protects one application from unauthorized access by another?",
+      "choices": [
+        "Mobility",
+        "Throughput",
+        "Isolation",
+        "Convenience"
+      ],
+      "answer": "c",
+      "why": "Isolation แยกการเข้าถึงทรัพยากรระหว่าง applications เพื่อป้องกันการเข้าถึงที่ไม่ได้รับอนุญาต",
+      "source_year": 2022,
+      "source_question": 5,
+      "source_page": 3
+    },
+    {
+      "n": 6,
+      "lecture": 2,
+      "ref": "E05 p3 Q6; E09 Q6",
+      "q": "Which listed facility is required specifically for voluntary process switching in a non-preemptive system?",
+      "choices": [
+        "A timer that periodically forces a context switch",
+        "A TLB",
+        "A cache",
+        "None; cooperative switching does not require timer-driven preemption"
+      ],
+      "answer": "d",
+      "why": "Non-preemptive/cooperative switching อาศัยงานคืน control เอง ไม่จำเป็นต้องมี timer เพื่อบังคับ preempt ตาม quantum",
+      "source_year": 2022,
+      "source_question": 6,
+      "source_page": 3
+    },
+    {
+      "n": 7,
+      "lecture": 2,
+      "ref": "E05 p3 Q7; E09 Q7",
+      "q": "Which part of a process is normally maintained in kernel space?",
+      "choices": [
+        "The user stack",
+        "The process descriptor",
+        "The user text segment",
+        "The user heap"
+      ],
+      "answer": "b",
+      "why": "Process descriptor/PCB เป็นข้อมูลบริหารที่ kernel เก็บรักษา ต่างจาก text/heap/stack ใน user address space",
+      "source_year": 2022,
+      "source_question": 7,
+      "source_page": 3
+    },
+    {
+      "n": 8,
+      "lecture": 2,
+      "ref": "E05 p3 Q8; E09 Q8",
+      "q": "In the conventional address-space layout, the heap grows upward. Which region typically grows in the opposite direction?",
+      "choices": [
+        "The text segment",
+        "The static data segment",
+        "The stack",
+        "The executable file header"
+      ],
+      "answer": "c",
+      "why": "ใน layout ที่เรียน heap โตขึ้นไปยัง address สูง ส่วน stack โตลงไปยัง address ต่ำ ไม่ใช่ข้อบังคับของทุก architecture",
+      "source_year": 2022,
+      "source_question": 8,
+      "source_page": 3
+    },
+    {
+      "n": 9,
+      "lecture": 2,
+      "ref": "E05 p3 Q9; E09 Q9",
+      "q": "In the basic three-state model, when can a ready process move directly to blocked?",
+      "choices": [
+        "When it reads a file before being dispatched",
+        "Whenever a timer interrupt occurs",
+        "Whenever the ready queue is nonempty",
+        "It cannot; it must first run and request an event or I/O"
+      ],
+      "answer": "d",
+      "why": "Ready ไม่ได้กำลังรันเพื่อร้องขอ I/O จึงไม่มี transition ready ไป blocked โดยตรงในโมเดลนี้",
+      "source_year": 2022,
+      "source_question": 9,
+      "source_page": 3
+    },
+    {
+      "n": 10,
+      "lecture": 2,
+      "ref": "E03 p4 Q12",
+      "q": "The state of a process is defined by which of the following?",
+      "choices": [
+        "Its final activity",
+        "The activity it completed previously",
+        "The activity it will perform next",
+        "Its current activity"
+      ],
+      "answer": "d",
+      "why": "Process state บอกกิจกรรม/สถานะปัจจุบัน เช่น ready/running/blocked ไม่ใช่กิจกรรมที่ผ่านมา จะทำในอนาคต หรือกิจกรรมสุดท้าย",
+      "source_year": 2561,
+      "source_question": 12,
+      "source_page": 4
+    },
+    {
+      "n": 11,
+      "lecture": 2,
+      "ref": "E05 p3 Q11; E09 Q11",
+      "q": "A process is blocked on a disk read. What is it waiting for?",
+      "choices": [
+        "The disk I/O to complete",
+        "Its next time quantum to expire",
+        "The OS to delete its executable file",
+        "Its priority to become the highest"
+      ],
+      "answer": "a",
+      "why": "Blocked on disk read รอ event คือ I/O completion ไม่ใช่รอ timer หรือเลือก CPU",
+      "source_year": 2022,
+      "source_question": 11,
+      "source_page": 3
+    },
+    {
+      "n": 12,
+      "lecture": 2,
+      "ref": "E05 p3 Q12; E09 Q12",
+      "q": "What does it mean when a process is a zombie?",
+      "choices": [
+        "It is running and cannot be preempted",
+        "It has exited, but its exit status has not yet been reaped",
+        "It is ready but has never been dispatched",
+        "It is waiting indefinitely for disk I/O"
+      ],
+      "answer": "b",
+      "why": "Zombie คือจบการทำงานแล้ว แต่ parent ยังไม่เก็บ exit status ด้วย wait/waitpid",
+      "source_year": 2022,
+      "source_question": 12,
+      "source_page": 3
+    },
+    {
+      "n": 13,
+      "lecture": 2,
+      "ref": "E05 p4 Q13; E09 Q13",
+      "q": "Which data structure keeps a process's state, saved registers, and scheduling information?",
+      "choices": [
+        "A translation lookaside buffer",
+        "A user stack alone",
+        "A process control block",
+        "A page frame"
+      ],
+      "answer": "c",
+      "why": "PCB/process descriptor เก็บข้อมูลบริหาร process เช่น state, saved context และ scheduling information; TLB เก็บ translation, stack ใช้ call/local state และ frame เป็นพื้นที่ physical memory",
+      "source_year": 2022,
+      "source_question": 13,
+      "source_page": 4
+    },
+    {
+      "n": 14,
+      "lecture": 2,
+      "ref": "E05 p4 Q14; E09 Q14",
+      "q": "A child prints before exiting. Its parent successfully waits for that child and then prints. Which order is guaranteed?",
+      "choices": [
+        "The parent's print precedes the child's print",
+        "Both prints occur simultaneously",
+        "The child restarts at the beginning of main()",
+        "The child's print precedes the parent's print"
+      ],
+      "answer": "d",
+      "why": "Parent wait สำเร็จหลัง child จบ ดังนั้นในเงื่อนไขนี้ child พิมพ์ก่อน parent โดยสมมติ output สำเร็จและไม่พิจารณา buffering ที่เปลี่ยนลำดับการแสดง",
+      "source_year": 2022,
+      "source_question": 14,
+      "source_page": 4
+    },
+    {
+      "n": 15,
+      "lecture": 3,
+      "ref": "E05 p4 Q15; E09 Q15",
+      "q": "Which non-preemptive policy executes ready jobs in their arrival order?",
+      "choices": [
+        "FIFO (FCFS)",
+        "SJF",
+        "STCF",
+        "Priority scheduling"
+      ],
+      "answer": "a",
+      "why": "FIFO/FCFS ใช้ลำดับการมาถึง ไม่ได้เรียงตามความยาวหรือ priority; แก้ stem เดิมให้ไม่กำกวมกับ RR first dispatch",
+      "source_year": 2022,
+      "source_question": 15,
+      "source_page": 4
+    },
+    {
+      "n": 16,
+      "lecture": 2,
+      "ref": "E03 p3 Q7",
+      "q": "Starting with one process, every process executes two successful calls: fork(); fork(); then prints once. How many prints occur in total? Assume no earlier buffered output.",
+      "choices": [
+        "One",
+        "Two",
+        "Three",
+        "Four"
+      ],
+      "answer": "d",
+      "why": "หลัง fork แรกมี 2 processes และทุกตัว fork อีกครั้งเป็น 4 processes จึงพิมพ์สี่ครั้ง ไม่ใช่บวกทีละหนึ่ง",
+      "source_year": 2561,
+      "source_question": 7,
+      "source_page": 3
+    },
+    {
+      "n": 17,
+      "lecture": 3,
+      "ref": "E05 p4 Q17; E09 Q17",
+      "q": "Which statement about standard MLFQ is NOT true?",
+      "choices": [
+        "A new job enters at the lowest priority",
+        "Different queues can have different priorities",
+        "Jobs at the same priority can use RR",
+        "A ready job belongs to one priority queue at a time"
+      ],
+      "answer": "a",
+      "why": "MLFQ ให้งานใหม่เริ่มที่ priority สูงสุด ไม่ใช่ต่ำสุด",
+      "source_year": 2022,
+      "source_question": 17,
+      "source_page": 4
+    },
+    {
+      "n": 18,
+      "lecture": 6,
+      "ref": "E05 p4 Q18; E09 Q18",
+      "q": "Which statement about virtual memory is NOT true?",
+      "choices": [
+        "Processes need protection from one another",
+        "A virtual address is translated to a physical address",
+        "Physical memory must exceed the combined virtual address spaces",
+        "Backing storage can hold pages that are not resident"
+      ],
+      "answer": "c",
+      "why": "Virtual memory อนุญาตให้ address spaces ที่ใช้มีขนาดรวมเกิน RAM โดยเก็บบางส่วนใน backing storage ได้",
+      "source_year": 2022,
+      "source_question": 18,
+      "source_page": 4
+    },
+    {
+      "n": 19,
+      "lecture": 1,
+      "ref": "E05 p3 Q3; E09 Q3",
+      "q": "Which statement describes CPU virtualization provided by a modern operating system?",
+      "choices": [
+        "Each process appears to have its own CPU",
+        "A single CPU core physically executes all processes at once",
+        "A CPU executes user instructions directly from disk",
+        "Every process must always have the same program-counter value"
+      ],
+      "answer": "a",
+      "why": "OS สลับการใช้ CPU ให้แต่ละ process เห็นเสมือนมี CPU ของตนเอง ไม่ใช่ว่า single core รันทุก process พร้อมกันจริงหรือ fetch คำสั่งจาก disk โดยตรง",
+      "source_year": 2022,
+      "source_question": 3,
+      "source_page": 3
+    },
+    {
+      "n": 20,
+      "lecture": 4,
+      "ref": "E05 p4 Q20; E09 Q20",
+      "q": "Which statement about memory allocation is true?",
+      "choices": [
+        "Variable-size partitions cannot suffer external fragmentation",
+        "Fixed-size partitions can suffer internal fragmentation",
+        "Compaction removes unused space inside every allocated block",
+        "Single-partition allocation always uses memory best"
+      ],
+      "answer": "b",
+      "why": "Fixed partitions อาจเหลือพื้นที่ภายในหน่วยที่จัดสรร ส่วน variable partitions อาจมี external fragmentation และ compaction ไม่แก้ internal waste",
+      "source_year": 2022,
+      "source_question": 20,
+      "source_page": 4
+    },
+    {
+      "n": 21,
+      "lecture": 3,
+      "ref": "E05 p4 Q21; E09 Q21",
+      "q": "What does a CPU process-selection algorithm select?",
+      "choices": [
+        "A virtual page to bring into RAM",
+        "A program file to remove from disk",
+        "A ready process to run next",
+        "A physical frame to evict"
+      ],
+      "answer": "c",
+      "why": "CPU scheduler เลือก ready process ให้ใช้ CPU ไม่ใช่เลือก victim page หรือจัดสรร frame",
+      "source_year": 2022,
+      "source_question": 21,
+      "source_page": 4
+    },
+    {
+      "n": 22,
+      "lecture": 6,
+      "ref": "E05 p4 Q22; E09 Q22",
+      "q": "What does a page-replacement algorithm select?",
+      "choices": [
+        "A resident page to evict when a frame is needed",
+        "A process to execute next",
+        "An instruction to fetch from the ready queue",
+        "A new virtual address for the program counter"
+      ],
+      "answer": "a",
+      "why": "Page replacement เลือก resident victim page เพื่อคืน frame เมื่อจำเป็นต้องแทนที่",
+      "source_year": 2022,
+      "source_question": 22,
+      "source_page": 4
+    },
+    {
+      "n": 23,
+      "lecture": 2,
+      "ref": "E03 p3 Q6",
+      "q": "Which of the following calls does not return to the original calling point when it succeeds?",
+      "choices": [
+        "fork()",
+        "exec()",
+        "wait()",
+        "None of these"
+      ],
+      "answer": "b",
+      "why": "exec สำเร็จแทนที่ process image จึงไม่กลับจุดเรียกเดิม ส่วน fork และ wait มี return path ตามปกติ; เติม when it succeeds เพื่อแยกกรณี exec ล้มเหลว",
+      "source_year": 2561,
+      "source_question": 6,
+      "source_page": 3
+    },
+    {
+      "n": 24,
+      "lecture": 5,
+      "ref": "E05 p4 Q24; E09 Q24",
+      "q": "What is a disadvantage of basic segmentation?",
+      "choices": [
+        "Every segment must have the same fixed size",
+        "It can suffer external fragmentation",
+        "It cannot provide bounds checking",
+        "It eliminates all memory-management overhead"
+      ],
+      "answer": "b",
+      "why": "Segments มีขนาดต่างกันและแต่ละ segment ต้องต่อเนื่อง จึงเกิด holes/external fragmentation ได้",
+      "source_year": 2022,
+      "source_question": 24,
+      "source_page": 4
+    },
+    {
+      "n": 25,
+      "lecture": 6,
+      "ref": "E05 p4 Q26; E09 Q26",
+      "q": "What does demand paging mean?",
+      "choices": [
+        "Loading all pages before the process starts",
+        "Keeping every page permanently in physical memory",
+        "Bringing in a page when it is referenced and not resident",
+        "Preloading only pages explicitly named by malloc()"
+      ],
+      "answer": "c",
+      "why": "Demand paging โหลด page เมื่อ reference แล้วพบว่ายังไม่ resident ไม่ต้องโหลดทั้ง process ก่อน",
+      "source_year": 2022,
+      "source_question": 26,
+      "source_page": 4
+    },
+    {
+      "n": 26,
+      "lecture": 6,
+      "ref": "E05 p5 Q27; E09 Q27",
+      "q": "Which is NOT a normal step in handling a legal, not-present page fault?",
+      "choices": [
+        "Locate the page on backing storage",
+        "Obtain a frame, replacing a page if necessary",
+        "Update the page table after the page is read",
+        "Always terminate the process without attempting a page-in"
+      ],
+      "answer": "d",
+      "why": "Legal not-present fault โดยปกติแก้ด้วย page-in และ restart; ไม่ควร terminate ทุกกรณี ต่างจาก invalid/protection access",
+      "source_year": 2022,
+      "source_question": 27,
+      "source_page": 5
+    },
+    {
+      "n": 27,
+      "lecture": 5,
+      "ref": "E05 p5 Q29; E09 Q29; L5 segmentation",
+      "q": "Which pair is used to relocate and bounds-check an address in a segment?",
+      "choices": [
+        "Virtual page number and page-fault count",
+        "Time quantum and process priority",
+        "Physical frame number and CPU burst time",
+        "Segment base address and segment limit"
+      ],
+      "answer": "d",
+      "why": "Segment ใช้ base แปลตำแหน่งและ limit ตรวจ offset; ตัวเลือกอื่นปน paging, scheduling หรือข้อมูลที่ไม่ใช่คู่ base/bounds ของ segment",
+      "source_year": 2022,
+      "source_question": 29,
+      "source_page": 5
+    },
+    {
+      "n": 28,
+      "lecture": 5,
+      "ref": "E05 p5 Q30; E09 Q30",
+      "q": "For a fixed virtual-address-space size and fixed PTE size, what is an effect of increasing the page size?",
+      "choices": [
+        "A smaller single-level page table",
+        "More virtual pages",
+        "Fewer page-offset bits",
+        "External fragmentation between fixed-size frames"
+      ],
+      "answer": "a",
+      "why": "Page ใหญ่ขึ้นทำให้จำนวน pages ลดลง จึงมี PTE entries น้อยลงเมื่อ address-space size และ PTE size คงที่",
+      "source_year": 2022,
+      "source_question": 30,
+      "source_page": 5
+    },
+    {
+      "n": 29,
+      "lecture": 3,
+      "ref": "E05 p5 Q34; E09 Q34",
+      "q": "Which scheduling policy does not require timer-driven preemption?",
+      "choices": [
+        "STCF",
+        "RR",
+        "Preemptive MLFQ",
+        "Non-preemptive FIFO"
+      ],
+      "answer": "d",
+      "why": "Non-preemptive FIFO อาศัย process จบ/block/yield ไม่ต้องใช้ timer ตัด CPU ตาม quantum",
+      "source_year": 2022,
+      "source_question": 34,
+      "source_page": 5
+    },
+    {
+      "n": 30,
+      "lecture": 6,
+      "ref": "E05 p5 Q35; E09 Q35",
+      "q": "Where can virtual-memory pages be kept when they are not resident in RAM?",
+      "choices": [
+        "Only in the CPU registers",
+        "On backing storage such as a disk",
+        "Only in the TLB",
+        "Inside the page-table entries themselves"
+      ],
+      "answer": "b",
+      "why": "Backing storage เช่น disk/swap ใช้เก็บ pages ที่ไม่ได้อยู่ใน RAM; TLB เก็บ translations ไม่ใช่เนื้อหา page",
+      "source_year": 2022,
+      "source_question": 35,
+      "source_page": 5
+    },
+    {
+      "n": 31,
+      "lecture": 3,
+      "ref": "E05 p5 Q36; E09 Q36",
+      "q": "What is response time in CPU scheduling?",
+      "choices": [
+        "Completion time minus arrival time",
+        "The sum of all time spent in the ready queue",
+        "First CPU start time minus arrival time",
+        "Time spent performing disk I/O"
+      ],
+      "answer": "c",
+      "why": "Response วัดจาก arrival ถึงการเริ่มได้รับ CPU ครั้งแรก ต่างจาก turnaround และ total waiting",
+      "source_year": 2022,
+      "source_question": 36,
+      "source_page": 5
+    },
+    {
+      "n": 32,
+      "lecture": 3,
+      "ref": "E05 p5 Q37; E09 Q37",
+      "q": "What is turnaround time?",
+      "choices": [
+        "Completion time minus arrival time",
+        "First CPU start time minus arrival time",
+        "The length of one RR time slice",
+        "CPU burst time minus total waiting time"
+      ],
+      "answer": "a",
+      "why": "Turnaround คือเวลาตั้งแต่ส่ง/เข้าระบบจนเสร็จสมบูรณ์",
+      "source_year": 2022,
+      "source_question": 37,
+      "source_page": 5
+    },
+    {
+      "n": 33,
+      "lecture": 4,
+      "ref": "E05 p5 Q38; E09 Q38",
+      "q": "Which problem can arise with variable-size contiguous partitions?",
+      "choices": [
+        "All requests must waste exactly one full frame",
+        "No two adjacent holes can ever be merged",
+        "Every process must use the same-sized partition",
+        "External fragmentation can require compaction"
+      ],
+      "answer": "d",
+      "why": "Variable-size contiguous allocation เกิด external fragmentation; coalescing รวม holes ที่ติดกัน และ compaction ย้าย allocated blocks เพื่อรวมพื้นที่ว่าง",
+      "source_year": 2022,
+      "source_question": 38,
+      "source_page": 5
+    },
+    {
+      "n": 34,
+      "lecture": 5,
+      "ref": "E05 p5 Q39; E09 Q39",
+      "q": "With a fixed page size and PTE size, what happens to a full single-level page table when the virtual address space becomes larger?",
+      "choices": [
+        "It needs fewer entries",
+        "It needs more memory for page-table entries",
+        "The page offset becomes zero bits",
+        "It no longer requires address translation"
+      ],
+      "answer": "b",
+      "why": "เมื่อ pagesize/PTEsize เท่าเดิม virtual space ใหญ่ขึ้นมี virtual pages มากขึ้น จึงต้องมี entries มากขึ้น",
+      "source_year": 2022,
+      "source_question": 39,
+      "source_page": 5
+    },
+    {
+      "n": 35,
+      "lecture": 5,
+      "ref": "E05 p5 Q40; E09 Q40",
+      "q": "Why can a multilevel page table save memory?",
+      "choices": [
+        "Unused lower-level page tables need not be allocated",
+        "All virtual pages become physically adjacent",
+        "Every PTE is kept inside a CPU register",
+        "Every second-level page table is always empty"
+      ],
+      "answer": "a",
+      "why": "ประหยัดได้เพราะไม่ต้องจัดสรร lower-level tables ให้ virtual regions ที่ไม่ใช้ ไม่ใช่ว่าทุกตารางว่าง",
+      "source_year": 2022,
+      "source_question": 40,
+      "source_page": 5
+    },
+    {
+      "n": 36,
+      "lecture": 3,
+      "ref": "E05 p6 Q44; E09 Q44",
+      "q": "What is a possible disadvantage of SJF when short jobs keep arriving?",
+      "choices": [
+        "It always has the largest average turnaround time",
+        "It must execute jobs in arrival order",
+        "A long waiting job can starve",
+        "It cannot run without equal-length bursts"
+      ],
+      "answer": "c",
+      "why": "SJF อาจทำให้งานยาวใน ready queue รอนานไม่สิ้นสุดหากมีงานสั้นเข้ามาต่อเนื่อง; ไม่ได้ทำให้ค่าเฉลี่ยแย่สุดทุกกรณี",
+      "source_year": 2022,
+      "source_question": 44,
+      "source_page": 6
+    },
+    {
+      "n": 37,
+      "lecture": 5,
+      "ref": "E05 p6 Q47; E09 Q47",
+      "q": "Which statement about basic segmentation is NOT true?",
+      "choices": [
+        "A program can be divided into logical segments",
+        "Different segments can have different sizes",
+        "Each segment can use its own base and bound",
+        "All segments must be equal-sized units like pages"
+      ],
+      "answer": "d",
+      "why": "Segmentation ใช้ส่วน logical ขนาดต่างกัน ส่วน paging ใช้ page ขนาดเท่ากัน",
+      "source_year": 2022,
+      "source_question": 47,
+      "source_page": 6
+    },
+    {
+      "n": 38,
+      "lecture": 5,
+      "ref": "E05 p6 Q48; E09 Q48",
+      "q": "Which statement about paging is true?",
+      "choices": [
+        "A virtual page and a physical frame must differ in size",
+        "A page is a virtual-memory unit; a frame is a physical-memory unit",
+        "Smaller pages always produce a smaller full page table",
+        "Demand paging loads every page before execution"
+      ],
+      "answer": "b",
+      "why": "Pages เป็นหน่วยใน virtual address space; frames เป็นหน่วยใน physical memory ที่มีขนาดเท่ากับ pages",
+      "source_year": 2022,
+      "source_question": 48,
+      "source_page": 6
+    },
+    {
+      "n": 39,
+      "lecture": 6,
+      "ref": "E05 p6 Q49; E09 Q49",
+      "q": "Which replacement policy requires future page references to make its ideal decisions?",
+      "choices": [
+        "FIFO",
+        "LRU",
+        "OPT",
+        "LFU"
+      ],
+      "answer": "c",
+      "why": "OPT ใช้ future knowledge เลือก page ที่จะไม่ถูกใช้ไปอีกนานที่สุด จึงใช้เป็น benchmark ไม่ใช่ online policy ที่รู้อนาคตจริง",
+      "source_year": 2022,
+      "source_question": 49,
+      "source_page": 6
+    },
+    {
+      "n": 40,
+      "lecture": 6,
+      "ref": "E05 p6 Q50; E09 Q50",
+      "q": "When does a demand-paging page fault occur?",
+      "choices": [
+        "When a referenced legal virtual page is not present in RAM",
+        "Whenever a resident page is read twice",
+        "Whenever an updated page is found in RAM",
+        "Whenever a translation is found in the TLB"
+      ],
+      "answer": "a",
+      "why": "Not-present legal page ทำให้ fault เพื่อ page-in; TLB hit ไม่ใช่ fault และ TLB miss ก็ไม่ได้หมายความว่า fault เสมอ",
+      "source_year": 2022,
+      "source_question": 50,
+      "source_page": 6
+    },
+    {
+      "n": 41,
+      "lecture": 3,
+      "ref": "E05 p6 Q51; E09 Q51",
+      "q": "Which policy rotates equal-priority ready jobs using a fixed time quantum?",
+      "choices": [
+        "Non-preemptive FIFO",
+        "Non-preemptive SJF",
+        "Round robin (RR)",
+        "OPT page replacement"
+      ],
+      "answer": "c",
+      "why": "RR หมุนงานตาม quantum; FIFO/SJF แบบ non-preemptive ไม่ตัดตาม slice และ OPT เป็น page replacement ไม่ใช่ CPU scheduling",
+      "source_year": 2022,
+      "source_question": 51,
+      "source_page": 6
+    }
+  ],
+  "short": [
+    {
+      "n": 1,
+      "lecture": 3,
+      "ref": "L3 MLFQ and STCF; E09 Q17; E06 p23-24 Q24",
+      "q": "Write the full names of MLFQ and STCF.",
+      "answer": "MLFQ: Multilevel Feedback Queue. STCF: Shortest Time-to-Completion First.",
+      "accept": "0.5 for each correct full name. Accept Multi-level and equivalent hyphenation.",
+      "why": "สองคำย่อที่ใช้จริงใน Lecture 3 และโจทย์ scheduling ไม่ใช่คำย่ออุปกรณ์พื้นฐานเรียงหลายข้อ"
+    },
+    {
+      "n": 2,
+      "lecture": 2,
+      "ref": "E10 p1 Q6",
+      "q": "What is the difference between a process and a program?",
+      "answer": "A program is passive code; a process is a program in execution.",
+      "accept": "0.5 for passive code; 0.5 for a program in execution. No resource list or additional explanation required.",
+      "why": "Process ไม่ใช่แค่ไฟล์ program ใน disk; program เดียวมีหลาย process ได้"
+    },
+    {
+      "n": 3,
+      "lecture": 5,
+      "ref": "L5 address translation; E09 Q23; E06 p25 Q30",
+      "q": "Expand MMU and state its address-translation function.",
+      "answer": "Memory Management Unit; translates virtual addresses to physical addresses.",
+      "accept": "0.5 for the full name; 0.5 for virtual-to-physical translation. No protection details required.",
+      "why": "แทนข้อ cooperative ที่ซ้ำปรนัย เพื่อเพิ่มคำย่อและความเข้าใจกลไกหน่วยความจำ"
+    },
+    {
+      "n": 4,
+      "lecture": 2,
+      "ref": "E10 p2 Q9",
+      "q": "Give two examples of CPU state saved during a context switch.",
+      "answer": "Program counter (PC) and stack pointer (SP).",
+      "accept": "0.5 each for two distinct valid items, such as PC, SP, a general-purpose register, or the processor status register. No switching steps required.",
+      "why": "ปรับจากแนว context switch ให้ถามเพียงตัวอย่าง 2 อย่าง ไม่บังคับอธิบายขั้นตอนเพิ่ม"
+    },
+    {
+      "n": 5,
+      "lecture": 2,
+      "ref": "E10 p2 Q10",
+      "q": "Give two types of information stored in a PCB, other than CPU register values.",
+      "answer": "Process ID (PID) and process state.",
+      "accept": "0.5 each for two distinct non-register information types, such as PID, state, scheduling information, or memory-management information. No PCB expansion required.",
+      "why": "ถามข้อมูล 2 ประเภท ไม่ถามชื่อเต็มพ่วงอีกส่วน และแยกจากตัวอย่าง register ในข้อก่อนหน้า"
+    },
+    {
+      "n": 6,
+      "lecture": 2,
+      "ref": "E10 p2 Q13",
+      "q": "What is an exited child process called before its living parent reaps its exit status?",
+      "answer": "Zombie process.",
+      "accept": "1 point for zombie or zombie process. No reason required; do not substitute orphan.",
+      "why": "ข้อนี้ถาม keyword เท่านั้น ไม่หักคะแนนเพราะไม่ได้อธิบายเหตุผลที่โจทย์ไม่ได้ถาม"
+    },
+    {
+      "n": 7,
+      "lecture": 2,
+      "ref": "E10 p2 Q15 (adapted to task examples); L2 I/O-bound/CPU-bound",
+      "q": "Give one example each of an I/O-bound task and a CPU-bound task.",
+      "answer": "I/O-bound: copying a large file; CPU-bound: matrix multiplication.",
+      "accept": "0.5 for each correctly labelled task. Accept equivalent examples under ordinary workload assumptions; no definitions or burst analysis required.",
+      "why": "ปรับจากคำถามนิยามเป็นตัวอย่างงาน 2 ประเภท ไม่ใช้ชื่ออุปกรณ์ลอย ๆ และไม่อ้างว่าคัดถ้อยคำเดิม"
+    },
+    {
+      "n": 8,
+      "lecture": 3,
+      "ref": "E10 p3 Q19",
+      "q": "Why is longest-job-first usually a poor policy for reducing average turnaround time?",
+      "answer": "Long jobs delay shorter jobs, increasing average turnaround time.",
+      "accept": "1 point for the delay imposed on shorter jobs and its effect on the average; no claim that LJF is impossible.",
+      "why": "LJF มีได้ แต่ไม่เหมาะกับเป้าหมาย average turnaround ของงาน batch ตามเงื่อนไขที่เรียน"
+    },
+    {
+      "n": 9,
+      "lecture": 4,
+      "ref": "L4 base/bounds; E10 p11 fragmentation/address protection",
+      "q": "With base = 16 KiB and bound = 4 KiB, is virtual byte address 4200 valid? Why?",
+      "answer": "No; 4200 exceeds the 4096-byte bound.",
+      "accept": "0.5 for No; 0.5 for the correct bounds comparison. No physical-address calculation or fault-handling steps required.",
+      "why": "ต้องตรวจ bounds ก่อนบวก base; คำตอบ 20584 เป็นการคำนวณโดยข้าม protection check"
+    },
+    {
+      "n": 10,
+      "lecture": 5,
+      "ref": "L5 TLB; E09 Q23",
+      "q": "Expand TLB and explain why a TLB miss need not cause a page fault.",
+      "answer": "Translation Lookaside Buffer; the translation may be uncached while the page is still in RAM.",
+      "accept": "0.5 for the full name; 0.5 for cached-translation miss versus nonresident-page distinction.",
+      "why": "TLB เป็น cache ของ translations ไม่ใช่ page contents จึง miss ได้ทั้งที่ page ยังอยู่ RAM"
+    }
+  ],
+  "scheduling": {
+    "bursts": [
+      10,
+      1,
+      2,
+      1,
+      5
+    ],
+    "priorities": [
+      3,
+      1,
+      3,
+      4,
+      2
+    ],
+    "arrival": 0,
+    "quantum": 1
+  },
+  "replacement": {
+    "reference": [
+      7,
+      0,
+      1,
+      3,
+      0,
+      3,
+      2,
+      4,
+      2,
+      7,
+      0,
+      3,
+      2,
+      1,
+      2,
+      0,
+      1,
+      4,
+      0,
+      1
+    ],
+    "frames": 3,
+    "memory_ns": 10,
+    "fault_ns": 10000000
+  }
+}

@@ -1,0 +1,23 @@
+\documentclass[12pt,a4paper]{exam}
+\usepackage{fontspec,xunicode,xltxtra,polyglossia,graphicx,tikz,geometry,enumitem,array,amsmath,amssymb}
+\setmainlanguage{thai}
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+\linespread{1.25}
+\geometry{top=0.8in,bottom=1in,left=0.8in,right=0.8in}
+\newfontfamily\thaifont[Scale=1.33,Script=Thai,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\newfontfamily\thaifonttt[Scale=1.33,Script=Thai,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\setmainfont[Scale=1.33,Path=../fonts/,Extension=.ttf,
+ BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{THSarabunNew}
+\pagestyle{headandfoot}
+\firstpageheader{\textbf{CPE333 Mock Midterm | เฉลยและเกณฑ์ตรวจ}}{}{}
+\runningheader{\textbf{CPE333 Mock Midterm | เฉลยและเกณฑ์ตรวจ}}{}{}
+\firstpagefooter{สำหรับตรวจหลังทำข้อสอบเท่านั้น | ไม่ใช่เฉลยอย่างเป็นทางการ}{}{\thepage}
+\runningfooter{สำหรับตรวจหลังทำข้อสอบเท่านั้น | ไม่ใช่เฉลยอย่างเป็นทางการ}{}{\thepage}
+\newcommand{\sectiontitle}[1]{\noindent\textbf{\underline{#1}}\par\smallskip}
+\begin{document}
+\sloppy
+\input{solutions.generated.tex}
+\end{document}
