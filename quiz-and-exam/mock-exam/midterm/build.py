@@ -129,11 +129,11 @@ def exam_source():
 \sectiontitle{Part III: Written Questions (20 points)}
 \noindent Answer all three questions in the answer booklet. Show your work.\par\smallskip
 \begin{questions}
-\question \textbf{(8 points)} Consider the following set of processes (jobs), where the run time of each process is given in milliseconds (ms):
+\question \textbf{(8 points)} Consider the following set of processes (jobs), where the run time of the process is given in milliseconds (ms):
 \begin{center}
 \renewcommand{\arraystretch}{1.0}
 \begin{tabular}{c|c|c}
-Process & Run time (ms) & Priority \\\hline
+Process & Run Time & Priority \\\hline
 $P_1$ & 10 & 3 \\
 $P_2$ & 1 & 1 \\
 $P_3$ & 2 & 3 \\
@@ -141,26 +141,21 @@ $P_4$ & 1 & 4 \\
 $P_5$ & 5 & 2
 \end{tabular}
 \end{center}
-The processes arrive in the order $P_1,P_2,P_3,P_4,P_5$, all at time 0. Assume zero context-switch overhead; break SJF ties by arrival order.
+The processes are assumed to arrive in the order $P_1$, $P_2$, $P_3$, $P_4$, $P_5$, all at time 0.
 \begin{parts}
-\part[3] Draw execution diagrams for FIFO, SJF, and RR scheduling with time slice = 1 ms.
-\part[2] Find the turnaround time of each process under each policy.
-\part[2] Find the response time of each process under each policy.
-\part[1] Which policy gives (i) the minimum average turnaround time and (ii) the minimum average response time? Calculate both averages for all three policies.
+\part Draw three diagrams illustrating the execution of these processes using FIFO, SJF, and RR scheduling with time slice = 1 ms.
+\part What is the Turnaround time of each process for each of the schedulers in \mbox{part (a)?}
+\part What is the Response time of each process for each of the schedulers in \mbox{part (a)?}
+\part Which of the schedulers results in (i) the minimum average Turnaround time, (ii) the minimum average Response time (taking the average over all processes)?
 \end{parts}
 
-\question \textbf{(4 points)} Explain how a commercial bank handles customers during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
+\question \textbf{(4 points)} Explain how a commercial bank handles customer during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
 
-\question \textbf{(8 points)} Use three initially empty frames and this page-reference string (20 references):
+\question \textbf{(8 points)} Draw three tables show the 3 Frames in physical memory using FIFO, LRU and OPT for page replacement policy (separate table for both policies) and find the Effective Access Time (EAT) of each policies when references strings (list of needed pages) as below:
 \begin{center}
-\textbf{7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1}
+7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1 (20 needed pages)
 \end{center}
-Assume memory-access time is 10 ns and disk-access time is 10 ms. For EAT, treat 10 ms as the complete fault-path cost (including restart) and ignore other costs.
-\begin{parts}
-\part \textbf{(4.5 points)} Draw FIFO, LRU, and OPT frame tables; mark each reference as a hit or fault.
-\part \textbf{(1.5 points)} Find each policy's total faults, total hits, and fault probability.
-\part[2] Calculate the effective access time (EAT) of each policy in milliseconds.
-\end{parts}
+Assume that the memory access time is 10 ns and the disk access time is 10 ms.
 \end{questions}
 \vfill\newpage
 % Pages 11 and 12 are intentionally blank scratch pages. Written answers still
@@ -212,7 +207,7 @@ def solutions_source():
             out.append(r"\end{enumerate}\newpage\sectiontitle{เฉลยส่วนที่ 2: Short Answer (ต่อ)}\begin{enumerate}[leftmargin=1.4em,start=6,itemsep=.25cm]")
         out.append(r"\item \textbf{"+tex(q["answer"])+r"}\\"+tex(q["accept"])+"; "+tex(q["why"]))
     out.append(r"\end{enumerate}\newpage\sectiontitle{เฉลยอัตนัยข้อ 1: CPU Scheduling (8 คะแนน)}")
-    out.append(r"\noindent Burst = (10,1,2,1,5) ms; arrival = 0 ทุกงาน; quantum = 1 ms; SJF ใช้ลำดับเดิมเมื่องานยาวเท่ากัน\par")
+    out.append(r"\noindent Burst = (10,1,2,1,5) ms; arrival = 0 ทุกงาน; quantum = 1 ms; เฉลยใช้ overhead 0 และให้ SJF ตัดสินงานยาวเท่ากันตามลำดับมาถึง เป็นข้อตกลงในการทำเฉลย ไม่ใช่ข้อความที่เพิ่มในโจทย์ รับลำดับ tie อื่นที่สอดคล้องกับ SJF และคำนวณถูกต้อง\par")
     for policy in ("FIFO","SJF","RR"):
         out.append(r"\noindent\textbf{"+policy+"}")
         out.append(gantt(scheduling(policy)))
@@ -229,7 +224,7 @@ def solutions_source():
 \item (a) 3 คะแนน: FIFO, SJF, RR อย่างละ 1; แต่ละอันให้ .5 สำหรับลำดับและ .5 สำหรับขอบเวลาถูกต้อง
 \item (b) 2 คะแนน: ตาราง turnaround 15 ค่า ค่าละ $2/15$ คะแนน
 \item (c) 2 คะแนน: ตาราง response 15 ค่า ค่าละ $2/15$ คะแนน
-\item (d) 1 คะแนน: ค่าเฉลี่ยทั้ง 6 ค่าละ .1 และเลือก policy ต่ำสุดถูกต้องอีก metric ละ .2
+\item (d) 1 คะแนน: เลือก SJF สำหรับ minimum average Turnaround .5 และ RR สำหรับ minimum average Response .5; ตารางค่าเฉลี่ยทั้ง 6 ค่าแสดงไว้สำหรับตรวจทบทวน ไม่บังคับรายงานทุกค่าที่โจทย์ไม่ได้ถาม
 \end{itemize}
 \noindent หากผิดจาก arithmetic ครั้งเดียวแต่ขั้นถัดไปใช้วิธีถูก ให้ follow-through credit โดยไม่หักซ้ำ; ไม่ให้ครบในส่วนที่ใช้นิยาม response ผิดเป็น waiting
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 2: MLFQ กับธนาคาร (4 คะแนน)}
@@ -254,8 +249,8 @@ def solutions_source():
 \par\medskip
 \noindent MLFQ ไม่ได้รับประกัน average turnaround ต่ำสุดทุก workload เพราะไม่ทราบความยาวงานล่วงหน้า และธนาคารจริงไม่สามารถ preempt ทุกจุดเหมือน CPU ได้; รับ policy อื่นที่ครบกฎและอธิบายความเป็นไปได้อย่างสอดคล้อง
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: Page Replacement (8 คะแนน)}
-\noindent\textbf{ข้อ (a): ตาราง frames และ hit/fault (4.5 คะแนน)}\\
-แสดงสถานะหลังแต่ละ reference; F = fault, H = hit, -- = frame ว่าง\par\smallskip
+\noindent\textbf{ตาราง FIFO, LRU และ OPT (6 คะแนน)}\\
+เฉลยเริ่มด้วย frames ว่าง แสดงสถานะหลังแต่ละ reference; F = fault, H = hit, -- = frame ว่าง เป็นสัญลักษณ์ช่วยตรวจ ไม่บังคับเพิ่มแถว H/F ในคำตอบ\par\smallskip
 """)
     refs = BANK["replacement"]["reference"]
     for p in ("FIFO","LRU","OPT"):
@@ -274,11 +269,11 @@ def solutions_source():
     out.append(r"""\newpage\sectiontitle{เฉลยอัตนัยข้อ 3 (ต่อ): EAT และเกณฑ์ตรวจ}
 \noindent\textbf{หน่วยและโมเดลต้นทุน}\\
 $m=10$ ns $=0.00001$ ms; $D=10$ ms $=10{,}000{,}000$ ns\\
-$D$ รวมเส้นทาง fault และ restarted access ตามโจทย์ จึงใช้
+ใช้โมเดล Lecture 6 หน้า 29 โดยให้ $D$ แทน disk access time:
 \[\mathrm{EAT}=(1-p)m+pD\]
-ไม่บวก $m$ เพิ่มอีกครั้งบนเส้นทาง fault
+โจทย์ต้นฉบับไม่ได้เพิ่มเงื่อนไข complete fault-path cost หรือ restarted access; สูตรนี้อิงโมเดลในสไลด์ ไม่ใช่การเติมถ้อยคำดังกล่าวลงในโจทย์
 """)
-    out.append(r"\noindent\textbf{ข้อ (b): Faults, hits และ fault probability (1.5 คะแนน); ข้อ (c): EAT (2 คะแนน)}")
+    out.append(r"\noindent\textbf{EAT (2 คะแนน)}\\จำนวน faults, hits และ probability ด้านล่างเป็นค่าช่วยคำนวณ EAT ไม่ใช่ข้อย่อยเพิ่มในโจทย์")
     out.append(table(["Policy","Faults","Hits","p","EAT (ms)"],[[p,replacement(p)["faults"],replacement(p)["hits"],f'{replacement(p)["faults"]}/20',f'{(1-replacement(p)["faults"]/20)*.00001+(replacement(p)["faults"]/20)*10:.7f}'] for p in ("FIFO","LRU","OPT")]))
     out.append(r"""\[\mathrm{EAT}_{FIFO}=\mathrm{EAT}_{LRU}=\frac7{20}(10)+\frac{13}{20}(10{,}000{,}000)=6{,}500{,}003.5\ \mathrm{ns}\]
 \[\mathrm{EAT}_{OPT}=\frac{10}{20}(10)+\frac{10}{20}(10{,}000{,}000)=5{,}000{,}005\ \mathrm{ns}\]
@@ -286,9 +281,8 @@ $D$ รวมเส้นทาง fault และ restarted access ตามโ
 \par\medskip
 \noindent\textbf{Rubric รวม 8 คะแนน}
 \begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
-\item ข้อ (a) ตาราง frames รวม 4.5 คะแนน: แต่ละ policy 1.5 คะแนน ให้ 1 สำหรับ frame contents 20 คอลัมน์ (คอลัมน์ละ .05) และ .5 สำหรับ H/F 20 ช่อง (ช่องละ .025)
-\item ข้อ (b) จำนวน faults, hits และ probability รวม 1.5 คะแนน: แต่ละ policy ชุดละ .5 คะแนน
-\item ข้อ (c) EAT รวม 2 คะแนน: สูตร .5; แปลงหน่วย .5; EAT แต่ละ policy ค่าละ $1/3$ ไม่บังคับเขียนข้อสรุปเพิ่มเติมที่โจทย์ไม่ได้ถาม
+\item ตาราง frames รวม 6 คะแนน: แต่ละ policy 2 คะแนน ให้ตาม frame contents 20 คอลัมน์ คอลัมน์ละ .1; ไม่หักเพราะไม่มีแถว hit/fault หรือการรายงาน counts แยกต่างหาก
+\item EAT รวม 2 คะแนน: สูตร .5; แปลงหน่วย .5; EAT แต่ละ policy ค่าละ $1/3$ ไม่บังคับเขียนข้อสรุปเพิ่มเติมที่โจทย์ไม่ได้ถาม
 \end{itemize}
 \noindent ให้ follow-through credit สำหรับ EAT ที่ใช้จำนวน fault จากตารางของผู้สอบอย่างถูกวิธี แม้ตารางก่อนหน้าผิด โดยหักข้อผิดเดิมในตาราง/จำนวน faults; ต้องไม่ให้คะแนนเต็มหากแทนค่าคนละหน่วยในสมการเดียวกัน
 \newpage\sectiontitle{แผนผังเนื้อหาและแหล่งอ้างอิงสำหรับตรวจทบทวน}

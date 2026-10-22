@@ -76,9 +76,11 @@
 
 รวมโจทย์ไว้หน้า 10 โดย Part III ปรากฏเฉพาะหน้านี้ หน้า 11–12 ใช้ทด ส่วนคำตอบจริงยังทำในสมุดคำตอบ
 
-1. Scheduling (8): E10 หน้า 4–5; ตาราง bursts/priority, arrivals 0, FIFO/SJF/RR q=1ms, turnaround, response และ averages ครบ
-2. MLFQ bank analogy (4): E10 หน้า 6; algorithms/policies, suggestions, average turnaround ครบ
-3. Replacement/EAT (8): E05 หน้า 2; 3 frames, FIFO/LRU/OPT, reference string 20 ตัว, 10 ns/10 ms ครบ จัดเป็น (a) ตาราง+H/F 4.5, (b) faults/hits/probability 1.5, (c) EAT 2 คะแนน
+1. Scheduling (8): E10 หน้า 4–5; stem, ตาราง, arrival และ (a)–(d) คงคำเดิมทุกคำ ไม่ย่อหรือเพิ่มเงื่อนไข
+2. MLFQ bank analogy (4): E10 หน้า 6; คงคำถามย่อหน้าเดิมทุกคำ รวม “customer”
+3. Replacement/EAT (8): E05 หน้า 2; คงคำถามย่อหน้าเดิมทุกคำ รวม grammar, 20 references และ 10 ns/10 ms ไม่แยกข้อย่อยหรือเพิ่มสมมติฐาน เฉลยตรวจตาราง 6 คะแนนและ EAT 2 คะแนน
+
+เปลี่ยนเฉพาะเลขข้อ/คะแนนให้เป็น 1–3 และ 8–4–8 ของชุดนี้ และจัดบรรทัด/ตารางให้ทั้งสามข้ออยู่หน้า 10 ตรวจ transcription อิสระกับข้อความใน PDF แบบ case-sensitive โดยละ whitespace เท่านั้น ดูรายละเอียดใน REFERENCE_AUDIT.md
 
 ## Single-answer review
 

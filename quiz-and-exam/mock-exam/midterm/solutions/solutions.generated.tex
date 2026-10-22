@@ -68,7 +68,7 @@
 \item \textbf{No; 4200 exceeds the 4096-byte bound.}\\0.5 for No; 0.5 for the correct bounds comparison. No physical-address calculation or fault-handling steps required.; ต้องตรวจ bounds ก่อนบวก base; คำตอบ 20584 เป็นการคำนวณโดยข้าม protection check
 \item \textbf{Translation Lookaside Buffer; the translation may be uncached while the page is still in RAM.}\\0.5 for the full name; 0.5 for cached-translation miss versus nonresident-page distinction.; TLB เป็น cache ของ translations ไม่ใช่ page contents จึง miss ได้ทั้งที่ page ยังอยู่ RAM
 \end{enumerate}\newpage\sectiontitle{เฉลยอัตนัยข้อ 1: CPU Scheduling (8 คะแนน)}
-\noindent Burst = (10,1,2,1,5) ms; arrival = 0 ทุกงาน; quantum = 1 ms; SJF ใช้ลำดับเดิมเมื่องานยาวเท่ากัน\par
+\noindent Burst = (10,1,2,1,5) ms; arrival = 0 ทุกงาน; quantum = 1 ms; เฉลยใช้ overhead 0 และให้ SJF ตัดสินงานยาวเท่ากันตามลำดับมาถึง เป็นข้อตกลงในการทำเฉลย ไม่ใช่ข้อความที่เพิ่มในโจทย์ รับลำดับ tie อื่นที่สอดคล้องกับ SJF และคำนวณถูกต้อง\par
 \noindent\textbf{FIFO}
 \begin{center}\begin{tikzpicture}[x=0.75cm,y=0.65cm]
 \draw (0,0) rectangle (10,1);\node at (5.0,.5) {$P_1$};
@@ -175,7 +175,7 @@ RR & 9.2 ms & 2.0 ms\\
 \item (a) 3 คะแนน: FIFO, SJF, RR อย่างละ 1; แต่ละอันให้ .5 สำหรับลำดับและ .5 สำหรับขอบเวลาถูกต้อง
 \item (b) 2 คะแนน: ตาราง turnaround 15 ค่า ค่าละ $2/15$ คะแนน
 \item (c) 2 คะแนน: ตาราง response 15 ค่า ค่าละ $2/15$ คะแนน
-\item (d) 1 คะแนน: ค่าเฉลี่ยทั้ง 6 ค่าละ .1 และเลือก policy ต่ำสุดถูกต้องอีก metric ละ .2
+\item (d) 1 คะแนน: เลือก SJF สำหรับ minimum average Turnaround .5 และ RR สำหรับ minimum average Response .5; ตารางค่าเฉลี่ยทั้ง 6 ค่าแสดงไว้สำหรับตรวจทบทวน ไม่บังคับรายงานทุกค่าที่โจทย์ไม่ได้ถาม
 \end{itemize}
 \noindent หากผิดจาก arithmetic ครั้งเดียวแต่ขั้นถัดไปใช้วิธีถูก ให้ follow-through credit โดยไม่หักซ้ำ; ไม่ให้ครบในส่วนที่ใช้นิยาม response ผิดเป็น waiting
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 2: MLFQ กับธนาคาร (4 คะแนน)}
@@ -200,8 +200,8 @@ RR & 9.2 ms & 2.0 ms\\
 \par\medskip
 \noindent MLFQ ไม่ได้รับประกัน average turnaround ต่ำสุดทุก workload เพราะไม่ทราบความยาวงานล่วงหน้า และธนาคารจริงไม่สามารถ preempt ทุกจุดเหมือน CPU ได้; รับ policy อื่นที่ครบกฎและอธิบายความเป็นไปได้อย่างสอดคล้อง
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: Page Replacement (8 คะแนน)}
-\noindent\textbf{ข้อ (a): ตาราง frames และ hit/fault (4.5 คะแนน)}\\
-แสดงสถานะหลังแต่ละ reference; F = fault, H = hit, -- = frame ว่าง\par\smallskip
+\noindent\textbf{ตาราง FIFO, LRU และ OPT (6 คะแนน)}\\
+เฉลยเริ่มด้วย frames ว่าง แสดงสถานะหลังแต่ละ reference; F = fault, H = hit, -- = frame ว่าง เป็นสัญลักษณ์ช่วยตรวจ ไม่บังคับเพิ่มแถว H/F ในคำตอบ\par\smallskip
 
 \noindent\textbf{FIFO: 13 faults, 7 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
@@ -259,11 +259,11 @@ H/F & F & F & H & F & H & H & H & F & H & H\\
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3 (ต่อ): EAT และเกณฑ์ตรวจ}
 \noindent\textbf{หน่วยและโมเดลต้นทุน}\\
 $m=10$ ns $=0.00001$ ms; $D=10$ ms $=10{,}000{,}000$ ns\\
-$D$ รวมเส้นทาง fault และ restarted access ตามโจทย์ จึงใช้
+ใช้โมเดล Lecture 6 หน้า 29 โดยให้ $D$ แทน disk access time:
 \[\mathrm{EAT}=(1-p)m+pD\]
-ไม่บวก $m$ เพิ่มอีกครั้งบนเส้นทาง fault
+โจทย์ต้นฉบับไม่ได้เพิ่มเงื่อนไข complete fault-path cost หรือ restarted access; สูตรนี้อิงโมเดลในสไลด์ ไม่ใช่การเติมถ้อยคำดังกล่าวลงในโจทย์
 
-\noindent\textbf{ข้อ (b): Faults, hits และ fault probability (1.5 คะแนน); ข้อ (c): EAT (2 คะแนน)}
+\noindent\textbf{EAT (2 คะแนน)}\\จำนวน faults, hits และ probability ด้านล่างเป็นค่าช่วยคำนวณ EAT ไม่ใช่ข้อย่อยเพิ่มในโจทย์
 \begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrrrr}
 Policy & Faults & Hits & p & EAT (ms)\\\hline
 FIFO & 13 & 7 & 13/20 & 6.5000035\\
@@ -276,9 +276,8 @@ OPT & 10 & 10 & 10/20 & 5.0000050\\
 \par\medskip
 \noindent\textbf{Rubric รวม 8 คะแนน}
 \begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
-\item ข้อ (a) ตาราง frames รวม 4.5 คะแนน: แต่ละ policy 1.5 คะแนน ให้ 1 สำหรับ frame contents 20 คอลัมน์ (คอลัมน์ละ .05) และ .5 สำหรับ H/F 20 ช่อง (ช่องละ .025)
-\item ข้อ (b) จำนวน faults, hits และ probability รวม 1.5 คะแนน: แต่ละ policy ชุดละ .5 คะแนน
-\item ข้อ (c) EAT รวม 2 คะแนน: สูตร .5; แปลงหน่วย .5; EAT แต่ละ policy ค่าละ $1/3$ ไม่บังคับเขียนข้อสรุปเพิ่มเติมที่โจทย์ไม่ได้ถาม
+\item ตาราง frames รวม 6 คะแนน: แต่ละ policy 2 คะแนน ให้ตาม frame contents 20 คอลัมน์ คอลัมน์ละ .1; ไม่หักเพราะไม่มีแถว hit/fault หรือการรายงาน counts แยกต่างหาก
+\item EAT รวม 2 คะแนน: สูตร .5; แปลงหน่วย .5; EAT แต่ละ policy ค่าละ $1/3$ ไม่บังคับเขียนข้อสรุปเพิ่มเติมที่โจทย์ไม่ได้ถาม
 \end{itemize}
 \noindent ให้ follow-through credit สำหรับ EAT ที่ใช้จำนวน fault จากตารางของผู้สอบอย่างถูกวิธี แม้ตารางก่อนหน้าผิด โดยหักข้อผิดเดิมในตาราง/จำนวน faults; ต้องไม่ให้คะแนนเต็มหากแทนค่าคนละหน่วยในสมการเดียวกัน
 \newpage\sectiontitle{แผนผังเนื้อหาและแหล่งอ้างอิงสำหรับตรวจทบทวน}

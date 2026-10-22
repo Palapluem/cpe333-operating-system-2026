@@ -319,11 +319,11 @@
 \sectiontitle{Part III: Written Questions (20 points)}
 \noindent Answer all three questions in the answer booklet. Show your work.\par\smallskip
 \begin{questions}
-\question \textbf{(8 points)} Consider the following set of processes (jobs), where the run time of each process is given in milliseconds (ms):
+\question \textbf{(8 points)} Consider the following set of processes (jobs), where the run time of the process is given in milliseconds (ms):
 \begin{center}
 \renewcommand{\arraystretch}{1.0}
 \begin{tabular}{c|c|c}
-Process & Run time (ms) & Priority \\\hline
+Process & Run Time & Priority \\\hline
 $P_1$ & 10 & 3 \\
 $P_2$ & 1 & 1 \\
 $P_3$ & 2 & 3 \\
@@ -331,26 +331,21 @@ $P_4$ & 1 & 4 \\
 $P_5$ & 5 & 2
 \end{tabular}
 \end{center}
-The processes arrive in the order $P_1,P_2,P_3,P_4,P_5$, all at time 0. Assume zero context-switch overhead; break SJF ties by arrival order.
+The processes are assumed to arrive in the order $P_1$, $P_2$, $P_3$, $P_4$, $P_5$, all at time 0.
 \begin{parts}
-\part[3] Draw execution diagrams for FIFO, SJF, and RR scheduling with time slice = 1 ms.
-\part[2] Find the turnaround time of each process under each policy.
-\part[2] Find the response time of each process under each policy.
-\part[1] Which policy gives (i) the minimum average turnaround time and (ii) the minimum average response time? Calculate both averages for all three policies.
+\part Draw three diagrams illustrating the execution of these processes using FIFO, SJF, and RR scheduling with time slice = 1 ms.
+\part What is the Turnaround time of each process for each of the schedulers in \mbox{part (a)?}
+\part What is the Response time of each process for each of the schedulers in \mbox{part (a)?}
+\part Which of the schedulers results in (i) the minimum average Turnaround time, (ii) the minimum average Response time (taking the average over all processes)?
 \end{parts}
 
-\question \textbf{(4 points)} Explain how a commercial bank handles customers during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
+\question \textbf{(4 points)} Explain how a commercial bank handles customer during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
 
-\question \textbf{(8 points)} Use three initially empty frames and this page-reference string (20 references):
+\question \textbf{(8 points)} Draw three tables show the 3 Frames in physical memory using FIFO, LRU and OPT for page replacement policy (separate table for both policies) and find the Effective Access Time (EAT) of each policies when references strings (list of needed pages) as below:
 \begin{center}
-\textbf{7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1}
+7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1 (20 needed pages)
 \end{center}
-Assume memory-access time is 10 ns and disk-access time is 10 ms. For EAT, treat 10 ms as the complete fault-path cost (including restart) and ignore other costs.
-\begin{parts}
-\part \textbf{(4.5 points)} Draw FIFO, LRU, and OPT frame tables; mark each reference as a hit or fault.
-\part \textbf{(1.5 points)} Find each policy's total faults, total hits, and fault probability.
-\part[2] Calculate the effective access time (EAT) of each policy in milliseconds.
-\end{parts}
+Assume that the memory access time is 10 ns and the disk access time is 10 ms.
 \end{questions}
 \vfill\newpage
 % Pages 11 and 12 are intentionally blank scratch pages. Written answers still

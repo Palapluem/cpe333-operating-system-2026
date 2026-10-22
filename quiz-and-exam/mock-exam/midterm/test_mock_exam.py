@@ -205,9 +205,9 @@ class MockExamTests(unittest.TestCase):
             self.assertIn("กลางภาคการศึกษาที่1/2569",text.replace(" ",""))
             body="\n".join(line for line in text.splitlines() if "ข้อสอบรายวิชา" not in line and "หน้าที่" not in line)
             self.assertNotRegex(body,r"[\u0e00-\u0e7f]")
-        self.assertIn("Run time (ms)",doc[9].get_text())
+        self.assertIn("Run Time",doc[9].get_text())
         self.assertIn("commercial bank",doc[9].get_text())
-        self.assertIn("reference string",doc[9].get_text().replace("-\n","-"))
+        self.assertIn("references strings",doc[9].get_text())
         for label in ["1. (8 points)","2. (4 points)","3. (8 points)"]:
             self.assertIn(label,doc[9].get_text())
         for i in [10,11]:
@@ -222,40 +222,46 @@ class MockExamTests(unittest.TestCase):
     def test_written_reference_tasks_are_complete(self):
         import pymupdf
         page=pymupdf.open(build.ROOT/"output/pdf/CPE333_Midterm_Mock_Exam.pdf")[9]
-        text=re.sub(r'\s+',' ',page.get_text())
-        for phrase in ["run time of each process", "all at time 0", "time slice = 1 ms",
-                       "turnaround time of each process", "response time of each process",
-                       "minimum average turnaround time", "minimum average response time",
-                       "commercial bank", "Describe the algorithms and policies used",
-                       "provide suggestions on how to improve the process",
-                       "optimizing the average turnaround time of customers",
-                       "three initially empty frames", "FIFO, LRU, and OPT", "effective access time (EAT)",
-                       "memory-access time is 10 ns", "disk-access time is 10 ms"]:
-            self.assertIn(phrase,text)
-        string=', '.join(str(n) for n in build.BANK['replacement']['reference'])
-        self.assertIn(string,text)
+        # Independently transcribed from E10 pp4-6 and E05 p2, checked visually.
+        # Only whitespace/layout, the selected question numbers and 8/4/8 scores
+        # differ from the old question text. Capitalization/grammar stay exact.
+        expected="""
+1. (8 points) Consider the following set of processes (jobs), where the run time of the process is given in milliseconds (ms):
+Process Run Time Priority
+P1 10 3 P2 1 1 P3 2 3 P4 1 4 P5 5 2
+The processes are assumed to arrive in the order P1, P2, P3, P4, P5, all at time 0.
+(a) Draw three diagrams illustrating the execution of these processes using FIFO, SJF, and RR scheduling with time slice = 1 ms.
+(b) What is the Turnaround time of each process for each of the schedulers in part (a)?
+(c) What is the Response time of each process for each of the schedulers in part (a)?
+(d) Which of the schedulers results in (i) the minimum average Turnaround time, (ii) the minimum average Response time (taking the average over all processes)?
+2. (4 points) Explain how a commercial bank handles customer during rush hours with the concept of the Multi-level Feedback Queue (MLFQ), in your opinion. Describe the algorithms and policies used and provide suggestions on how to improve the process with the goal of optimizing the average turnaround time of customers.
+3. (8 points) Draw three tables show the 3 Frames in physical memory using FIFO, LRU and OPT for page replacement policy (separate table for both policies) and find the Effective Access Time (EAT) of each policies when references strings (list of needed pages) as below:
+7, 0, 1, 3, 0, 3, 2, 4, 2, 7, 0, 3, 2, 1, 2, 0, 1, 4, 0, 1 (20 needed pages)
+Assume that the memory access time is 10 ns and the disk access time is 10 ms.
+"""
+        actual=page.get_text().split('1. (8 points)',1)[1].split('ข้อสอบรายวิชา',1)[0]
+        actual='1. (8 points)'+actual
+        self.assertEqual(re.sub(r'\s+','',actual),re.sub(r'\s+','',expected))
 
     def test_written_subparts_are_compact_and_complete(self):
         import pymupdf
         page=pymupdf.open(build.ROOT/"output/pdf/CPE333_Midterm_Mock_Exam.pdf")[9]
         text=page.get_text()
-        self.assertNotIn("part (a)",text)
-        for phrase in ["under each policy", "(4.5 points)", "(1.5 points)",
-                       "total faults, total hits, and fault probability", "in milliseconds"]:
-            self.assertIn(phrase,text)
+        self.assertIn("part (a)",text)
         lines=[''.join(s['text'] for s in line['spans'])
                for block in page.get_text('dict')['blocks'] for line in block.get('lines',[])]
-        for phrase in ["Find the turnaround time", "Find the response time"]:
+        for phrase in ["What is the Turnaround time", "What is the Response time"]:
             line=next(line for line in lines if phrase in line)
-            self.assertIn("under each policy.",line)
-        self.assertEqual(text.count('(a)'),2)
-        self.assertEqual(text.count('(b)'),2)
-        self.assertEqual(text.count('(c)'),2)
+            self.assertIn("part (a)?",line)
+        replacement=text.split('3. (8 points)',1)[1]
+        for unwanted in ['(a)','(b)','(c)','initially empty','complete fault-path',
+                         'zero context-switch','4.5 points','1.5 points']:
+            self.assertNotIn(unwanted,replacement)
         key=pymupdf.open(build.ROOT/"output/pdf/CPE333_Midterm_Mock_Solutions.pdf")
-        key_text=re.sub(r'\s+','','\n'.join(p.get_text() for p in key))
-        self.assertIn('ข้อ(a)',key_text)
-        self.assertIn('ข้อ(b)',key_text)
-        self.assertIn('ข้อ(c)',key_text)
+        key_text=re.sub(r'\s+','','\n'.join(p.get_text() for p in key[9:12]))
+        self.assertIn('ตารางFIFO,LRUและOPT(6คะแนน)',key_text)
+        self.assertIn('EAT(2คะแนน)',key_text)
+        self.assertNotIn('ข้อ(a)',key_text)
 
     def test_nonpublication_checkbox_is_crossed(self):
         import pymupdf

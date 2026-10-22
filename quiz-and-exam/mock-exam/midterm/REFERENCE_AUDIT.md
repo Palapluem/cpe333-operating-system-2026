@@ -54,9 +54,9 @@ Part I มีเฉพาะหน้า 2, Part II หน้า 9, Part III ห
 | (a) execution diagrams ของ FIFO/SJF/RR; time slice 1 ms | ครบ |
 | (b) turnaround ของทุก process ในแต่ละวิธี | ครบ |
 | (c) response ของทุก process ในแต่ละวิธี | ครบ ไม่เปลี่ยนเป็น waiting ตามลายมือแก้ในภาพ |
-| (d) minimum average turnaround และ minimum average response โดยเฉลี่ยทุก process | ครบ ให้แสดงค่าเฉลี่ยด้วย |
+| (d) minimum average Turnaround และ minimum average Response โดยเฉลี่ยทุก process | คงประโยคต้นฉบับ ไม่เพิ่มคำสั่งคำนวณทุกค่า |
 
-เพิ่มเพียงสมมติฐาน zero context-switch cost และ tie-break SJF เพื่อให้ตรวจคำตอบได้แน่นอน คะแนนเปลี่ยนจากต้นฉบับ 10 เป็น 8 ตามการแบ่ง 8–4–8 ที่ผู้ใช้เลือก ไม่ใช่พิมพ์คะแนนต้นฉบับผิด รอบจัดบรรทัดย่อ 1(a)–(d) โดยคงงานที่ต้องทำครบ ข้อ (b)/(c) ใช้ “under each policy” แทนอ้าง “part (a)” เพื่อไม่ให้มีเศษข้อความตกบรรทัด
+คืน stem, หัวตาราง Run Time, ข้อความ arrival และ 1(a)–(d) ตามคำพิมพ์เดิมทุกคำ คงตัวพิมพ์ใหญ่ Turnaround/Response และคำอ้าง “part (a)?” โดยจัดบรรทัดไม่ให้คำอ้างดังกล่าวตกเดี่ยว ไม่เพิ่ม zero context-switch cost หรือ tie-break ลงในโจทย์ (อยู่เฉพาะคำอธิบายแนวเฉลย) และไม่แสดงคะแนนย่อยที่ต้นฉบับไม่มี คะแนนรวมเปลี่ยนจาก 10 เป็น 8 ตามการแบ่ง 8–4–8 ที่ผู้ใช้เลือก
 
 ## ข้อเขียน 2: MLFQ กับธนาคาร
 
@@ -64,7 +64,7 @@ Part I มีเฉพาะหน้า 2, Part II หน้า 9, Part III ห
 
 องค์ประกอบที่ตรวจว่ามีครบ: commercial bank, rush hours, MLFQ, in your opinion, algorithms and policies, suggestions for improvement และเป้าหมาย average turnaround time ของ customers
 
-ใช้ย่อหน้าเดียวที่ใกล้ข้อความอังกฤษต้นฉบับ แก้ customer เป็น customers และไม่พิมพ์ย่อหน้าเฉลย/ลายมือที่อยู่ด้านล่างภาพลงในข้อสอบ ไม่มีการแจกแจงกฎห้าข้อเป็นคำใบ้เพิ่ม คะแนนเป็น 4 ตามคำขอ แทน 6 ในภาพ
+คงย่อหน้าคำถามเดิมทุกคำ รวม “handles customer” ตามต้นฉบับ ไม่แก้ grammar และไม่พิมพ์ย่อหน้าเฉลย/ลายมือที่อยู่ด้านล่างภาพลงในข้อสอบ ไม่มีการแจกแจงกฎห้าข้อเป็นคำใบ้เพิ่ม คะแนนเป็น 4 ตามคำขอ แทน 6 ในภาพ
 
 ## ข้อเขียน 3: Page Replacement / EAT
 
@@ -73,19 +73,19 @@ Part I มีเฉพาะหน้า 2, Part II หน้า 9, Part III ห
 | รายการในต้นฉบับ | ตรวจในฉบับนี้ |
 |---|---|
 | 3 physical frames | ครบ |
-| Separate tables: FIFO, LRU, OPT | ครบ แก้ typo “both policies” เป็นแต่ละ policy เพราะมี 3 วิธี |
+| Separate tables: FIFO, LRU, OPT | คงถ้อยคำ “separate table for both policies” เดิมโดยไม่แก้ grammar |
 | Reference string 20 ตัว | ตรงทุกตัว |
 | 7,0,1,3,0,3,2,4,2,7,0,3,2,1,2,0,1,4,0,1 | ครบ |
 | EAT ของแต่ละ policy | ครบ |
 | Memory access = 10 ns | ครบ |
 | Disk access = 10 ms | ครบ |
 
-ระบุเพิ่มเติมว่า frames เริ่มว่าง ให้แสดง hit/fault, counts และ probability เพื่อเห็นขั้นตอน และกำหนดให้ 10 ms เป็น complete fault-path cost รวม restart เพื่อให้ EAT มีโมเดลชัดเจน ไม่ใช่การอ้างว่าต้นฉบับระบุสมมติฐานนี้ไว้แล้ว คะแนนเปลี่ยนจาก 13 เป็น 8 ตามคำขอ
+คืนคำถามย่อหน้าเดียวตามต้นฉบับ ไม่แยกเป็น (a)–(c) ไม่เติมเงื่อนไข frames ว่าง, H/F, counts, probability, complete fault-path cost, restart หรือหน่วยคำตอบที่ต้นฉบับไม่ได้สั่ง คงตัวพิมพ์/grammar เช่น “3 Frames”, “each policies”, “references strings” และ “(20 needed pages)” บรรทัดสุดท้ายคง “Assume that the memory access time is 10 ns and the disk access time is 10 ms.” เปลี่ยนเฉพาะเลขข้อจาก 1 ในเอกสารเก่าเป็น 3 ในชุดนี้ และคะแนนจาก 13 เป็น 8 ตามคำขอ
 
-รอบจัดระเบียบแบ่งงานเดิมเป็น (a) ตาราง FIFO/LRU/OPT พร้อม hit/fault 4.5 คะแนน, (b) จำนวน faults/hits และ fault probability 1.5 คะแนน, (c) EAT หน่วย ms 2 คะแนน ไม่มีการเปลี่ยน reference string หรือสมมติฐาน เฉลยและ rubric ใช้ป้าย (a)–(c) ตรงกัน
+เฉลยใช้ frames ว่างและโมเดล EAT ของ Lecture 6 หน้า 29 เพื่ออธิบายการคำนวณโดยไม่แอบอ้างว่าเงื่อนไขเหล่านั้นถูกเพิ่มในโจทย์ rubric ให้ตาราง 6 และ EAT 2 คะแนน ไม่บังคับแถว H/F หรือการรายงาน counts เป็นข้อเพิ่ม
 
 ผลตรวจคำนวณยังเป็น FIFO/LRU/OPT faults = 13/13/10; ไม่คัดตัวเลขหน่วยเวลาที่เขียนกำกับผิดในต้นฉบับ
 
 ## สรุปความตรงต้นฉบับ
 
-ไม่มีข้อมูลสำคัญหรือคำถามย่อยของสามข้อที่ตกหล่น แต่เป็นฉบับคัดและปรับสำหรับข้อสอบฝึก ไม่ใช่ facsimile คำต่อคำ คะแนนย่อย/สมมติฐานที่เพิ่มอธิบายไว้ข้างต้น แยกชัดเจนจากข้อมูลเดิม
+เฉพาะข้อความโจทย์ส่วนที่ 3 ทั้งสามข้อคงคำพิมพ์เดิมทุกคำ รวมข้อมูล ตัวเลข punctuation และ capitalization ตรวจด้วย transcription อิสระเทียบกับข้อความ PDF หลัง render โดยละ whitespace เท่านั้น คงเลขข้อ 1–3 และคะแนน 8–4–8 สำหรับชุดนี้ ไม่คัดหัวเรื่อง/เวลาเดิม/คำตอบที่เขียนกำกับ รูปแบบบรรทัด ตาราง และป้ายข้อใช้รูปแบบมาตรฐานของเอกสารนี้ ไม่ใช่ภาพ facsimile ของหน้าสแกนเดิม ทั้งสามข้ออยู่หน้า 10 โดยไม่เปลี่ยน class/font/margin ส่วนปรนัยและ short answer ยังเป็นฉบับคัดและปรับตามที่อธิบายแยกไว้
