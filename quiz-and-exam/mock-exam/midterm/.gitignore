@@ -1,4 +1,4 @@
-# Derived TeX noise; keep editable sources, generated inputs, and publishable PDFs.
+# Derived TeX noise; keep editable sources and publishable PDFs.
 *.aux
 *.log
 *.out
