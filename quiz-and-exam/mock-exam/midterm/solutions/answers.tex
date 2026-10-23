@@ -8,7 +8,7 @@
 \item \textbf{(c)} Without user/kernel-mode separation, a process may bypass memory protection and access another process's data. {\small [L1; E09 Q2]}
 \item \textbf{(e)} The Lecture 2 model is Process = (Program, Data, Control state, Process state); all four are components. {\small [L2; E09 Q4]}
 \item \textbf{(b)} Isolation protects one application from unauthorized access by another. {\small [L1; E09 Q5]}
-\item \textbf{(b)} A timer interrupt lets a preemptive scheduler regain control from a CPU-bound process. The source says ``non-preemptive''; that premise was corrected because a timer interrupt enables preemption. {\small [L2; E09 Q6]}
+\item \textbf{(b)} The source marks Timer interrupt and the original stem says ``non-preemptive''. Those two details conflict with the usual distinction that timer preemption is used by a preemptive scheduler; both are retained here to match the source. {\small [L2; E09 Q6]}
 \item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; code, data, and stack are user-space regions. {\small [L2; E09 Q7]}
 \item \textbf{(c)} In the conventional layout used in the course, the stack grows opposite to the heap. {\small [L2; E09 Q8]}
 \item \textbf{(d)} A process must be running before it can request I/O or another operation that blocks it; there is no direct Ready-to-Blocked transition. The source key's ``reads a file'' answer was corrected. {\small [L2; E09 Q9]}
@@ -19,23 +19,23 @@
 \item \textbf{(e)} This is the answer indicated by the old lab question: the parent prints after the child finishes. A call to \texttt{wait()} alone does not guarantee that the child itself printed; that detail depends on the referenced lab program. {\small [L2; E09 Q14]}
 \item \textbf{(d)} Two successful fork calls leave four processes to execute the print statement once each. {\small [L2; E03 Q7]}
 \item \textbf{(e)} Timer preemption, blocking for I/O or wait, and yielding can each release the CPU. {\small [L2; E09 Q16]}
-\item \textbf{(a)} FIFO runs each job to completion in arrival order. The source's broader wording and marked ``Both FIFO and RR'' can describe ready-queue rotation, so the stem is narrowed to completion order to keep one answer. {\small [L3; E09 Q15]}
+\item \textbf{(a)} This is the answer marked in the source. The original wording and choices are retained; interpret ``arrival order'' as selecting the next job in arrival order. {\small [L3; E09 Q15]}
 \item \textbf{(b)} In the C storage-class model covered in class, \texttt{register} requests register storage for a local variable; the source's ``fastest'' claim is not guaranteed by C. {\small [L4; E09 Q19]}
 \item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. The scanned source marks this choice; a separate typed key saying ``none'' is incorrect. {\small [L4; E09 Q20]}
 \item \textbf{(b)} The short-term scheduler selects a ready process to run. {\small [L3; E09 Q21]}
 \item \textbf{(c)} Page replacement chooses a resident page to remove when a frame is needed. {\small [L6; E09 Q22]}
 \item \textbf{(e)} Paging uses page tables, segmentation uses segment tables, and a TLB may cache translations; these mechanisms are not all required simultaneously. {\small [L5; E09 Q23]}
-\item \textbf{(c)} The stem is narrowed to ask specifically for the fragmentation problem; the source choices are reproduced verbatim. The old key marked (d), which names a separate claimed cost rather than a fragmentation type. {\small [L5; E09 Q24]}
+\item \textbf{(d)} This is the answer marked in the source. The source wording and choices are retained; note that (c), external fragmentation, is also a standard disadvantage of contiguous allocation, so the original item is not unambiguous on technical grounds. {\small [L5; E09 Q24]}
 \item \textbf{(a)} Demand paging loads a page when it is referenced and is not already resident. {\small [L6; E09 Q26]}
 \item \textbf{(e)} Context saving, victim selection when needed, page-in, and page-table update can all occur while handling a valid page fault. {\small [L6; E09 Q27]}
-\item \textbf{(a)} The stem is narrowed to ask for the starting physical address field, so \textit{Base} is the single answer. The source's broad stem and marked ``All choices'' option are not consistent with the base-and-bound entry described in Lecture 5; the printed choices remain unchanged. {\small [L5; E09 Q29]}
+\item \textbf{(e)} The source asks which information is stored in the segment table and marks ``All choices''; Base, Bound, Direction, and Valid are the fields listed in the source. {\small [L5; E09 Q29]}
 \item \textbf{(c)} With a fixed virtual address space, a larger page means fewer virtual pages and therefore a smaller page table. {\small [L5; E09 Q30]}
 \item \textbf{(c)} Round robin is considered fair because it shares CPU time among active jobs on a short time scale. {\small [L3; E09 Q33]}
 \item \textbf{(a)} FIFO does not use time-slice preemption; it runs the current job until completion or blocking. {\small [L3; E09 Q34]}
 \item \textbf{(e)} This is the answer marked in the old exam: the memory image is kept on secondary storage. The original distractor ``virtual storage'' is retained as printed. {\small [L6; E09 Q35]}
 \item \textbf{(c)} Response time is the interval from arrival until the process first gets the CPU. {\small [L3; E09 Q36]}
 \item \textbf{(b)} Turnaround time is completion time minus arrival time. {\small [L3; E09 Q37]}
-\item \textbf{(d)} Compaction may be needed to address external fragmentation from variable-size partitions. The source labels compaction as the problem; the stem now asks for the operation that addresses it. {\small [L4; E09 Q38]}
+\item \textbf{(d)} This is the answer marked in the source. The wording is retained as printed; ``Need compacting'' refers to the compaction needed to address external fragmentation from flexible-size partitions. {\small [L4; E09 Q38]}
 \item \textbf{(a)} A larger virtual address space requires more page-table entries when page and PTE sizes are fixed. {\small [L5; E09 Q39]}
 \item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions; this is how it saves memory for sparse address spaces. {\small [L5; E09 Q40]}
 \item \textbf{(a)} In the simplified state model used here, a newly created process is placed in the ready state. {\small [L2; E09 Q41]}

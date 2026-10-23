@@ -3,7 +3,7 @@
 \begingroup\small
 \noindent Circle the one correct answer in each question.\par\smallskip
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{0}
-\question What is a trap in an operating system?
+\question What is a trap in OS?
 \begin{verticalchoices}
 \item A trap is a system call that provides OS level service
 \item A trap is a service that user can capture output from a process
@@ -11,7 +11,7 @@
 \item A trap is a way to capture bugs
 \item There is no trap in OS
 \end{verticalchoices}
-\question What protection risk arises if user mode and kernel mode are not separated?
+\question What would happen if there is no user level and privileged level separation?
 \begin{verticalchoices}
 \item Process cannot be kicked of processor
 \item OS cannot access disks or external devices
@@ -19,7 +19,7 @@
 \item OS can prevent process from directly access devices
 \item Process cannot create child process
 \end{verticalchoices}
-\question Which set gives the four components of a process in the model used in class?
+\question What is not the component of a process?
 \begin{verticalchoices}
 \item Program
 \item Data state
@@ -27,7 +27,7 @@
 \item Control state
 \item All of the choices are process components
 \end{verticalchoices}
-\question Which OS goal is specifically intended to protect one application from another?
+\question What is the issue to consider to protect one application from others?
 \begin{verticalchoices}
 \item Performance
 \item Isolation
@@ -35,7 +35,7 @@
 \item Mobility
 \item All of the issues is for protection
 \end{verticalchoices}
-\question Which low-level hardware mechanism is needed in a preemptive system to switch a CPU-bound process?
+\question What is the low-level hardware that is needed in non-preemptive system to switch process?
 \begin{verticalchoices}
 \item MMU
 \item Timer interrupt
@@ -43,7 +43,7 @@
 \item TLB
 \item None of them
 \end{verticalchoices}
-\question Which part of a process is stored in kernel space?
+\question Which part of the process is in kernel space?
 \begin{verticalchoices}
 \item Text segment
 \item Data segment
@@ -54,7 +54,7 @@
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{6}
-\question In a conventional process address space, which region grows in the opposite direction from the heap?
+\question Which part of memory of a process grows in an opposite direction of other?
 \begin{verticalchoices}
 \item Text
 \item Heap
@@ -62,7 +62,7 @@
 \item Program
 \item They are all growing in the same direction
 \end{verticalchoices}
-\question When would a process in the ready state be moved directly to the blocked state?
+\question When would a process in ready state be moved to a blocked state?
 \begin{verticalchoices}
 \item When it read a file
 \item When it read from memory
@@ -70,7 +70,7 @@
 \item Cannot happen
 \item Both when read from file and memory
 \end{verticalchoices}
-\question Which event can move a process into the ready state?
+\question When would a process enter a ready state?
 \begin{verticalchoices}
 \item Timer interrupt occurs
 \item I/O transfer is completed
@@ -78,7 +78,7 @@
 \item All of the events
 \item None of the events
 \end{verticalchoices}
-\question What does it mean for a process to be a zombie?
+\question What does it mean when process is a zombie?
 \begin{verticalchoices}
 \item Process is running on processor and cannot be kicked off
 \item Process is waiting for I/O indefinitely
@@ -86,7 +86,7 @@
 \item Process is terminated but cannot be removed from the system
 \item There is no such thing as zombie in OS
 \end{verticalchoices}
-\question Which process-control block stores a process's state and saved CPU context?
+\question What is the data structure that keeps process information?
 \begin{verticalchoices}
 \item PCB
 \item TLB
@@ -94,7 +94,7 @@
 \item MMU
 \item Queue
 \end{verticalchoices}
-\question Which situation can leave a zombie process in the system?
+\question Which situation could lead to zombies in the system?
 \begin{verticalchoices}
 \item Parent exists before child returns value
 \item Parent creates more than one child
@@ -122,7 +122,7 @@ main()
     printf("hello");
 }
 \end{lstlisting}
-How may time the word "hello" will be printed
+How many times will the word "hello" be printed?
 \begin{verticalchoices}
 \item Only once
 \item Twice
@@ -130,7 +130,7 @@ How may time the word "hello" will be printed
 \item Four times
 \item Eight times
 \end{verticalchoices}
-\question Which events can cause a running process to give up the CPU?
+\question Which event can cause a process to release the CPU?
 \begin{verticalchoices}
 \item Timer interrupt
 \item Calling I/O transfer
@@ -138,7 +138,7 @@ How may time the word "hello" will be printed
 \item Calling yield
 \item All of the events
 \end{verticalchoices}
-\question Which scheduling algorithm executes jobs to completion in the order of arrival?
+\question Which of the following scheduling algorithms execute the jobs in the arrival order?
 \begin{verticalchoices}
 \item FIFO
 \item SJF
@@ -146,7 +146,7 @@ How may time the word "hello" will be printed
 \item Both FIFO and RR
 \item Both FIFO and SJF
 \end{verticalchoices}
-\question In the C storage-class model covered in class, which class requests register storage for a local variable?
+\question Which storage class is the fastest?
 \begin{verticalchoices}
 \item Auto
 \item Register
@@ -157,7 +157,7 @@ How may time the word "hello" will be printed
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{17}
-\question Which statement about partition allocation is true?
+\question Which statement is true?
 \begin{verticalchoices}
 \item Single partition allocation is more efficient that multiple partition allocation in terms of memory usage
 \item Flexible-size partition does not suffer external fragmentation
@@ -165,7 +165,7 @@ How may time the word "hello" will be printed
 \item To solve internal fragmentation, OS needs to do memory coalescing and compaction
 \item None of them is true
 \end{verticalchoices}
-\question What does the short-term process scheduler do?
+\question What does process selection algorithm do?
 \begin{verticalchoices}
 \item Select program to load into memory
 \item Select process to run
@@ -173,7 +173,7 @@ How may time the word "hello" will be printed
 \item Select memory to assign to a process
 \item Select process to put to memory
 \end{verticalchoices}
-\question What does a page-replacement algorithm do when a frame is needed?
+\question What does page replacement algorithm do?
 \begin{verticalchoices}
 \item Select a page to load into memory
 \item Select a page to run
@@ -189,7 +189,7 @@ How may time the word "hello" will be printed
 \item Segment table
 \item All of them are used in address translation
 \end{verticalchoices}
-\question Which option names the fragmentation problem that can occur with contiguous segment allocation?
+\question What is the disadvantage of segmentation with the contiguous memory allocation?
 \begin{verticalchoices}
 \item Harder to translate from VA to PA
 \item Cannot protect memory from other process
@@ -208,7 +208,7 @@ How may time the word "hello" will be printed
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{23}
-\question Which step does NOT occur while handling a valid page fault?
+\question What does not happen when a page fault occurs?
 \begin{verticalchoices}
 \item Save process context
 \item Free a frame if there is no free frame
@@ -216,7 +216,7 @@ How may time the word "hello" will be printed
 \item Update page table
 \item All events happen
 \end{verticalchoices}
-\question Which segment-table field stores a segment's starting physical address?
+\question What is the data stored in the segment table?
 \begin{verticalchoices}
 \item Base
 \item Bound
@@ -224,7 +224,7 @@ How may time the word "hello" will be printed
 \item Valid
 \item All choices are a part of segment table
 \end{verticalchoices}
-\question With a fixed virtual address-space size, what is one effect of using a larger page size?
+\question What is the effect of a larger page size?
 \begin{verticalchoices}
 \item More problem with external fragmentation
 \item Smaller TLB reaches
@@ -232,7 +232,7 @@ How may time the word "hello" will be printed
 \item More process can be created
 \item There is no effect from the size of page
 \end{verticalchoices}
-\question Which single-queue policy rotates among all ready jobs, giving each a time slice in turn?
+\question Which scheduler is the fairest?
 \begin{verticalchoices}
 \item FIFO
 \item STCF
@@ -259,7 +259,7 @@ How may time the word "hello" will be printed
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{29}
-\question What is the response time of a process?
+\question What is the response time?
 \begin{verticalchoices}
 \item Time that process starts running until finish
 \item Time that process enters system until finish
@@ -267,7 +267,7 @@ How may time the word "hello" will be printed
 \item Time that process runs until requests for I/O
 \item Time that process runs at each cycle
 \end{verticalchoices}
-\question What is the turnaround time of a process?
+\question What is the turnaround time?
 \begin{verticalchoices}
 \item Time that process starts running until finish
 \item Time that process enters system until finish
@@ -275,7 +275,7 @@ How may time the word "hello" will be printed
 \item Time that process runs until requests for I/O
 \item Time that process runs at each cycle
 \end{verticalchoices}
-\question What operation may be needed to address external fragmentation from flexible-size partitions?
+\question What is the problem of flexible partition size?
 \begin{verticalchoices}
 \item Limit degree of multitasking
 \item Internal fragmentation
@@ -283,7 +283,7 @@ How may time the word "hello" will be printed
 \item Need compacting
 \item There is no problem
 \end{verticalchoices}
-\question With a single-level page table and fixed page size, what is a cost of a larger virtual address space?
+\question What is the problem with paging when address space is larger?
 \begin{verticalchoices}
 \item Need more memory to store page table
 \item Internal fragmentation
@@ -291,7 +291,7 @@ How may time the word "hello" will be printed
 \item TLB reach is smaller
 \item There is no problem causes by larger address space
 \end{verticalchoices}
-\question How can a multilevel page table save memory for a sparse address space?
+\question Why could a multi-level page table save some memory?
 \begin{verticalchoices}
 \item Table size is reduced
 \item Address space is reduced
@@ -299,7 +299,7 @@ How may time the word "hello" will be printed
 \item All of the second level pages are empty
 \item There is no need to store all the empty second level pages
 \end{verticalchoices}
-\question In the simplified state model, which state does a newly created process enter after admission?
+\question Which state could a process be in when it is newly created in an OS?
 \begin{verticalchoices}
 \item ready
 \item running
@@ -310,7 +310,7 @@ How may time the word "hello" will be printed
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{35}
-\question Which state is a process in while it is executing on the CPU?
+\question When a process is using a processor, which state could it be?
 \begin{verticalchoices}
 \item ready
 \item running
@@ -318,7 +318,7 @@ How may time the word "hello" will be printed
 \item terminated
 \item empty
 \end{verticalchoices}
-\question What fairness risk can SJF create if shorter jobs keep arriving?
+\question What is a disadvantage of shortest job first (SJF) scheduling?
 \begin{verticalchoices}
 \item Suffer convoy effect
 \item Highest average waiting time
@@ -326,7 +326,7 @@ How may time the word "hello" will be printed
 \item Highest average turn around time
 \item Starvation
 \end{verticalchoices}
-\question Which scheduling metric is Round Robin primarily designed to improve?
+\question What is the advantage of round robin (RR) process scheduling?
 \begin{verticalchoices}
 \item Lowest average turn around time
 \item Lowest average waiting time
@@ -334,7 +334,7 @@ How may time the word "hello" will be printed
 \item Lowest average response time
 \item highest throughput
 \end{verticalchoices}
-\question Which statement about paging is correct?
+\question What is true about the paging memory scheme?
 \begin{verticalchoices}
 \item Page and page frame can be different in size
 \item The smaller the page size is, the smaller the page table is
@@ -342,7 +342,7 @@ How may time the word "hello" will be printed
 \item Page is in logical memory, page frame is in physical memory
 \item Demand paging is when a program can demand preloading of a page
 \end{verticalchoices}
-\question Which page-replacement policy is an ideal benchmark but cannot be implemented exactly without knowing future references?
+\question Which memory replacement policy is not really achieved?
 \begin{verticalchoices}
 \item Optimal
 \item FIFO
