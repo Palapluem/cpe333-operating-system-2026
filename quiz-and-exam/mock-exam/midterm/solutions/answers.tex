@@ -2,57 +2,48 @@
 \sectiontitle{เฉลยและเกณฑ์ตรวจ: CPE333 Mock Midterm ชุดที่ 1}
 \noindent สำหรับตรวจหลังทำข้อสอบเท่านั้น ไม่ใช่เฉลยข้อสอบจริงของรายวิชา\\คะแนนรวม 50: ปรนัย $20c/41$ เมื่อ $c$ คือจำนวนข้อถูก; เติมคำ 10; อัตนัย $8+4+8=20$\\ไม่ปัดคะแนนรายข้อ; เมื่อสรุปผลจึงปัดคะแนนรวมเป็นทศนิยมสองตำแหน่ง ไม่มีการหักคะแนนตอบผิด\par\medskip
 \sectiontitle{เฉลยส่วนที่ 1: คำตอบเดียวที่ดีที่สุด}
-\begin{enumerate}[leftmargin=1.4em,start=1,itemsep=0.18cm]
-\item \textbf{(b)} Trap ส่งการควบคุมแบบ synchronous เข้า OS handler เช่นการร้องขอ system call ไม่ใช่ asynchronous hardware interrupt {\small [L1]}
-\item \textbf{(c)} หากไม่มีการแยก privilege ผู้ใช้/process อาจเข้าถึงข้อมูลของ process อื่นหรืออุปกรณ์โดยข้ามการป้องกัน {\small [L1]}
-\item \textbf{(c)} PID เป็น identifier ของ process; PCB เป็นโครงสร้างเก็บข้อมูล ไม่ใช่เลข identifier ส่วน device queue และ PFN อ้างคนละทรัพยากร {\small [L2]}
-\item \textbf{(b)} Program counter ระบุตำแหน่งคำสั่งถัดไป; stack pointer ชี้ stack, page-table base ชี้ตาราง และ data register ไม่ใช่ตัวติดตามคำสั่งถัดไป {\small [L2]}
-\item \textbf{(c)} Isolation แยกการเข้าถึงทรัพยากรระหว่าง applications เพื่อป้องกันการเข้าถึงที่ไม่ได้รับอนุญาต {\small [L1]}
-\item \textbf{(d)} Non-preemptive/cooperative switching อาศัยงานคืน control เอง ไม่จำเป็นต้องมี timer เพื่อบังคับ preempt ตาม quantum {\small [L2]}
-\item \textbf{(b)} Process descriptor/PCB เป็นข้อมูลบริหารที่ kernel เก็บรักษา ต่างจาก text/heap/stack ใน user address space {\small [L2]}
-\item \textbf{(c)} ใน layout ที่เรียน heap โตขึ้นไปยัง address สูง ส่วน stack โตลงไปยัง address ต่ำ ไม่ใช่ข้อบังคับของทุก architecture {\small [L2]}
-\item \textbf{(d)} Ready ไม่ได้กำลังรันเพื่อร้องขอ I/O จึงไม่มี transition ready ไป blocked โดยตรงในโมเดลนี้ {\small [L2]}
-\item \textbf{(d)} Process state บอกกิจกรรม/สถานะปัจจุบัน เช่น ready/running/blocked ไม่ใช่กิจกรรมที่ผ่านมา จะทำในอนาคต หรือกิจกรรมสุดท้าย {\small [L2]}
-\item \textbf{(a)} Blocked on disk read รอ event คือ I/O completion ไม่ใช่รอ timer หรือเลือก CPU {\small [L2]}
-\end{enumerate}
-\newpage\sectiontitle{เฉลยส่วนที่ 1 (ต่อ)}
-\begin{enumerate}[leftmargin=1.4em,start=12,itemsep=0.18cm]
-\item \textbf{(b)} Zombie คือจบการทำงานแล้ว แต่ parent ยังไม่เก็บ exit status ด้วย wait/waitpid {\small [L2]}
-\item \textbf{(c)} PCB/process descriptor เก็บข้อมูลบริหาร process เช่น state, saved context และ scheduling information; TLB เก็บ translation, stack ใช้ call/local state และ frame เป็นพื้นที่ physical memory {\small [L2]}
-\item \textbf{(d)} Parent wait สำเร็จหลัง child จบ ดังนั้นในเงื่อนไขนี้ child พิมพ์ก่อน parent โดยสมมติ output สำเร็จและไม่พิจารณา buffering ที่เปลี่ยนลำดับการแสดง {\small [L2]}
-\item \textbf{(a)} FIFO/FCFS ใช้ลำดับการมาถึง ไม่ได้เรียงตามความยาวหรือ priority; แก้ stem เดิมให้ไม่กำกวมกับ RR first dispatch {\small [L3]}
-\item \textbf{(d)} หลัง fork แรกมี 2 processes และทุกตัว fork อีกครั้งเป็น 4 processes จึงพิมพ์สี่ครั้ง ไม่ใช่บวกทีละหนึ่ง {\small [L2]}
-\item \textbf{(a)} MLFQ ให้งานใหม่เริ่มที่ priority สูงสุด ไม่ใช่ต่ำสุด {\small [L3]}
-\item \textbf{(c)} Virtual memory อนุญาตให้ address spaces ที่ใช้มีขนาดรวมเกิน RAM โดยเก็บบางส่วนใน backing storage ได้ {\small [L6]}
-\item \textbf{(a)} OS สลับการใช้ CPU ให้แต่ละ process เห็นเสมือนมี CPU ของตนเอง ไม่ใช่ว่า single core รันทุก process พร้อมกันจริงหรือ fetch คำสั่งจาก disk โดยตรง {\small [L1]}
-\item \textbf{(b)} Fixed partitions อาจเหลือพื้นที่ภายในหน่วยที่จัดสรร ส่วน variable partitions อาจมี external fragmentation และ compaction ไม่แก้ internal waste {\small [L4]}
-\item \textbf{(c)} CPU scheduler เลือก ready process ให้ใช้ CPU ไม่ใช่เลือก victim page หรือจัดสรร frame {\small [L3]}
-\item \textbf{(a)} Page replacement เลือก resident victim page เพื่อคืน frame เมื่อจำเป็นต้องแทนที่ {\small [L6]}
-\end{enumerate}
-\newpage\sectiontitle{เฉลยส่วนที่ 1 (ต่อ)}
-\begin{enumerate}[leftmargin=1.4em,start=23,itemsep=0.18cm]
-\item \textbf{(b)} exec สำเร็จแทนที่ process image จึงไม่กลับจุดเรียกเดิม ส่วน fork และ wait มี return path ตามปกติ; เติม when it succeeds เพื่อแยกกรณี exec ล้มเหลว {\small [L2]}
-\item \textbf{(b)} Segments มีขนาดต่างกันและแต่ละ segment ต้องต่อเนื่อง จึงเกิด holes/external fragmentation ได้ {\small [L5]}
-\item \textbf{(c)} Demand paging โหลด page เมื่อ reference แล้วพบว่ายังไม่ resident ไม่ต้องโหลดทั้ง process ก่อน {\small [L6]}
-\item \textbf{(d)} Legal not-present fault โดยปกติแก้ด้วย page-in และ restart; ไม่ควร terminate ทุกกรณี ต่างจาก invalid/protection access {\small [L6]}
-\item \textbf{(d)} Segment ใช้ base แปลตำแหน่งและ limit ตรวจ offset; ตัวเลือกอื่นปน paging, scheduling หรือข้อมูลที่ไม่ใช่คู่ base/bounds ของ segment {\small [L5]}
-\item \textbf{(a)} Page ใหญ่ขึ้นทำให้จำนวน pages ลดลง จึงมี PTE entries น้อยลงเมื่อ address-space size และ PTE size คงที่ {\small [L5]}
-\item \textbf{(d)} Non-preemptive FIFO อาศัย process จบ/block/yield ไม่ต้องใช้ timer ตัด CPU ตาม quantum {\small [L3]}
-\item \textbf{(b)} Backing storage เช่น disk/swap ใช้เก็บ pages ที่ไม่ได้อยู่ใน RAM; TLB เก็บ translations ไม่ใช่เนื้อหา page {\small [L6]}
-\item \textbf{(c)} Response วัดจาก arrival ถึงการเริ่มได้รับ CPU ครั้งแรก ต่างจาก turnaround และ total waiting {\small [L3]}
-\item \textbf{(a)} Turnaround คือเวลาตั้งแต่ส่ง/เข้าระบบจนเสร็จสมบูรณ์ {\small [L3]}
-\end{enumerate}
-\newpage\sectiontitle{เฉลยส่วนที่ 1 (ต่อ)}
-\begin{enumerate}[leftmargin=1.4em,start=33,itemsep=0.18cm]
-\item \textbf{(d)} Variable-size contiguous allocation เกิด external fragmentation; coalescing รวม holes ที่ติดกัน และ compaction ย้าย allocated blocks เพื่อรวมพื้นที่ว่าง {\small [L4]}
-\item \textbf{(b)} เมื่อ pagesize/PTEsize เท่าเดิม virtual space ใหญ่ขึ้นมี virtual pages มากขึ้น จึงต้องมี entries มากขึ้น {\small [L5]}
-\item \textbf{(a)} ประหยัดได้เพราะไม่ต้องจัดสรร lower-level tables ให้ virtual regions ที่ไม่ใช้ ไม่ใช่ว่าทุกตารางว่าง {\small [L5]}
-\item \textbf{(c)} SJF อาจทำให้งานยาวใน ready queue รอนานไม่สิ้นสุดหากมีงานสั้นเข้ามาต่อเนื่อง; ไม่ได้ทำให้ค่าเฉลี่ยแย่สุดทุกกรณี {\small [L3]}
-\item \textbf{(d)} Segmentation ใช้ส่วน logical ขนาดต่างกัน ส่วน paging ใช้ page ขนาดเท่ากัน {\small [L5]}
-\item \textbf{(b)} Pages เป็นหน่วยใน virtual address space; frames เป็นหน่วยใน physical memory ที่มีขนาดเท่ากับ pages {\small [L5]}
-\item \textbf{(c)} OPT ใช้ future knowledge เลือก page ที่จะไม่ถูกใช้ไปอีกนานที่สุด จึงใช้เป็น benchmark ไม่ใช่ online policy ที่รู้อนาคตจริง {\small [L6]}
-\item \textbf{(a)} Not-present legal page ทำให้ fault เพื่อ page-in; TLB hit ไม่ใช่ fault และ TLB miss ก็ไม่ได้หมายความว่า fault เสมอ {\small [L6]}
-\item \textbf{(c)} RR หมุนงานตาม quantum; FIFO/SJF แบบ non-preemptive ไม่ตัดตาม slice และ OPT เป็น page replacement ไม่ใช่ CPU scheduling {\small [L3]}
+\begin{enumerate}[leftmargin=1.4em,start=1,itemsep=0.14cm]
+\item \textbf{(a)} A trap transfers control synchronously to an OS handler for a service such as a system call. {\small [L1; E09 Q1]}
+\item \textbf{(c)} Without privilege separation, a process could bypass protection and access another process's data. {\small [L1; E09 Q2]}
+\item \textbf{(e)} The question treats program, data state, process status, and control state as process components; hence none of the first four is the exception. {\small [L2; E09 Q4]}
+\item \textbf{(b)} Isolation protects one application from unauthorized access by another. {\small [L1; E09 Q5]}
+\item \textbf{(e)} A non-preemptive switch can follow a trap/system call or a process blocking/exiting; a timer interrupt is needed for forced preemption, not for every switch. {\small [L2; E09 Q6]}
+\item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; text, data, and stack are process address-space regions. {\small [L2; E09 Q7]}
+\item \textbf{(c)} In the conventional layout used in the course, the stack grows opposite to the heap. {\small [L2; E09 Q8]}
+\item \textbf{(d)} A ready process must run before it can request I/O or another event that blocks it. {\small [L2; E09 Q9]}
+\item \textbf{(d)} Process creation, I/O completion, and a timer-driven preemption can all place a process in the ready state in this model. {\small [L2; E09 Q10]}
+\item \textbf{(d)} A zombie has terminated but remains represented until its parent collects its exit status. {\small [L2; E09 Q12]}
+\item \textbf{(a)} The PCB stores process information; TLB, stack, MMU, and queue are not the per-process control block. {\small [L2; E09 Q13]}
+\item \textbf{(a)} A child that exits while its parent is still alive may remain a zombie until the parent collects its exit status; if the parent exits first, the child is an orphan. {\small [L2; E09 Q31]}
+\item \textbf{(e)} A successful wait delays the parent's print until the child has finished and printed. {\small [L2; E09 Q14]}
+\item \textbf{(d)} Two successful fork calls leave four processes to execute the print statement once each. {\small [L2; E03 Q7]}
+\item \textbf{(e)} Timer preemption, blocking for I/O or wait, and yielding can each release the CPU. {\small [L2; E09 Q16]}
+\item \textbf{(b)} Standard MLFQ starts a new job at the highest priority, not the lowest. {\small [L3; E09 Q17]}
+\item \textbf{(b)} Among the listed C storage classes, register is the one intended to request register storage for a local variable. {\small [L4; E09 Q19]}
+\item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. {\small [L4; E09 Q20]}
+\item \textbf{(b)} The process-selection/scheduling algorithm chooses a ready process to run. {\small [L3; E09 Q21]}
+\item \textbf{(c)} Page replacement chooses a resident page to remove when a frame is needed. {\small [L6; E09 Q22]}
+\item \textbf{(e)} MMU, page tables, TLBs, and segment tables are all used in address translation across the schemes covered. {\small [L5; E09 Q23]}
+\item \textbf{(c)} Variable-sized contiguous segments can leave separated holes, causing external fragmentation; the source's highlighted choice D is not supported by the lecture's comparison. {\small [L5; E09 Q24]}
+\item \textbf{(a)} Demand paging brings a page into memory only when it is referenced and needed. {\small [L6; E09 Q26]}
+\item \textbf{(e)} The listed save, frame-selection, page-in, and page-table-update operations are all part of handling a legal page fault. {\small [L6; E09 Q27]}
+\item \textbf{(e)} In the question bank's segment-descriptor model, base, bound, growth direction, and validity/control metadata are grouped in the segment table. {\small [L5; E09 Q29]}
+\item \textbf{(c)} With a fixed virtual address space, a larger page means fewer virtual pages and therefore a smaller page table. {\small [L5; E09 Q30]}
+\item \textbf{(c)} Round robin is considered fair because it shares CPU time among active jobs on a short time scale. {\small [L3; E09 Q33]}
+\item \textbf{(a)} Non-preemptive FIFO does not require a timer interrupt to take the CPU away at a time-slice boundary. {\small [L3; E09 Q34]}
+\item \textbf{(e)} Pages not resident in physical memory are backed by secondary storage. {\small [L6; E09 Q35]}
+\item \textbf{(c)} Response time is the interval from arrival until the process first gets the CPU. {\small [L3; E09 Q36]}
+\item \textbf{(b)} Turnaround time is completion time minus arrival time. {\small [L3; E09 Q37]}
+\item \textbf{(d)} Variable-size partitions can cause external fragmentation, for which compaction may be needed. {\small [L4; E09 Q38]}
+\item \textbf{(a)} A larger virtual address space requires more page-table entries when page and PTE sizes are fixed. {\small [L5; E09 Q39]}
+\item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions. {\small [L5; E09 Q40]}
+\item \textbf{(a)} In the simplified state model used here, a newly created process is placed in the ready state. {\small [L2; E09 Q41]}
+\item \textbf{(b)} A process using the processor is in the running state. {\small [L2; E09 Q42]}
+\item \textbf{(e)} A long job can starve under SJF if shorter jobs keep arriving. {\small [L3; E09 Q44]}
+\item \textbf{(d)} Round robin generally offers a low response time because each ready job receives a time slice promptly. {\small [L3; E09 Q46]}
+\item \textbf{(d)} Pages are units of logical memory; page frames are equal-sized units of physical memory. {\small [L5; E09 Q48]}
+\item \textbf{(a)} OPT is an ideal benchmark because it needs knowledge of future page references. {\small [L6; E09 Q49]}
+\item \textbf{(a)} In the source's terminology, a page-table entry that is not valid/present causes a page fault when accessed. {\small [L6; E09 Q50]}
 \end{enumerate}
 \newpage\sectiontitle{เฉลยส่วนที่ 2: เติมคำ / ตอบสั้น}
 \noindent ข้อละ 1 คะแนน ให้ partial credit ตามองค์ประกอบในแต่ละข้อ; รับถ้อยคำอื่นที่มีความหมายถูกต้อง ไม่บังคับจำประโยคเฉลย\par\smallskip
@@ -286,20 +277,21 @@ OPT & 10 & 10 & 10/20 & 5.0000050\\
 
 \begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lcl}
 Lecture & จำนวนปรนัย & หัวข้อ\\\hline
-1 & 4 & Privilege, trap, isolation\\
-2 & 13 & Process, state, context switch, wait\\
+1 & 3 & Privilege, trap, isolation\\
+2 & 14 & Process, state, context switch, wait\\
 3 & 8 & FIFO/SJF/STCF/RR, MLFQ, metrics\\
-4 & 2 & Fixed/variable partitions, fragmentation\\
+4 & 3 & C storage class, partition fragmentation\\
 5 & 7 & Segmentation, paging, address translation\\
-6 & 7 & Virtual memory, demand paging, replacement\\
+6 & 6 & Virtual memory, demand paging, replacement\\
 \end{tabular}\end{center}
 \noindent\textbf{แหล่งเนื้อหา (path เทียบกับ root ของ repository)}
 \begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
 \item lectures/CPE333\_OS\_Midterm\_StudyNotes.pdf และ Lecture1--Lecture6: ใช้กำหนดขอบเขต ไม่รวม threads/locks/deadlock ที่อยู่นอกชุด Lecture 1--6
-\item ปรนัย 5 ข้ออิงปี 2561 (E03) และ 36 ข้ออิงปี 2022 (E05); E09 เป็นชุดเนื้อหาซ้ำสำหรับเทียบตัวเลือก ไม่ใช้ annotation เป็นเฉลย
-\item quiz-and-exam/midterm/Backroom.pdf และข้อสอบปี 2558/2561: เทียบหัวข้อและแนวคำถาม ไม่คัดลอกหน้าที่มีคำตอบเขียนกำกับ
+\item ปรนัย 1 ข้ออิงข้อสอบ CPE326 ปี 2561 (E03, ข้อ 7) และ 40 ข้ออิงชุดคำถามปี 2022 (E09); ตรวจตัวเลือกที่ไหลต่อข้ามหน้าจากไฟล์เต็ม 16 หน้า และใช้ Lecture 1--6 ตัดสินเฉลยเมื่อ annotation ขัดกับเนื้อหา
+\item quiz-and-exam/midterm/Backroom.pdf และข้อสอบปี 2558/2561: เทียบหัวข้อและแนวคำถาม ไม่คัดลอกหน้าที่มีคำตอบเขียนกำกับ; เมื่อเครื่องหมายเฉลยขัดกับ Lecture ให้ยึดแนวคิดใน Lecture (เช่น E09 Q6 และ Q24)
 \item quiz-and-exam/midterm/ยำรวมมิตรข้อเขียน.pdf หน้า 4--6 และ 10: Scheduling, bank analogy และ MLFQ rules; ตัวเลข burst ใช้ 10,1,2,1,5 รวม 19 ms ตามโจทย์ชุดนี้ ไม่ใช่ Quiz อีกชุดที่ $P_4=2$
-\item E05: OS-Midterm-2022 ไฟล์ชื่อยาว หน้า 2 ใช้ reference string 20 ตัว, 3 frames, 10 ns/10 ms; หน้า 3--6 เป็นภาพปรนัยถึงข้อ 51 ส่วนหน้าสรุป 7--9 มีถึงข้อ 40 เท่านั้น
+\item E09: \texttt{os midterm exam.pdf} หน้า 1--16 เป็น bank ปรนัยฉบับเต็ม; ตรวจภาพครบทุกหน้าและตามตัวเลือกที่ไหลข้ามหน้าใน Q4, Q7, Q10, Q17, Q20, Q27, Q30, Q40, Q43 และ Q50. E05 เป็นไฟล์สรุป quiz ปี 2022 ซึ่งมีเฉลยถึง Q40 แต่ไม่มีชุดตัวเลือกครบ
+\item E09 Q15 ไม่ได้นำมาใช้ เพราะภาพ quiz เน้น ``Both FIFO and RR'' แต่สรุปเฉลยระบุ FIFO และ stem ไม่แยกว่าหมายถึงลำดับเข้าคิวหรือลำดับเสร็จงาน จึงไม่ผ่านเกณฑ์คำตอบเดียว; Q45 เป็นข้อซ้ำกับ Q44 และตัดข้อที่อยู่นอกขอบเขตหรือมีคำตอบกำกวมออก
 \item quiz-and-exam/midterm/Quiz\_BeforeMidterm.pdf: เทียบรูปแบบโจทย์ Scheduling และ fit policy
 \end{itemize}
 \noindent\textbf{แม่แบบการพิมพ์}\\
