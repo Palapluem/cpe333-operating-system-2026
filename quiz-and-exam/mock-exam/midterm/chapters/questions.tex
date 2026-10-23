@@ -114,14 +114,14 @@
 \item Parent will always print after child
 \end{verticalchoices}
 \question The following C program :
-\begin{center}\ttfamily
-main()\\
-\{\\
-\quad fork();\\
-\quad fork();\\
-\quad printf("hello");\\
-\}
-\end{center}
+\begin{lstlisting}[language=C,basicstyle={\fontspec{Courier New}\small},columns=fullflexible,keepspaces=true,showstringspaces=false,aboveskip=0.15cm,belowskip=0.15cm]
+main()
+{
+    fork();
+    fork();
+    printf("hello");
+}
+\end{lstlisting}
 How may time the word “hello” will be printed
 \begin{verticalchoices}
 \item Only once
