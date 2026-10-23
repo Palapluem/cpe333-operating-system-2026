@@ -34,11 +34,11 @@
 \pointname{}
 \pointformat{\textbf{(\thepoints\ \ifnum\thepoints=1\relax point\else points\fi)}}
 \newcommand{\examheader}{%
- \makebox[\textwidth][l]{Name \hrulefill\quad Student ID \makebox[2.0in]{\hrulefill}}}
+ {\small\makebox[\textwidth][l]{Name \hrulefill\quad Student ID \makebox[2.0in]{\hrulefill}}}}
 \firstpageheader{\examheader}{}{}
 \runningheader{\examheader}{}{}
-\firstpagefooter{\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}{}{\textit{หน้าที่ \thepage/12}}
-\runningfooter{\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}{}{\textit{หน้าที่ \thepage/12}}
+\firstpagefooter{{\small\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}}{}{{\small\textit{หน้าที่ \thepage/12}}}
+\runningfooter{{\small\textit{ข้อสอบรายวิชา CPE333 Operating Systems กลางภาคการศึกษาที่ 1/2569}}}{}{{\small\textit{หน้าที่ \thepage/12}}}
 % Content-only helpers: the document class and standard layout stay unchanged.
 \newenvironment{verticalchoices}{%
  \begin{enumerate}[label=(\alph*),leftmargin=1.8em,itemsep=0pt,parsep=0pt,topsep=2pt]
