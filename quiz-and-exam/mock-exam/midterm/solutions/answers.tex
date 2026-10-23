@@ -3,14 +3,14 @@
 \noindent สำหรับตรวจหลังทำข้อสอบเท่านั้น ไม่ใช่เฉลยข้อสอบจริงของรายวิชา\\คะแนนรวม 50: ปรนัย $20c/41$ เมื่อ $c$ คือจำนวนข้อถูก; เติมคำ 10; อัตนัย $8+4+8=20$\\ไม่ปัดคะแนนรายข้อ; เมื่อสรุปผลจึงปัดคะแนนรวมเป็นทศนิยมสองตำแหน่ง ไม่มีการหักคะแนนตอบผิด\par\medskip
 \sectiontitle{เฉลยส่วนที่ 1: คำตอบเดียวที่ดีที่สุด}
 \begin{enumerate}[leftmargin=1.4em,start=1,itemsep=0.14cm]
-\item \textbf{(a)} A trap transfers control to an OS handler; system calls may use this mechanism. {\small [L1; E09 Q1]}
+\item \textbf{(a)} A trap transfers control to an OS handler; system calls may use this mechanism. The source conflates a trap with a system call, so the mock distinguishes them. {\small [L1; E09 Q1]}
 \item \textbf{(c)} Without user/kernel-mode separation, a process may bypass memory protection and access another process's data. {\small [L1; E09 Q2]}
 \item \textbf{(e)} The Lecture 2 model is Process = (Program, Data, Control state, Process state); all four are components. {\small [L2; E09 Q4]}
 \item \textbf{(b)} Isolation protects one application from unauthorized access by another. {\small [L1; E09 Q5]}
-\item \textbf{(b)} A timer interrupt lets a preemptive scheduler regain control from a CPU-bound process. {\small [L2; E09 Q6]}
+\item \textbf{(b)} A timer interrupt lets a preemptive scheduler regain control from a CPU-bound process. The source says ``non-preemptive''; that premise was corrected because a timer interrupt enables preemption. {\small [L2; E09 Q6]}
 \item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; code, data, and stack are user-space regions. {\small [L2; E09 Q7]}
 \item \textbf{(c)} In the conventional layout used in the course, the stack grows opposite to the heap. {\small [L2; E09 Q8]}
-\item \textbf{(d)} A process must be running before it can request I/O or another operation that blocks it; there is no direct Ready-to-Blocked transition. {\small [L2; E09 Q9]}
+\item \textbf{(d)} A process must be running before it can request I/O or another operation that blocks it; there is no direct Ready-to-Blocked transition. The source key's ``reads a file'' answer was corrected. {\small [L2; E09 Q9]}
 \item \textbf{(d)} Process creation, I/O completion, and a timer-driven preemption can all place a process in the ready state in this model. {\small [L2; E09 Q10]}
 \item \textbf{(d)} A zombie has terminated but remains represented until its parent collects its exit status. {\small [L2; E09 Q12]}
 \item \textbf{(a)} The PCB stores per-process control information such as state and saved CPU context. {\small [L2; E09 Q13]}
@@ -18,23 +18,23 @@
 \item \textbf{(e)} A successful wait delays the parent's print statement until the child terminates. {\small [L2; E09 Q14]}
 \item \textbf{(d)} Two successful fork calls leave four processes to execute the print statement once each. {\small [L2; E03 Q7]}
 \item \textbf{(e)} Timer preemption, blocking for I/O or wait, and yielding can each release the CPU. {\small [L2; E09 Q16]}
-\item \textbf{(b)} Standard MLFQ starts a new job at the highest priority, not the lowest; periodic priority boosts are also valid. {\small [L3; E09 Q17]}
-\item \textbf{(b)} In the C storage-class model covered in class, \texttt{register} requests register storage for a local variable. {\small [L4; E09 Q19]}
-\item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. {\small [L4; E09 Q20]}
+\item \textbf{(b)} Standard MLFQ starts a new job at the highest priority, not the lowest. The source's ``All statements are true'' option conflicted with its NOT-true stem, so it was replaced to leave one defensible answer. {\small [L3; E09 Q17]}
+\item \textbf{(b)} In the C storage-class model covered in class, \texttt{register} requests register storage for a local variable; the source's ``fastest'' claim is not guaranteed by C. {\small [L4; E09 Q19]}
+\item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. The scanned source marks this choice; a separate typed key saying ``none'' is incorrect. {\small [L4; E09 Q20]}
 \item \textbf{(b)} The short-term scheduler selects a ready process to run. {\small [L3; E09 Q21]}
 \item \textbf{(c)} Page replacement chooses a resident page to remove when a frame is needed. {\small [L6; E09 Q22]}
 \item \textbf{(e)} Paging uses page tables, segmentation uses segment tables, and a TLB may cache translations; these mechanisms are not all required simultaneously. {\small [L5; E09 Q23]}
-\item \textbf{(c)} Contiguous segments can leave separated holes, causing external fragmentation. {\small [L5; E09 Q24]}
+\item \textbf{(c)} Contiguous segments can leave separated holes, causing external fragmentation. The source's map-size option was not used because it makes the original broad stem ambiguous. {\small [L5; E09 Q24]}
 \item \textbf{(a)} Demand paging loads a page when it is referenced and is not already resident. {\small [L6; E09 Q26]}
 \item \textbf{(e)} Context saving, victim selection when needed, page-in, and page-table update can all occur while handling a valid page fault. {\small [L6; E09 Q27]}
-\item \textbf{(a)} Each segment-table entry in Lecture 5 contains a base-and-bounds pair. {\small [L5; E09 Q29]}
+\item \textbf{(a)} Each segment-table entry in Lecture 5 contains a base-and-bounds pair. The source key ``all choices'' adds direction and valid fields that the lecture's described entry does not include. {\small [L5; E09 Q29]}
 \item \textbf{(c)} With a fixed virtual address space, a larger page means fewer virtual pages and therefore a smaller page table. {\small [L5; E09 Q30]}
 \item \textbf{(c)} Round robin is considered fair because it shares CPU time among active jobs on a short time scale. {\small [L3; E09 Q33]}
 \item \textbf{(a)} FIFO does not use time-slice preemption; it runs the current job until completion or blocking. {\small [L3; E09 Q34]}
-\item \textbf{(e)} A nonresident virtual-memory page is backed by secondary storage. {\small [L6; E09 Q35]}
+\item \textbf{(e)} A nonresident virtual-memory page is backed by secondary storage. The source's ``virtual storage'' option overlapped with secondary storage, so it was replaced to keep one answer. {\small [L6; E09 Q35]}
 \item \textbf{(c)} Response time is the interval from arrival until the process first gets the CPU. {\small [L3; E09 Q36]}
 \item \textbf{(b)} Turnaround time is completion time minus arrival time. {\small [L3; E09 Q37]}
-\item \textbf{(d)} Variable-size partitions can cause external fragmentation; compaction may be used to address it. {\small [L4; E09 Q38]}
+\item \textbf{(d)} Compaction may be needed to address external fragmentation from variable-size partitions. The source labels compaction as the problem; the stem now asks for the operation that addresses it. {\small [L4; E09 Q38]}
 \item \textbf{(a)} A larger virtual address space requires more page-table entries when page and PTE sizes are fixed. {\small [L5; E09 Q39]}
 \item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions; this is how it saves memory for sparse address spaces. {\small [L5; E09 Q40]}
 \item \textbf{(a)} In the simplified state model used here, a newly created process is placed in the ready state. {\small [L2; E09 Q41]}
@@ -43,7 +43,7 @@
 \item \textbf{(d)} Round robin improves response time by giving each ready job a time slice promptly. {\small [L3; E09 Q46]}
 \item \textbf{(d)} Pages are units of logical memory; page frames are equal-sized units of physical memory. {\small [L5; E09 Q48]}
 \item \textbf{(a)} OPT is an ideal benchmark because it requires knowledge of future page references. {\small [L6; E09 Q49]}
-\item \textbf{(a)} A reference to a valid virtual page whose present bit is 0 causes a page fault; an address outside the virtual address space is invalid. {\small [L6; E09 Q50]}
+\item \textbf{(a)} A reference to a valid virtual page whose present bit is 0 causes a page fault; an address outside the virtual address space is invalid. The source's ``not valid'' wording was corrected because an invalid address is not the ordinary not-present page-fault case. {\small [L6; E09 Q50]}
 \end{enumerate}
 \newpage\sectiontitle{เฉลยส่วนที่ 2: เติมคำ / ตอบสั้น}
 \noindent ข้อละ 1 คะแนน ให้ partial credit ตามองค์ประกอบในแต่ละข้อ; รับถ้อยคำอื่นที่มีความหมายถูกต้อง ไม่บังคับจำประโยคเฉลย\par\smallskip
