@@ -3,90 +3,90 @@
 \begingroup\small
 \noindent Circle the one correct answer in each question.\par\smallskip
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{0}
-\question What is a trap in OS?
+\question What is a trap in an operating system?
 \begin{verticalchoices}
-\item A trap is a system call that provides OS level service
-\item A trap is a service that user can capture output from a process
-\item A trap is a system call that captures users in OS
-\item A trap is a way to capture bugs
-\item There is no trap in OS
+\item It transfers control to an OS handler; system calls may use this mechanism.
+\item It lets a user process capture another process's output.
+\item It is a scheduling policy that switches between ready processes.
+\item It detects bugs without changing the CPU's execution mode.
+\item Operating systems have no trap mechanism.
 \end{verticalchoices}
-\question What would happen if there is no user level and privileged level separation?
+\question What protection risk arises if user mode and kernel mode are not separated?
 \begin{verticalchoices}
-\item Process cannot be kicked of processor
-\item OS cannot access disks or external devices
-\item Process may be able to access other process data
-\item OS can prevent process from directly access devices
-\item Process cannot create child process
+\item Every process is automatically isolated from all other processes.
+\item The operating system loses access to disks and external devices.
+\item A process may access another process's memory.
+\item Direct device access is automatically blocked by the operating system.
+\item Creating child processes becomes impossible.
 \end{verticalchoices}
-\question What is not the component of a process?
+\question Which set gives the four components of a process in the model used in class?
 \begin{verticalchoices}
-\item Program
-\item Data state
-\item Process status
-\item Control state
-\item All of the choices are process components
+\item Program and data only
+\item Program, data, and control state
+\item Program, data, and process state
+\item Data, control state, and process state
+\item Program, data, control state, and process state
 \end{verticalchoices}
-\question What is the issue to consider to protect one application from others?
+\question Which OS goal is specifically intended to protect one application from another?
 \begin{verticalchoices}
 \item Performance
 \item Isolation
 \item Reliability
-\item Mobility
-\item All of the issues is for protection
+\item Portability
+\item All four goals provide isolation.
 \end{verticalchoices}
-\question What is the low-level hardware that is needed in non-preemptive system to switch process?
+\question Which mechanism lets the OS regain control from a CPU-bound process in a preemptive scheduler?
 \begin{verticalchoices}
 \item MMU
 \item Timer interrupt
 \item Cache
 \item TLB
-\item None of them
+\item None of these.
 \end{verticalchoices}
-\question Which part of the process is in kernel space?
+\question Which part of a process is stored in kernel space?
 \begin{verticalchoices}
 \item Text segment
 \item Data segment
 \item Stack segment
 \item Process descriptor
-\item All of them are not in kernel
+\item None; all four are stored in user space.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{6}
-\question Which part of memory of a process grows in an opposite direction of other?
+\question In a conventional process address space, which region grows in the opposite direction from the heap?
 \begin{verticalchoices}
-\item Text
+\item Code segment
 \item Heap
 \item Stack
-\item Program
-\item They are all growing in the same direction
+\item Data segment
+\item All regions grow in the same direction.
 \end{verticalchoices}
-\question When would a process in ready state be moved to a blocked state?
+\question Can a process move directly from the ready state to the blocked state?
 \begin{verticalchoices}
-\item When it read a file
-\item When it read from memory
-\item When timer interrupt occurs
-\item Cannot happen
-\item Both when read from file and memory
+\item Yes, when it requests a file read.
+\item Yes, when it reads a page from disk.
+\item Yes, when a timer interrupt occurs.
+\item No. It must first be running.
+\item Yes, after either (a) or (b).
 \end{verticalchoices}
-\question When would a process enter a ready state?
+\question Which event can move a process into the ready state?
 \begin{verticalchoices}
-\item Timer interrupt occurs
-\item I/O transfer is completed
-\item A process is created
-\item All of the events
-\item None of the events
+\item A timer interrupt preempts it.
+\item Its I/O operation completes.
+\item The process is created and admitted to the ready queue.
+\item Any of the events in (a), (b), or (c).
+\item None of the events in (a), (b), or (c).
 \end{verticalchoices}
-\question What does it mean when process is a zombie?
+\question What does it mean for a process to be a zombie?
 \begin{verticalchoices}
-\item Process is running on processor and cannot be kicked off
-\item Process is waiting for I/O indefinitely
-\item Process is ready but has never be select to run
-\item Process is terminated but cannot be removed from the system
-\item There is no such thing as zombie in OS
+\item It is running on the CPU and cannot be preempted.
+\item It is waiting for I/O indefinitely.
+\item It is ready but has never been selected to run.
+\item It has terminated, but its parent has not yet collected its exit status.
+\item Operating systems have no zombie state.
 \end{verticalchoices}
-\question What is the data structure that keeps process information?
+\question Which process-control block stores a process's state and saved CPU context?
 \begin{verticalchoices}
 \item PCB
 \item TLB
@@ -94,35 +94,38 @@
 \item MMU
 \item Queue
 \end{verticalchoices}
-\question Which situation could lead to zombies in the system?
+\question Which situation can leave a zombie process in the system?
 \begin{verticalchoices}
-\item Parent exists before child returns value
-\item Parent creates more than one child
-\item Child also creates a child process
-\item Parent waits for child
-\item Child executes other program
+\item A child exits while its parent is alive and does not collect its exit status.
+\item A parent creates several children and calls \texttt{wait()} for each one.
+\item A child creates another process, and both parents collect their children's exit statuses.
+\item A parent calls \texttt{wait()} and collects the child's exit status.
+\item A child calls \texttt{exec()} and continues running the new program.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{12}
-\question In the lab, when a parent waits for the child before printing, what will always happen?
+\question If a parent successfully calls \texttt{wait()} before its own print statement, what is guaranteed?
 \begin{verticalchoices}
-\item Child will always print after parent
-\item A zombie will always happen
-\item Child will always start from beginning of main function
-\item A segmentation fault will always occur
-\item Parent will always print after child
+\item The child always prints after the parent.
+\item A zombie process is always created.
+\item The child starts again from the beginning of \texttt{main()}.
+\item A segmentation fault always occurs.
+\item The parent's print statement runs only after the child terminates.
 \end{verticalchoices}
-\question The following C program :
-\begin{lstlisting}[language=C,basicstyle={\fontspec{Courier New}\small},columns=fullflexible,keepspaces=true,showstringspaces=false,aboveskip=0.15cm,belowskip=0.15cm]
-main()
-{
+\question The following C program:
+\begin{lstlisting}[language=C,basicstyle={\fontspec{Courier New}\fontsize{10pt}{11pt}\selectfont},columns=fullflexible,keepspaces=true,showstringspaces=false,aboveskip=0pt,belowskip=0pt]
+#include <stdio.h>
+#include <unistd.h>
+
+int main(void) {
     fork();
     fork();
     printf("hello");
+    return 0;
 }
 \end{lstlisting}
-How may time the word “hello” will be printed
+Assume both calls succeed. How many times will the word “hello” be printed?
 \begin{verticalchoices}
 \item Only once
 \item Twice
@@ -130,233 +133,233 @@ How may time the word “hello” will be printed
 \item Four times
 \item Eight times
 \end{verticalchoices}
-\question Which event can cause a process to release from a CPU?
+\question Which events can cause a running process to give up the CPU?
 \begin{verticalchoices}
-\item Timer interrupt
-\item Calling I/O transfer
-\item Calling wait
-\item Calling yield
-\item All of the events
+\item A timer interrupt preempts it.
+\item It requests blocking I/O.
+\item It calls \texttt{wait()} and must block.
+\item It calls \texttt{yield()}.
+\item Any of the events in (a), (b), (c), or (d).
 \end{verticalchoices}
-\question What is not true about MLFQ?
+\question Which statement is NOT true about MLFQ?
 \begin{verticalchoices}
-\item It has a number of distinct queues of different priority levels.
-\item Process enters with lowest level of priority
-\item A job that is ready to run is on a single queue
-\item RR is used among jobs in the same queue
-\item All statements are true
+\item It has multiple queues at different priority levels.
+\item A new job enters at the lowest priority level.
+\item A ready job is on exactly one queue.
+\item Round robin is used among jobs in the same queue.
+\item A periodic priority boost can move jobs to the highest-priority queue.
 \end{verticalchoices}
-\question Which of the storage class is the fastest?
+\question In the C storage-class model covered in class, which class requests register storage for a local variable?
 \begin{verticalchoices}
 \item Auto
 \item Register
 \item Extern
 \item Static
-\item They are executed at the same speed by CPU
+\item None of these.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{17}
-\question Which statement is true?
+\question Which statement about partition allocation is true?
 \begin{verticalchoices}
-\item Single partition allocation is more efficient that multiple partition allocation in terms of memory usage
-\item Flexible-size partition does not suffer external fragmentation
-\item Fixed-size partition suffers from internal fragmentation
-\item To solve internal fragmentation, OS needs to do memory coalescing and compaction
-\item None of them is true
+\item Single-partition allocation supports several processes in memory at once.
+\item Flexible-size partitions eliminate external fragmentation.
+\item Fixed-size partitions can suffer from internal fragmentation.
+\item Compaction eliminates internal fragmentation in fixed-size partitions.
+\item None of these statements is true.
 \end{verticalchoices}
-\question What does process selection algorithm do?
+\question What does the short-term process scheduler do?
 \begin{verticalchoices}
-\item Select program to load into memory
-\item Select process to run
-\item Select process to remove from memory
-\item Select memory to assign to a process
-\item Select process to put to memory
+\item Selects a program to load into memory.
+\item Selects a ready process to run.
+\item Selects a process to remove from memory.
+\item Selects a memory region to assign to a process.
+\item Selects a process to load into memory.
 \end{verticalchoices}
-\question What does page replacement algorithm do?
+\question What does a page-replacement algorithm do when a frame is needed?
 \begin{verticalchoices}
-\item Select a page to load into memory
-\item Select a page to run
-\item Select a page to remove from memory
-\item Select memory to assign to a page
-\item Select a page to replace a process
+\item Selects the requested page to load into memory.
+\item Selects a page to execute.
+\item Selects a resident page to evict so its frame can be reused.
+\item Selects a memory region to assign to a page.
+\item Selects a process to remove from memory.
 \end{verticalchoices}
-\question What is not used in address translation?
+\question Which statement about the address-translation schemes covered in class is true?
 \begin{verticalchoices}
-\item MMU
-\item Page table
-\item TLB
-\item Segment table
-\item All of them are used in address translation
+\item A page table maps segment numbers to base-and-bounds pairs.
+\item A segment table maps page numbers to physical frames.
+\item A TLB stores page contents rather than address translations.
+\item Every scheme requires both a page table and a segment table.
+\item Paging uses page tables, segmentation uses segment tables, and a TLB may cache translations.
 \end{verticalchoices}
-\question What is the disadvantage of segmentation with the contiguous memory allocation?
+\question What is a disadvantage of segmentation when each segment occupies contiguous physical memory?
 \begin{verticalchoices}
-\item Harder to translate from VA to PA
-\item Cannot protect memory from other process
-\item Suffer from external fragmentation
-\item Use too much memory to keep map of the address translation
-\item There is no disadvantage
+\item Address translation from virtual to physical addresses is impossible.
+\item It cannot protect one process's memory from another process.
+\item It can suffer from external fragmentation.
+\item It always requires a large table for address translation.
+\item It has no disadvantages.
 \end{verticalchoices}
 \question What does demand paging mean?
 \begin{verticalchoices}
-\item Page will be loaded when it is accesses only
-\item Page is always in memory for on demand access
-\item Page is pre-loaded on user demand
-\item Page is pre-loaded by probability of the on demand usage
-\item There is no such thing as on demand paging in OS
+\item A page is loaded only when it is referenced and is not already resident.
+\item Every page is kept in physical memory for on-demand access.
+\item All pages are loaded when a process starts.
+\item Pages are loaded in advance based on predicted use.
+\item Operating systems do not use demand paging.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{23}
-\question What does not happen when a page fault occurs?
+\question Which step does NOT occur while handling a valid page fault?
 \begin{verticalchoices}
-\item Save process context
-\item Free a frame if there is no free frame
-\item Locate and read page from disk
-\item Update page table
-\item All events happen
+\item The OS saves the faulting process's context.
+\item If no free frame is available, the OS selects a victim page and reuses its frame.
+\item The OS locates the requested page and reads it from disk.
+\item The OS updates the page-table entry to mark the page present.
+\item All of these steps may occur.
 \end{verticalchoices}
-\question What is the data stored in the segment table?
+\question What does each segment-table entry contain in the scheme shown in Lecture 5?
 \begin{verticalchoices}
-\item Base
-\item Bound
-\item Direction
-\item Valid
-\item All choices are a part of segment table
+\item A base-and-bounds pair.
+\item A logical page number and a physical frame number.
+\item A process's CPU register context.
+\item A process ID and scheduling priority.
+\item All of the items in (a)--(d).
 \end{verticalchoices}
-\question What is the effect of a larger page size?
+\question With a fixed virtual address-space size, what is one effect of using a larger page size?
 \begin{verticalchoices}
-\item More problem with external fragmentation
-\item Smaller TLB reaches
-\item Smaller page table
-\item More process can be created
-\item There is no effect from the size of page
+\item More external fragmentation.
+\item Smaller TLB reach.
+\item A smaller page table.
+\item More page-table entries for each process.
+\item Page size has no effect.
 \end{verticalchoices}
-\question Which scheduler is the fairest?
+\question Which single-queue policy rotates among all ready jobs, giving each a time slice in turn?
 \begin{verticalchoices}
 \item FIFO
 \item STCF
 \item RR
-\item MLPQ
-\item All of the schedulers have the same fairness
+\item MLFQ
+\item SJF
 \end{verticalchoices}
-\question Which scheduler does not need timer interrupt?
+\question Which nonpreemptive policy serves ready jobs in arrival order until each finishes or blocks?
 \begin{verticalchoices}
 \item FIFO
 \item STCF
 \item RR
-\item MLPQ
-\item All of the schedulers have the same fairness
+\item MLFQ
+\item None of these policies.
 \end{verticalchoices}
-\question Where does virtual memory safe the image of memory?
+\question Where is a nonresident virtual-memory page typically kept?
 \begin{verticalchoices}
-\item On virtual storage
-\item On a virtual cloud
-\item On virtual private network
-\item On kernel of the OS
-\item On secondary storage
+\item In a TLB.
+\item In a page-table entry.
+\item In an available physical frame.
+\item In the CPU cache.
+\item On secondary storage.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{29}
-\question What is the response time?
+\question What is the response time of a process?
 \begin{verticalchoices}
-\item Time that process starts running until finish
-\item Time that process enters system until finish
-\item Time that process enters system until running
-\item Time that process runs until requests for I/O
-\item Time that process runs at each cycle
+\item Time from the process's first CPU allocation until completion.
+\item Time from the process's arrival until completion.
+\item Time from the process's arrival until it first runs.
+\item Time from when the process runs until it requests I/O.
+\item Time the process runs during one CPU time slice.
 \end{verticalchoices}
-\question What is the turnaround time?
+\question What is the turnaround time of a process?
 \begin{verticalchoices}
-\item Time that process starts running until finish
-\item Time that process enters system until finish
-\item Time that process enters system until running
-\item Time that process runs until requests for I/O
-\item Time that process runs at each cycle
+\item Time from the process's first CPU allocation until completion.
+\item Time from the process's arrival until completion.
+\item Time from the process's arrival until it first runs.
+\item Time from when the process runs until it requests I/O.
+\item Time the process runs during one CPU time slice.
 \end{verticalchoices}
-\question What is the problem of flexible partition size?
+\question What is a common problem with variable-size (flexible) partitions?
 \begin{verticalchoices}
-\item Limit degree of multitasking
-\item Internal fragmentation
-\item Address translation
-\item Need compacting
-\item There is no problem
+\item They limit the degree of multiprogramming to one process.
+\item They cause internal fragmentation between allocated partitions.
+\item They make address translation impossible.
+\item They can cause external fragmentation.
+\item They have no fragmentation problems.
 \end{verticalchoices}
-\question What is the problem with paging when address space is larger?
+\question With a single-level page table and fixed page size, what is a cost of a larger virtual address space?
 \begin{verticalchoices}
-\item Need more memory to store page table
-\item Internal fragmentation
-\item External fragmentation
-\item TLB reach is smaller
-\item There is no problem causes by larger address space
+\item More memory is needed to store the page table.
+\item Internal fragmentation is eliminated.
+\item External fragmentation increases.
+\item TLB reach becomes smaller.
+\item A larger address space has no cost.
 \end{verticalchoices}
-\question Why multi-level page table could save some memory?
+\question How can a multilevel page table save memory for a sparse address space?
 \begin{verticalchoices}
-\item Table size is reduced
-\item Address space is reduced
-\item Page size is increased
-\item All of the second level pages are empty
-\item There is no need to store all the empty second level pages.
+\item It eliminates the need for a page table.
+\item It reduces the size of the virtual address space.
+\item It increases the page size.
+\item It allocates every lower-level table, even for unused regions.
+\item It can omit lower-level page tables for unused regions.
 \end{verticalchoices}
-\question Which state could a process be when it is newly created in OS?
+\question In the simplified state model, which state does a newly created process enter after admission?
 \begin{verticalchoices}
-\item ready
-\item running
-\item blocked
-\item terminated
-\item empty
+\item Ready
+\item Running
+\item Blocked
+\item Terminated
+\item None of these.
 \end{verticalchoices}
 \end{questions}\vfill\newpage
 
 \begin{questions}\setlength{\itemsep}{0.08cm}\setcounter{question}{35}
-\question When a process is using a processor, which state could it be?
+\question Which state is a process in while it is executing on the CPU?
 \begin{verticalchoices}
-\item ready
-\item running
-\item blocked
-\item terminated
-\item empty
+\item Ready
+\item Running
+\item Blocked
+\item Terminated
+\item New
 \end{verticalchoices}
-\question What is a disadvantage of shortest job first (SJF) scheduling?
+\question What fairness risk can SJF create if shorter jobs keep arriving?
 \begin{verticalchoices}
-\item Suffer convoy effect
-\item Highest average waiting time
-\item Highest agerage response time
-\item Highest average turn around time
-\item Stravation
+\item It guarantees the highest average waiting time.
+\item It always increases average response time.
+\item It prevents short jobs from running before long jobs.
+\item It gives every job an equal share of CPU time.
+\item A long job may starve.
 \end{verticalchoices}
-\question What is the advantage of round robin (RR) process scheduling?
+\question Which scheduling metric is Round Robin primarily designed to improve?
 \begin{verticalchoices}
-\item Lowest average turn around time
-\item Lowest average waiting time
-\item stravation could occur
-\item Lowest average response time
-\item highest throughput
+\item Minimum average turnaround time.
+\item Minimum average waiting time.
+\item Zero starvation under every workload.
+\item Lower average response time for interactive jobs.
+\item Maximum throughput for every time quantum.
 \end{verticalchoices}
-\question What is true about paging memory scheme
+\question Which statement about paging is correct?
 \begin{verticalchoices}
-\item Page and page frame can be different in size
-\item The smaller the page size is, the smaller the page table is
-\item Larger page transfer as fast as smaller page
-\item Page is in logical memory, page frame is in physical memory
-\item Demand paging is when a program can demand preloading of a page
+\item Pages and page frames may have different sizes.
+\item Smaller pages always produce smaller page tables.
+\item Transferring a larger page takes no more time than transferring a smaller page.
+\item A page belongs to logical memory; a frame belongs to physical memory.
+\item Demand paging lets a program request that all pages be preloaded.
 \end{verticalchoices}
-\question Which memory replacement policy is not really achieved?
+\question Which page-replacement policy is an ideal benchmark but cannot be implemented exactly without knowing future references?
 \begin{verticalchoices}
 \item Optimal
 \item FIFO
 \item LRU
 \item LFU
-\item All of the answers can be implemented
+\item All of these policies can be implemented exactly.
 \end{verticalchoices}
-\question When does a page fault occur
+\question When does a page fault occur?
 \begin{verticalchoices}
-\item When a process access a page that is not valid in page tale
-\item When a process access a page that is not in logical memory
-\item When a process access a page that is updated in memory
-\item When a process access a page not updated in memory
-\item All of the answers cause page fault to occur
+\item A process references a valid virtual page whose present bit is 0.
+\item A process accesses an address outside its virtual address space.
+\item A process accesses a page that is already present in physical memory.
+\item A process accesses a present page that has been modified.
+\item All of the above cause a page fault.
 \end{verticalchoices}
 \end{questions}\endgroup\vfill\newpage
 

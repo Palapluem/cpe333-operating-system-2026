@@ -3,47 +3,47 @@
 \noindent สำหรับตรวจหลังทำข้อสอบเท่านั้น ไม่ใช่เฉลยข้อสอบจริงของรายวิชา\\คะแนนรวม 50: ปรนัย $20c/41$ เมื่อ $c$ คือจำนวนข้อถูก; เติมคำ 10; อัตนัย $8+4+8=20$\\ไม่ปัดคะแนนรายข้อ; เมื่อสรุปผลจึงปัดคะแนนรวมเป็นทศนิยมสองตำแหน่ง ไม่มีการหักคะแนนตอบผิด\par\medskip
 \sectiontitle{เฉลยส่วนที่ 1: คำตอบเดียวที่ดีที่สุด}
 \begin{enumerate}[leftmargin=1.4em,start=1,itemsep=0.14cm]
-\item \textbf{(a)} A trap transfers control synchronously to an OS handler for a service such as a system call. {\small [L1; E09 Q1]}
-\item \textbf{(c)} Without privilege separation, a process could bypass protection and access another process's data. {\small [L1; E09 Q2]}
-\item \textbf{(e)} The question treats program, data state, process status, and control state as process components; hence none of the first four is the exception. {\small [L2; E09 Q4]}
+\item \textbf{(a)} A trap transfers control to an OS handler; system calls may use this mechanism. {\small [L1; E09 Q1]}
+\item \textbf{(c)} Without user/kernel-mode separation, a process may bypass memory protection and access another process's data. {\small [L1; E09 Q2]}
+\item \textbf{(e)} The Lecture 2 model is Process = (Program, Data, Control state, Process state); all four are components. {\small [L2; E09 Q4]}
 \item \textbf{(b)} Isolation protects one application from unauthorized access by another. {\small [L1; E09 Q5]}
-\item \textbf{(e)} A non-preemptive switch can follow a trap/system call or a process blocking/exiting; a timer interrupt is needed for forced preemption, not for every switch. {\small [L2; E09 Q6]}
-\item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; text, data, and stack are process address-space regions. {\small [L2; E09 Q7]}
+\item \textbf{(b)} A timer interrupt lets a preemptive scheduler regain control from a CPU-bound process. {\small [L2; E09 Q6]}
+\item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; code, data, and stack are user-space regions. {\small [L2; E09 Q7]}
 \item \textbf{(c)} In the conventional layout used in the course, the stack grows opposite to the heap. {\small [L2; E09 Q8]}
-\item \textbf{(d)} A ready process must run before it can request I/O or another event that blocks it. {\small [L2; E09 Q9]}
+\item \textbf{(d)} A process must be running before it can request I/O or another operation that blocks it; there is no direct Ready-to-Blocked transition. {\small [L2; E09 Q9]}
 \item \textbf{(d)} Process creation, I/O completion, and a timer-driven preemption can all place a process in the ready state in this model. {\small [L2; E09 Q10]}
 \item \textbf{(d)} A zombie has terminated but remains represented until its parent collects its exit status. {\small [L2; E09 Q12]}
-\item \textbf{(a)} The PCB stores process information; TLB, stack, MMU, and queue are not the per-process control block. {\small [L2; E09 Q13]}
-\item \textbf{(a)} A child that exits while its parent is still alive may remain a zombie until the parent collects its exit status; if the parent exits first, the child is an orphan. {\small [L2; E09 Q31]}
-\item \textbf{(e)} A successful wait delays the parent's print until the child has finished and printed. {\small [L2; E09 Q14]}
+\item \textbf{(a)} The PCB stores per-process control information such as state and saved CPU context. {\small [L2; E09 Q13]}
+\item \textbf{(a)} A child that exits while its parent is alive remains a zombie if the parent does not collect its exit status. {\small [L2; E09 Q31]}
+\item \textbf{(e)} A successful wait delays the parent's print statement until the child terminates. {\small [L2; E09 Q14]}
 \item \textbf{(d)} Two successful fork calls leave four processes to execute the print statement once each. {\small [L2; E03 Q7]}
 \item \textbf{(e)} Timer preemption, blocking for I/O or wait, and yielding can each release the CPU. {\small [L2; E09 Q16]}
-\item \textbf{(b)} Standard MLFQ starts a new job at the highest priority, not the lowest. {\small [L3; E09 Q17]}
-\item \textbf{(b)} Among the listed C storage classes, register is the one intended to request register storage for a local variable. {\small [L4; E09 Q19]}
+\item \textbf{(b)} Standard MLFQ starts a new job at the highest priority, not the lowest; periodic priority boosts are also valid. {\small [L3; E09 Q17]}
+\item \textbf{(b)} In the C storage-class model covered in class, \texttt{register} requests register storage for a local variable. {\small [L4; E09 Q19]}
 \item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. {\small [L4; E09 Q20]}
-\item \textbf{(b)} The process-selection/scheduling algorithm chooses a ready process to run. {\small [L3; E09 Q21]}
+\item \textbf{(b)} The short-term scheduler selects a ready process to run. {\small [L3; E09 Q21]}
 \item \textbf{(c)} Page replacement chooses a resident page to remove when a frame is needed. {\small [L6; E09 Q22]}
-\item \textbf{(e)} MMU, page tables, TLBs, and segment tables are all used in address translation across the schemes covered. {\small [L5; E09 Q23]}
-\item \textbf{(c)} Variable-sized contiguous segments can leave separated holes, causing external fragmentation; the source's highlighted choice D is not supported by the lecture's comparison. {\small [L5; E09 Q24]}
-\item \textbf{(a)} Demand paging brings a page into memory only when it is referenced and needed. {\small [L6; E09 Q26]}
-\item \textbf{(e)} The listed save, frame-selection, page-in, and page-table-update operations are all part of handling a legal page fault. {\small [L6; E09 Q27]}
-\item \textbf{(e)} In the question bank's segment-descriptor model, base, bound, growth direction, and validity/control metadata are grouped in the segment table. {\small [L5; E09 Q29]}
+\item \textbf{(e)} Paging uses page tables, segmentation uses segment tables, and a TLB may cache translations; these mechanisms are not all required simultaneously. {\small [L5; E09 Q23]}
+\item \textbf{(c)} Contiguous segments can leave separated holes, causing external fragmentation. {\small [L5; E09 Q24]}
+\item \textbf{(a)} Demand paging loads a page when it is referenced and is not already resident. {\small [L6; E09 Q26]}
+\item \textbf{(e)} Context saving, victim selection when needed, page-in, and page-table update can all occur while handling a valid page fault. {\small [L6; E09 Q27]}
+\item \textbf{(a)} Each segment-table entry in Lecture 5 contains a base-and-bounds pair. {\small [L5; E09 Q29]}
 \item \textbf{(c)} With a fixed virtual address space, a larger page means fewer virtual pages and therefore a smaller page table. {\small [L5; E09 Q30]}
 \item \textbf{(c)} Round robin is considered fair because it shares CPU time among active jobs on a short time scale. {\small [L3; E09 Q33]}
-\item \textbf{(a)} Non-preemptive FIFO does not require a timer interrupt to take the CPU away at a time-slice boundary. {\small [L3; E09 Q34]}
-\item \textbf{(e)} Pages not resident in physical memory are backed by secondary storage. {\small [L6; E09 Q35]}
+\item \textbf{(a)} FIFO does not use time-slice preemption; it runs the current job until completion or blocking. {\small [L3; E09 Q34]}
+\item \textbf{(e)} A nonresident virtual-memory page is backed by secondary storage. {\small [L6; E09 Q35]}
 \item \textbf{(c)} Response time is the interval from arrival until the process first gets the CPU. {\small [L3; E09 Q36]}
 \item \textbf{(b)} Turnaround time is completion time minus arrival time. {\small [L3; E09 Q37]}
-\item \textbf{(d)} Variable-size partitions can cause external fragmentation, for which compaction may be needed. {\small [L4; E09 Q38]}
+\item \textbf{(d)} Variable-size partitions can cause external fragmentation; compaction may be used to address it. {\small [L4; E09 Q38]}
 \item \textbf{(a)} A larger virtual address space requires more page-table entries when page and PTE sizes are fixed. {\small [L5; E09 Q39]}
-\item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions. {\small [L5; E09 Q40]}
+\item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions; this is how it saves memory for sparse address spaces. {\small [L5; E09 Q40]}
 \item \textbf{(a)} In the simplified state model used here, a newly created process is placed in the ready state. {\small [L2; E09 Q41]}
 \item \textbf{(b)} A process using the processor is in the running state. {\small [L2; E09 Q42]}
 \item \textbf{(e)} A long job can starve under SJF if shorter jobs keep arriving. {\small [L3; E09 Q44]}
-\item \textbf{(d)} Round robin generally offers a low response time because each ready job receives a time slice promptly. {\small [L3; E09 Q46]}
+\item \textbf{(d)} Round robin improves response time by giving each ready job a time slice promptly. {\small [L3; E09 Q46]}
 \item \textbf{(d)} Pages are units of logical memory; page frames are equal-sized units of physical memory. {\small [L5; E09 Q48]}
-\item \textbf{(a)} OPT is an ideal benchmark because it needs knowledge of future page references. {\small [L6; E09 Q49]}
-\item \textbf{(a)} In the source's terminology, a page-table entry that is not valid/present causes a page fault when accessed. {\small [L6; E09 Q50]}
+\item \textbf{(a)} OPT is an ideal benchmark because it requires knowledge of future page references. {\small [L6; E09 Q49]}
+\item \textbf{(a)} A reference to a valid virtual page whose present bit is 0 causes a page fault; an address outside the virtual address space is invalid. {\small [L6; E09 Q50]}
 \end{enumerate}
 \newpage\sectiontitle{เฉลยส่วนที่ 2: เติมคำ / ตอบสั้น}
 \noindent ข้อละ 1 คะแนน ให้ partial credit ตามองค์ประกอบในแต่ละข้อ; รับถ้อยคำอื่นที่มีความหมายถูกต้อง ไม่บังคับจำประโยคเฉลย\par\smallskip
