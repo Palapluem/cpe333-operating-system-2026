@@ -134,74 +134,129 @@
 \end{tikzpicture}\end{center}
 \noindent RR ยังคงมีจุดแบ่ง quantum แม้เหลือเพียง $P_1$; จะรวมช่วงติดกันของ $P_1$ ตอนท้ายก็ได้ถ้าระบุ quantum ถูกต้อง\par\medskip
 \noindent\textbf{นิยามที่ใช้}\\$T_i=C_i-A_i$; $R_i=S_i-A_i$; $W_i=T_i-B_i$ (กรณีมี CPU burst เดียว ไม่มี I/O)\\$C$: completion, $A$: arrival, $S$: first start, $B$: CPU burst\\Response time ไม่ใช่ total waiting time โดยเฉพาะเมื่อใช้ RR\par
-\newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): ตารางและเกณฑ์ตรวจ}
-\noindent\textbf{Turnaround time (ms)}
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrrrrr}
-Policy & $P_1$ & $P_2$ & $P_3$ & $P_4$ & $P_5$\\\hline
-FIFO & 10 & 11 & 13 & 14 & 19\\
-SJF & 19 & 1 & 4 & 2 & 9\\
-RR & 19 & 2 & 7 & 4 & 14\\
+\newpage\sectiontitle{เฉลยอัตนัยข้อ 1: ไล่ FIFO และ SJF}
+\noindent\textbf{FIFO:} ทุก process มาถึงเวลาเดียวกัน ลำดับตามโจทย์จึงเป็น $P_1,P_2,P_3,P_4,P_5$. FIFO ทำงานจนจบทีละตัว ดังนั้นเวลาสิ้นสุดได้จาก burst สะสม:
+\[0+10=10,\qquad 10+1=11,\qquad 11+2=13,\qquad 13+1=14,\qquad 14+5=19.\]
+\begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|r|c|r|r}
+Process & Burst (ms) & CPU interval & First start $S_i$ & Completion $C_i$\\\hline
+$P_1$ & 10 & $[0,10)$ & 0 & 10\\
+$P_2$ & 1 & $[10,11)$ & 10 & 11\\
+$P_3$ & 2 & $[11,13)$ & 11 & 13\\
+$P_4$ & 1 & $[13,14)$ & 13 & 14\\
+$P_5$ & 5 & $[14,19)$ & 14 & 19\\
 \end{tabular}\end{center}
-\noindent\textbf{Response time (ms)}
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrrrrr}
-Policy & $P_1$ & $P_2$ & $P_3$ & $P_4$ & $P_5$\\\hline
-FIFO & 0 & 10 & 11 & 13 & 14\\
-SJF & 9 & 0 & 2 & 1 & 4\\
-RR & 0 & 1 & 2 & 3 & 4\\
+\noindent เช่น $P_3$ เริ่มหลัง $P_1$ และ $P_2$ จบที่ $10+1=11$; ทำงาน 2 ms จึงเสร็จที่ $11+2=13$.\par\medskip
+\noindent\textbf{SJF แบบไม่แทรกงาน:} เนื่องจากทุกงานพร้อมตั้งแต่ $t=0$, เลือก burst สั้นที่สุดก่อน. เรียงได้ $P_2(1),P_4(1),P_3(2),P_5(5),P_1(10)$. $P_2$ กับ $P_4$ ยาวเท่ากัน จึงใช้ลำดับมาถึงเป็น tie-break.\par
+\begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|r|c|r|r}
+Process & Burst (ms) & CPU interval & First start $S_i$ & Completion $C_i$\\\hline
+$P_2$ & 1 & $[0,1)$ & 0 & 1\\
+$P_4$ & 1 & $[1,2)$ & 1 & 2\\
+$P_3$ & 2 & $[2,4)$ & 2 & 4\\
+$P_5$ & 5 & $[4,9)$ & 4 & 9\\
+$P_1$ & 10 & $[9,19)$ & 9 & 19\\
 \end{tabular}\end{center}
-\noindent\textbf{Waiting time (ms) - เพิ่มเพื่อเทียบ ไม่ได้ถามให้คำนวณ}
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrrrrr}
-Policy & $P_1$ & $P_2$ & $P_3$ & $P_4$ & $P_5$\\\hline
-FIFO & 0 & 10 & 11 & 13 & 14\\
-SJF & 9 & 0 & 2 & 1 & 4\\
-RR & 9 & 1 & 5 & 3 & 9\\
-\end{tabular}\end{center}
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrr}
-Policy & Average turnaround & Average response\\\hline
-FIFO & 13.4 ms & 9.6 ms\\
-SJF & 7.0 ms & 3.2 ms\\
-RR & 9.2 ms & 2.0 ms\\
-\end{tabular}\end{center}
-\noindent\textbf{สรุป:} SJF ให้ average turnaround ต่ำสุด 7.0 ms; RR ให้ average response ต่ำสุด 2.0 ms สำหรับ workload นี้เท่านั้น\par\medskip
-\noindent\textbf{Rubric รวม 8 คะแนน}
-\begin{itemize}[leftmargin=1.4em,itemsep=.12cm]
-\item (a) 3 คะแนน: FIFO, SJF, RR อย่างละ 1; แต่ละอันให้ .5 สำหรับลำดับและ .5 สำหรับขอบเวลาถูกต้อง
-\item (b) 2 คะแนน: ตาราง turnaround 15 ค่า ค่าละ $2/15$ คะแนน
-\item (c) 2 คะแนน: ตาราง response 15 ค่า ค่าละ $2/15$ คะแนน
-\item (d) 1 คะแนน: เลือก SJF สำหรับ minimum average Turnaround .5 และ RR สำหรับ minimum average Response .5; ตารางค่าเฉลี่ยทั้ง 6 ค่าแสดงไว้สำหรับตรวจทบทวน ไม่บังคับรายงานทุกค่าที่โจทย์ไม่ได้ถาม
+\noindent ตัวอย่าง: เมื่อ $P_2$ และ $P_4$ จบที่เวลา 2, งานสั้นที่สุดที่เหลือคือ $P_3$; จึงจบที่ $2+2=4$. ทั้ง FIFO และ SJF ไม่หยุดกลาง burst ในโจทย์นี้; ตัวเลข Priority ไม่เกี่ยวกับสองนโยบายนี้.\par
+\newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): ไล่ Round Robin}
+\noindent เริ่มด้วย ready queue $[P_1,P_2,P_3,P_4,P_5]$. ในแต่ละรอบหยิบหัวคิวมาใช้ CPU ไม่เกิน 1 ms. ถ้าทำเสร็จให้ออกจากระบบ; ถ้ายังเหลือ burst ให้นำไปต่อท้ายคิว. ตัวอย่างรอบแรก: $P_1$ ใช้ 1 ms จาก 10 ms เหลือ 9 ms แล้วต่อท้าย; จากนั้น $P_2$ ใช้ 1 ms จบงาน.\par\smallskip
+{\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|r|l}
+เวลา (ms) & Process & Burst ที่เหลือ & ผลหลังจบ quantum\\\hline
+$[0,1)$ & $P_1$ & 9 & กลับไปท้ายคิว\\
+$[1,2)$ & $P_2$ & 0 & เสร็จที่ $t=2$\\
+$[2,3)$ & $P_3$ & 1 & กลับไปท้ายคิว\\
+$[3,4)$ & $P_4$ & 0 & เสร็จที่ $t=4$\\
+$[4,5)$ & $P_5$ & 4 & กลับไปท้ายคิว\\
+$[5,6)$ & $P_1$ & 8 & กลับไปท้ายคิว\\
+$[6,7)$ & $P_3$ & 0 & เสร็จที่ $t=7$\\
+$[7,8)$ & $P_5$ & 3 & กลับไปท้ายคิว\\
+$[8,9)$ & $P_1$ & 7 & กลับไปท้ายคิว\\
+$[9,10)$ & $P_5$ & 2 & กลับไปท้ายคิว\\
+$[10,11)$ & $P_1$ & 6 & กลับไปท้ายคิว\\
+$[11,12)$ & $P_5$ & 1 & กลับไปท้ายคิว\\
+$[12,13)$ & $P_1$ & 5 & กลับไปท้ายคิว\\
+$[13,14)$ & $P_5$ & 0 & เสร็จที่ $t=14$\\
+$[14,15)$ & $P_1$ & 4 & เหลืองานเดียวในคิว\\
+$[15,16)$ & $P_1$ & 3 & ทำต่ออีกหนึ่ง quantum\\
+$[16,17)$ & $P_1$ & 2 & ทำต่ออีกหนึ่ง quantum\\
+$[17,18)$ & $P_1$ & 1 & ทำต่ออีกหนึ่ง quantum\\
+$[18,19)$ & $P_1$ & 0 & เสร็จที่ $t=19$\\
+\end{tabular}\end{center}}
+\noindent เมื่อเหลือ $P_1$ เพียงงานเดียว CPU ยังแบ่งเวลาเป็น quantum ละ 1 ms; ใน Gantt chart จะรวมช่วงท้าย $[14,19)$ เป็นกล่องเดียวก็ได้ แต่จุดแบ่งที่ 15, 16, 17 และ 18 ยังคงมีอยู่.\par
+
+\newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): คำนวณเวลาและค่าเฉลี่ย}
+\noindent นิยามที่ใช้คือ $T_i=C_i-A_i$ และ $R_i=S_i-A_i$, โดย $S_i$ เป็นเวลาได้ CPU ครั้งแรก. ทุก process มาถึงเวลา $A_i=0$, ดังนั้น turnaround เท่ากับ completion time และ response เท่ากับ first-start time.\par\smallskip
+{\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|r|r|r|r}
+Policy & Process & $S_i$ & $C_i$ & $T_i=C_i$ & $R_i=S_i$\\\hline
+FIFO & $P_1$ & 0 & 10 & 10 & 0\\
+ & $P_2$ & 10 & 11 & 11 & 10\\
+ & $P_3$ & 11 & 13 & 13 & 11\\
+ & $P_4$ & 13 & 14 & 14 & 13\\
+ & $P_5$ & 14 & 19 & 19 & 14\\\hline
+SJF & $P_1$ & 9 & 19 & 19 & 9\\
+ & $P_2$ & 0 & 1 & 1 & 0\\
+ & $P_3$ & 2 & 4 & 4 & 2\\
+ & $P_4$ & 1 & 2 & 2 & 1\\
+ & $P_5$ & 4 & 9 & 9 & 4\\\hline
+RR & $P_1$ & 0 & 19 & 19 & 0\\
+ & $P_2$ & 1 & 2 & 2 & 1\\
+ & $P_3$ & 2 & 7 & 7 & 2\\
+ & $P_4$ & 3 & 4 & 4 & 3\\
+ & $P_5$ & 4 & 14 & 14 & 4\\
+\end{tabular}\end{center}}
+\noindent\textbf{ตัวอย่างแทนค่าสูตร}\\
+FIFO: $P_5$ จบที่ 19 จึงได้ $T_5=19-0=19$ ms; เริ่มครั้งแรกที่ 14 จึงได้ $R_5=14-0=14$ ms.\\
+RR: $P_3$ จบที่ 7 แม้ใช้ CPU รวม 2 ms จึงได้ $T_3=7-0=7$ ms; เริ่มครั้งแรกที่ 2 จึงได้ $R_3=2-0=2$ ms. เวลารอระหว่าง quantum หลังจากได้ CPU ครั้งแรกไม่ถูกนับซ้ำใน response time.\par\medskip
+\newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): ค่าเฉลี่ยและเกณฑ์ตรวจ}
+\noindent\textbf{คำนวณค่าเฉลี่ย}
+\begin{itemize}[leftmargin=1.4em,itemsep=.16cm]
+\item FIFO: $\overline{T}=(10+11+13+14+19)/5=67/5=13.4$ ms; $\overline{R}=(0+10+11+13+14)/5=48/5=9.6$ ms.
+\item SJF: $\overline{T}=(19+1+4+2+9)/5=35/5=7.0$ ms; $\overline{R}=(9+0+2+1+4)/5=16/5=3.2$ ms.
+\item RR: $\overline{T}=(19+2+7+4+14)/5=46/5=9.2$ ms; $\overline{R}=(0+1+2+3+4)/5=10/5=2.0$ ms.
 \end{itemize}
-\noindent หากผิดจาก arithmetic ครั้งเดียวแต่ขั้นถัดไปใช้วิธีถูก ให้ follow-through credit โดยไม่หักซ้ำ; ไม่ให้ครบในส่วนที่ใช้นิยาม response ผิดเป็น waiting
+\noindent\textbf{สรุปข้อ (d):} SJF ให้ average turnaround ต่ำสุดที่ 7.0 ms; RR ให้ average response ต่ำสุดที่ 2.0 ms. เป็นผลเฉพาะ burst และ arrival ชุดนี้ ไม่ได้แปลว่า scheduler เดิมจะชนะทุก workload.\par\medskip
+\noindent\textbf{เกณฑ์ตรวจ 8 คะแนน}
+\begin{itemize}[leftmargin=1.4em,itemsep=.14cm]
+\item (a) 3 คะแนน: FIFO, SJF, RR อย่างละ 1 คะแนน; ดูลำดับงานและขอบเวลาบน Gantt chart.
+\item (b) 2 คะแนน: turnaround 15 ค่า; ให้ตามค่าที่คำนวณสม่ำเสมอจาก $C_i-A_i$.
+\item (c) 2 คะแนน: response 15 ค่า; ใช้เวลาได้ CPU ครั้งแรก $S_i-A_i$, ไม่ใช่เวลารอรวม.
+\item (d) 1 คะแนน: SJF สำหรับ minimum average turnaround (.5) และ RR สำหรับ minimum average response (.5).
+\end{itemize}
+\noindent หากคำนวณพลาดหนึ่งจุดแต่ใช้วิธีถูกในขั้นถัดไป ให้ follow-through credit และไม่หักความผิดเดิมซ้ำ.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 2: MLFQ กับธนาคาร (4 คะแนน)}
-\noindent\textbf{คำตอบตัวอย่างแบบเรียงความ (ไม่เกิน 5 บรรทัด)}\\
-ตอบเป็นย่อหน้าเดียวได้ ไม่ต้องแจกแจงกฎเป็นข้อ ๆ\par\smallskip
-{\small\noindent ช่วงที่ธนาคารมีลูกค้าเยอะ อาจใช้ MLFQ โดยให้ลูกค้าใหม่เริ่มจากคิวบนสุดและให้บริการคนในคิวสูงก่อน\\
-ถ้ามีหลายคนรอในคิวเดียวกันก็ผลัดกันรับบริการแบบ RR ส่วนคิวล่างให้ช่วงบริการนานกว่า\\
-หากลูกค้าใช้เวลาบริการครบแล้วยังทำรายการไม่เสร็จ ก็ย้ายไปคิวถัดไป และดึงผู้ที่ยังรอขึ้นคิวบนสุดเป็นระยะ\\
-พนักงานควรพักรายการ ณ จุดที่ปลอดภัยและบันทึกความคืบหน้าไว้ทำต่อ การเตรียมเอกสารหรือเพิ่มช่องบริการช่วยลดเวลารอ\\
-ธนาคารจึงควรติดตามเวลาเฉลี่ยตั้งแต่เข้าคิวจนทำรายการเสร็จ แล้วปรับการจัดคิวให้เหมาะสม\par}\medskip
-\noindent\textbf{เกณฑ์ตรวจภาพรวม: กฎ MLFQ และการเทียบกับธนาคาร (2 คะแนน; ข้อละ .4)}
+\noindent\textbf{คำตอบตัวอย่างแบบเรียงความสั้น}
+{\small\begin{quote}
+ช่วงลูกค้าแน่น ธนาคารอาจใช้ MLFQ โดยให้ลูกค้าใหม่เริ่มคิวความสำคัญสูง และเลือกบริการจากคิวสูงสุดที่ยังมีคนรอ หากอยู่คิวเดียวกันให้ผลัดกันแบบ RR; รายการที่ยังไม่เสร็จเมื่อใช้เวลาในระดับนั้นครบจึงเลื่อนไปคิวล่างซึ่งให้ช่วงบริการยาวขึ้น และควรเลื่อนผู้ที่รอนานกลับขึ้นคิวบนเป็นระยะเพื่อไม่ให้ถูกทิ้งไว้นาน การคัดแยกรายการ เตรียมเอกสาร และเพิ่มช่องบริการตามภาระงานช่วยลดเวลาเฉลี่ยตั้งแต่เข้าคิวจนจบรายการ ทั้งนี้ควรพักธุรกรรมเฉพาะจุดปลอดภัย บันทึกความคืบหน้า และปรับนโยบายจากเวลาที่วัดได้จริง.
+\end{quote}}\medskip
+\noindent\textbf{แยกกฎออกมาเพื่อให้เห็นว่าใช้ MLFQ อย่างไร}
 \begin{enumerate}[leftmargin=1.4em,itemsep=.18cm]
-\item Priority สูงกว่าจะได้บริการก่อน: เลือกคิวระดับสูงสุดที่มีลูกค้าพร้อมทำรายการ
-\item Priority เท่ากันใช้ RR: ให้บริการเป็นช่วงแล้วหมุนเวียนเมื่อถึงจุดพักที่ปลอดภัย หากยังทำไม่เสร็จ
-\item งานใหม่เริ่มที่คิวบนสุด: ลูกค้าใหม่มีโอกาสจบรายการสั้นเร็ว โดยยังไม่ต้องรู้ service time ล่วงหน้า
-\item เมื่อใช้ allotment สะสมของระดับนั้นครบ ให้ลด priority หนึ่งระดับ แม้เคยพัก/yield ก่อนหมด slice; ระดับล่างสุดคงอยู่ระดับเดิม
-\item ทุกช่วงเวลา $S$ ให้ boost งานที่ยังไม่เสร็จกลับคิวบนสุด ป้องกันงานยาวอดรอ และรองรับพฤติกรรมงานที่เปลี่ยนไป
+\item \textbf{เลือกคิวที่มี priority สูงสุดก่อน.} ถ้า Q0 มีลูกค้าพร้อมบริการ ให้เลือก Q0 ก่อน Q1 หรือ Q2; คิวล่างทำงานเมื่อไม่มีงานในคิวที่สูงกว่า.
+\item \textbf{ใช้ RR ภายในคิวเดียวกัน.} ลูกค้าในระดับเดียวกันได้ช่วงบริการสั้น ๆ ตามลำดับ แล้ววนไปคนถัดไป จึงไม่ให้รายการเดียวครองช่องบริการตลอด.
+\item \textbf{ให้รายการใหม่เริ่มคิวบนสุด.} ระบบยังไม่ทราบเวลาทำรายการจริงก่อนเริ่ม; รายการสั้นอาจจบจาก Q0 ส่วนรายการยาวจะใช้เวลาในคิวสูงต่อเนื่องมากกว่า.
+\item \textbf{ลดระดับเมื่อใช้ allotment ครบ.} ถ้ารายการยังไม่จบหลังใช้เวลาสะสมครบโควตาของระดับนั้น จึงลดลงหนึ่งคิว; การ yield หรือพักก่อนหมด slice ไม่ควรล้างเวลาที่ใช้ไปแล้ว.
+\item \textbf{ทำ priority boost เป็นระยะ.} เลื่อนงานที่ยังไม่เสร็จกลับขึ้นคิวสูงตามรอบ เพื่อไม่ให้งานซับซ้อนถูกงานสั้นแซงซ้ำจนแทบไม่ได้รับบริการ.
 \end{enumerate}
-\noindent\textbf{ตัวอย่าง policy ที่ใช้งานได้ (1 คะแนน)}\\
-ตัวเลขและจำนวนระดับต่อไปนี้เป็นตัวอย่าง ไม่ใช่ค่าที่โจทย์บังคับ; ให้คะแนนจากความสอดคล้องของ policy และการใช้ feedback ไม่ใช่การใช้ตัวเลขเหมือนเฉลย
-\begin{itemize}[leftmargin=1.4em,itemsep=.12cm]
-\item ใช้ Q0, Q1, Q2 ตามลำดับสูงไปต่ำ; slice เท่ากับ 2, 4, 8 นาที; allotment ของ Q0/Q1 เท่ากับ 2/4 นาที ส่วน Q2 หมุน RR จนจบ (.25)
-\item ลูกค้าใหม่เข้า Q0, จบรายการสั้นก็ออกจากระบบ; งานที่ใช้เวลาใน Q0 สะสมครบ 2 นาทีลง Q1 และครบ 4 นาทีใน Q1 ลง Q2 (.25)
-\item เมื่องาน priority สูงกว่ามาถึง ให้พักงานต่ำกว่า ณ safe stage boundary ถัดไป บันทึก progress และเวลาสะสมไว้ ไม่เริ่ม financial update ค้างครึ่งทาง (.25)
-\item ตั้ง boost เช่นทุก 20 นาที และคงลำดับเข้าคิวอย่างเป็นธรรม; งาน blocked รอเอกสารไม่ควรยึด counter เมื่อกลับมาพร้อมต้องใช้กติกา boost/accounting ที่ประกาศชัด (.25)
+\noindent\textbf{ตัวอย่างการเดินคิว (ตัวเลขสมมติ ไม่ใช่ค่าที่โจทย์กำหนด)}\\
+พิจารณาช่องบริการเดียว มี A, B, C มาพร้อมกันและใช้เวลา 1, 5, 3 นาทีตามลำดับ; Q0 ให้ slice 2 นาทีและ Q1 ให้ slice 4 นาที.
+\begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|c|l|l}
+เวลา & คิว/ลูกค้า & เวลาที่เหลือ & ผล\\\hline
+0--1 & Q0 / A & 0 นาที & A เสร็จที่นาที 1\\
+1--3 & Q0 / B & 3 นาที & ใช้ Q0 ครบ 2 นาที จึงย้ายไป Q1\\
+3--5 & Q0 / C & 1 นาที & ใช้ Q0 ครบ 2 นาที จึงย้ายไป Q1\\
+5--8 & Q1 / B & 0 นาที & B ใช้ต่อ 3 นาทีและเสร็จที่นาที 8\\
+8--9 & Q1 / C & 0 นาที & C ใช้ต่อ 1 นาทีและเสร็จที่นาที 9\\
+\end{tabular}\end{center}
+\noindent เมื่อทุกคนมาถึงเวลา 0, turnaround ของ A, B, C จึงเป็น 1, 8, 9 นาที. ตัวอย่างนี้แสดงว่าคิวสูงช่วยให้งานสั้นเสร็จเร็ว ขณะที่การลดระดับยังเปิดโอกาสให้งานยาวค่อย ๆ ทำต่อจนจบ.\par\medskip
+\newpage\noindent\textbf{ข้อเสนอปรับปรุงและข้อจำกัด}
+\begin{itemize}[leftmargin=1.4em,itemsep=.15cm]
+\item ตรวจเอกสารและคัดประเภทบริการก่อนเข้าคิว เพื่อลดเวลาที่ช่องบริการหยุดรอข้อมูล; จัดผู้เชี่ยวชาญหรือเพิ่ม counter เฉพาะช่วงที่ข้อมูลชี้ว่าคุ้มกับกำลังคน.
+\item ตั้ง slice คิวสูงสั้นพอให้งานง่ายเริ่มเร็ว แต่ไม่สั้นจนเสียเวลาเปลี่ยนงานมาก; คิวต่ำให้ช่วงยาวขึ้นเพื่อลด overhead.
+\item บันทึกเวลา arrival, เริ่มบริการ, พัก, กลับมาทำต่อ และ completion แล้วคำนวณ turnaround จริงเพื่อปรับ slice, allotment และรอบ boost.
+\item ธุรกรรมธนาคารหยุดสลับไม่ได้ทุกจุดเหมือน CPU: ต้องพัก ณ checkpoint ที่ปลอดภัยและเก็บ progress; หลาย counter ทำให้บริการขนานได้แต่มีต้นทุนเพิ่ม.
 \end{itemize}
-\noindent\textbf{ข้อเสนอปรับปรุงและผลต่อ turnaround (1 คะแนน)}\\
-ให้ .5 สำหรับข้อเสนอเช่นคัดกรองรายการ, จัดเตรียมเอกสารล่วงหน้า, ลด slice ในคิวสูง, เพิ่ม counter ตามกำลังคน หรือปรับ boost จากข้อมูลเวลารอจริง; อีก .5 สำหรับผลและข้อจำกัด เช่น slice สั้นเพิ่ม overhead, boost ถี่รบกวนงานสั้น, เพิ่ม counter เปลี่ยนเป็นหลาย server และมีต้นทุนเพิ่ม
-\par\medskip
-\noindent MLFQ ไม่ได้รับประกัน average turnaround ต่ำสุดทุก workload เพราะไม่ทราบความยาวงานล่วงหน้า และธนาคารจริงไม่สามารถ preempt ทุกจุดเหมือน CPU ได้; รับ policy อื่นที่ครบกฎและอธิบายความเป็นไปได้อย่างสอดคล้อง
+\noindent MLFQ ไม่รับประกัน average turnaround ต่ำที่สุดทุกชุดงานเพราะไม่ทราบเวลาบริการล่วงหน้า; ควรประเมินทั้ง turnaround, ความเป็นธรรม และความถูกต้องของธุรกรรม.\par\medskip
+\noindent\textbf{เกณฑ์ตรวจ 4 คะแนน:} ความเข้าใจและการเทียบกฎ MLFQ 2 คะแนน; policy ที่นำไปใช้ได้ 1 คะแนน; ข้อเสนอปรับปรุงพร้อมเหตุผลหรือข้อจำกัด 1 คะแนน. รับตัวอย่างอื่นที่อธิบายสอดคล้อง ไม่บังคับจำนวนคิวหรือเวลาเหมือนตัวอย่างนี้.
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: Page Replacement (8 คะแนน)}
 \noindent\textbf{ตาราง FIFO, LRU และ OPT (6 คะแนน)}\\
-เฉลยเริ่มด้วย frames ว่าง แสดงสถานะหลังแต่ละ reference; F = fault, H = hit, -- = frame ว่าง เป็นสัญลักษณ์ช่วยตรวจ ไม่บังคับเพิ่มแถว H/F ในคำตอบ\par\smallskip
+เริ่มด้วย 3 frames ว่าง; แต่ละคอลัมน์คือสถานะหลังรับ page reference นั้นแล้ว. H (hit) หมายถึง page อยู่ใน RAM อยู่ก่อน จึงไม่เปลี่ยน frame; F (fault) หมายถึง page ไม่อยู่ใน frame และต้องนำเข้ามา. เครื่องหมาย -- คือ frame ยังว่าง. ตารางย่อยจะไล่เหตุผลเฉพาะจังหวะที่ต้องเลือก victim.\par\medskip
 
 \noindent\textbf{FIFO: 13 faults, 7 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
@@ -220,6 +275,23 @@ Frame 2 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
 Frame 3 & 4 & 3 & 3 & 3 & 3 & 0 & 0 & 0 & 0 & 0\\
 H/F & F & F & F & F & H & F & H & F & H & H\\
 \end{tabular}\end{center}}
+\noindent\textbf{FIFO: ทำไมแต่ละ page จึงถูกนำออก}\quad Queue เรียงจาก page ที่เข้าก่อนสุดไปหลังสุด. References 1--3 เติม frame; เมื่อเกิด hit ลำดับ FIFO ไม่เปลี่ยน.\par\smallskip
+{\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|c|l}
+Reference no. & Page เข้า & Victim & Queue หลังแทนที่ (เก่า $\rightarrow$ ใหม่)\\\hline
+4 & 3 & 7 & $[0,1,3]$\\
+7 & 2 & 0 & $[1,3,2]$\\
+8 & 4 & 1 & $[3,2,4]$\\
+10 & 7 & 3 & $[2,4,7]$\\
+11 & 0 & 2 & $[4,7,0]$\\
+12 & 3 & 4 & $[7,0,3]$\\
+13 & 2 & 7 & $[0,3,2]$\\
+14 & 1 & 0 & $[3,2,1]$\\
+16 & 0 & 3 & $[2,1,0]$\\
+18 & 4 & 2 & $[1,0,4]$\\
+\end{tabular}\end{center}}
+\noindent มี fault ตอนเติม frame 3 ครั้งแรกและ fault ที่ทำให้แทนที่อีก 10 ครั้ง รวม 13 faults; references ที่เหลือ 7 ครั้งเป็น hits.\par
+\newpage\sectiontitle{เฉลยอัตนัยข้อ 3: LRU และเหตุผลเลือก victim}
+\noindent LRU (Least Recently Used) แทนที่ page ที่ไม่ได้ถูกใช้นานที่สุด ณ ตอนเกิด fault. ทุก hit ต้องปรับข้อมูลว่า page นั้นเพิ่งถูกใช้; ต่างจาก FIFO ตรงที่ hit เปลี่ยนลำดับความเก่า-ใหม่ได้.\par\smallskip
 \noindent\textbf{LRU: 13 faults, 7 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
 Ref. no. & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
@@ -237,7 +309,23 @@ Frame 2 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
 Frame 3 & 2 & 3 & 3 & 3 & 3 & 0 & 0 & 0 & 0 & 0\\
 H/F & F & F & F & F & H & F & H & F & H & H\\
 \end{tabular}\end{center}}
+\noindent\textbf{ตรวจ victim ของ LRU}\quad ตัวเลขในคอลัมน์สุดท้ายคือ reference ครั้งล่าสุดที่ page นั้นถูกใช้ก่อนการแทนที่; เลือก page ที่เลขน้อยที่สุด.\par\smallskip
+{\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|c|c}
+Reference no. & Page เข้า & Victim & ครั้งล่าสุดของ victim\\\hline
+4 & 3 & 7 & 1\\
+7 & 2 & 1 & 3\\
+8 & 4 & 0 & 5\\
+10 & 7 & 3 & 6\\
+11 & 0 & 4 & 8\\
+12 & 3 & 2 & 9\\
+13 & 2 & 7 & 10\\
+14 & 1 & 0 & 11\\
+16 & 0 & 3 & 12\\
+18 & 4 & 2 & 15\\
+\end{tabular}\end{center}}
+\noindent ตัวอย่างที่ reference 8: frames มี 3, 0, 2; ครั้งล่าสุดคือ 6, 5, 7 ตามลำดับ จึงแทนที่ 0 ซึ่งเก่าสุด. รวมกับ fault ตอนเติม frame ครั้งแรก 3 ครั้งจะได้ 13 faults และ 7 hits.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: ตาราง OPT (ต่อ)}
+\noindent OPT แทนที่ page ที่จะถูกใช้อีกครั้งช้าที่สุดในอนาคต; ถ้าไม่ถูกใช้อีกเลย ให้ถือว่าไกลที่สุด. จึงต้องมอง reference string ที่เหลือไปข้างหน้า.\par\smallskip
 \noindent\textbf{OPT: 10 faults, 10 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
 Ref. no. & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
@@ -255,25 +343,44 @@ Frame 2 & 4 & 3 & 3 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
 Frame 3 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 4 & 4 & 4\\
 H/F & F & F & H & F & H & H & H & F & H & H\\
 \end{tabular}\end{center}}
-\noindent ตารางตัวอย่าง OPT เลือก frame ต่ำสุดเมื่อตัดสินเสมอ; โจทย์ไม่บังคับ tie-break จึงรับ trace อื่นที่เลือกเหยื่อ optimal และได้จำนวน fault ถูกต้อง\par
+\noindent\textbf{ไล่การตัดสินใจเมื่อ OPT เกิด fault}\\
+References 1--3 เติม frame ว่าง. เลขหลัง @ คือหมายเลข reference ที่ page นั้นจะปรากฏอีกครั้ง; "ไม่มี" หมายถึงไม่ปรากฏในส่วนที่เหลือ.\par\smallskip
+{\small\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{c|c|c|p{5.2cm}|c}
+Ref. no. & Page เข้า & Frames ก่อน fault & การใช้ครั้งถัดไปของ resident pages & Victim\\\hline
+4 & 3 & $7,0,1$ & $7@10,\ 0@5,\ 1@14$ & 1\\
+7 & 2 & $7,0,3$ & $7@10,\ 0@11,\ 3@12$ & 3\\
+8 & 4 & $7,0,2$ & $7@10,\ 0@11,\ 2@9$ & 0\\
+11 & 0 & $7,4,2$ & $7$ ไม่มี, $4@18,\ 2@13$ & 7\\
+12 & 3 & $0,4,2$ & $0@16,\ 4@18,\ 2@13$ & 4\\
+14 & 1 & $0,3,2$ & $0@16,\ 3$ ไม่มี, $2@15$ & 3\\
+18 & 4 & $0,1,2$ & $0@19,\ 1@20,\ 2$ ไม่มี & 2\\
+\end{tabular}\end{center}}
+\noindent ตัวอย่างที่ reference 4: จาก frames $7,0,1$ นั้น 7 จะกลับมาใช้ที่ 10, 0 ที่ 5 และ 1 ที่ 14; จึงนำ 1 ออกเพราะต้องรอนานที่สุด. OPT ได้ 3 faults ตอนเติม frame และอีก 7 faults ตามตาราง รวม 10 faults; ที่เหลือเป็น 10 hits. หากมี tie ระหว่าง page ที่ไม่ถูกใช้อีก เลือก victim ตัวใดก็ได้ที่ให้ผล optimal.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3 (ต่อ): EAT และเกณฑ์ตรวจ}
-\noindent\textbf{หน่วยและโมเดลต้นทุน}\\
-$m=10$ ns $=0.00001$ ms; $D=10$ ms $=10{,}000{,}000$ ns\\
-ใช้โมเดล Lecture 6 หน้า 29 โดยให้ $D$ แทน disk access time:
-\[\mathrm{EAT}=(1-p)m+pD\]
-โจทย์ต้นฉบับไม่ได้เพิ่มเงื่อนไข complete fault-path cost หรือ restarted access; สูตรนี้อิงโมเดลในสไลด์ ไม่ใช่การเติมถ้อยคำดังกล่าวลงในโจทย์
-
-\noindent\textbf{EAT (2 คะแนน)}\\จำนวน faults, hits และ probability ด้านล่างเป็นค่าช่วยคำนวณ EAT ไม่ใช่ข้อย่อยเพิ่มในโจทย์
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lrrrr}
-Policy & Faults & Hits & p & EAT (ms)\\\hline
-FIFO & 13 & 7 & 13/20 & 6.5000035\\
-LRU & 13 & 7 & 13/20 & 6.5000035\\
-OPT & 10 & 10 & 10/20 & 5.0000050\\
+\noindent\textbf{ขั้นที่ 1: ทำหน่วยให้ตรงกัน}\\
+Memory access time $m=10$ ns $=0.00001$ ms. Disk access time $D=10$ ms $=10{,}000{,}000$ ns. จะใช้หน่วย ns ทั้งหมดหรือแปลงเป็น ms ทั้งหมดก็ได้ แต่ห้ามบวก ns กับ ms โดยตรง.\par\medskip
+\noindent\textbf{ขั้นที่ 2: หาโอกาส hit และ fault}\\
+มี references ทั้งหมด 20 ครั้ง. ให้ $p=\text{faults}/20$ เป็นโอกาสเกิด page fault และ $h=\text{hits}/20=1-p$ เป็นโอกาส hit. ใช้โมเดล Lecture 6:
+\[\mathrm{EAT}=hm+pD=(1-p)m+pD.\]
+\noindent ในที่นี้ $D$ แทน disk access time ตามที่โจทย์ให้; ไม่เพิ่มต้นทุนอื่นที่โจทย์ไม่ได้ระบุ.\par\medskip
+\noindent\textbf{ขั้นที่ 3: แทนค่าและคำนวณ}
+\begin{itemize}[leftmargin=1.4em,itemsep=.2cm]
+\item \textbf{FIFO:} $p=13/20=0.65$ และ $h=7/20=0.35$.\\
+$\mathrm{EAT}=0.35(10\,\mathrm{ns})+0.65(10{,}000{,}000\,\mathrm{ns})$\\
+$=3.5+6{,}500{,}000=6{,}500{,}003.5$ ns $=6.5000035$ ms $\approx 6.5$ ms.
+\item \textbf{LRU:} fault/hit counts เท่ากับ FIFO สำหรับ string นี้, จึง $p=0.65$, $h=0.35$ และ EAT $=6{,}500{,}003.5$ ns $=6.5000035$ ms $\approx 6.5$ ms.
+\item \textbf{OPT:} $p=10/20=0.5$ และ $h=10/20=0.5$.\\
+$\mathrm{EAT}=0.5(10\,\mathrm{ns})+0.5(10{,}000{,}000\,\mathrm{ns})$\\
+$=5+5{,}000{,}000=5{,}000{,}005$ ns $=5.000005$ ms $\approx 5.0$ ms.
+\end{itemize}
+\noindent\textbf{สรุปผล}
+\begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{l|r|r|r|l}
+Policy & Faults & Hits & $p$ & EAT\\\hline
+FIFO & 13 & 7 & 0.65 & $6.5000035$ ms\\
+LRU & 13 & 7 & 0.65 & $6.5000035$ ms\\
+OPT & 10 & 10 & 0.50 & $5.0000050$ ms\\
 \end{tabular}\end{center}
-\[\mathrm{EAT}_{FIFO}=\mathrm{EAT}_{LRU}=\frac7{20}(10)+\frac{13}{20}(10{,}000{,}000)=6{,}500{,}003.5\ \mathrm{ns}\]
-\[\mathrm{EAT}_{OPT}=\frac{10}{20}(10)+\frac{10}{20}(10{,}000{,}000)=5{,}000{,}005\ \mathrm{ns}\]
-\noindent ดังนั้น OPT ต่ำสุด; FIFO กับ LRU เท่ากันสำหรับ string นี้ ไม่ได้หมายความว่าจะเท่ากันสำหรับ string อื่น\\รับคำตอบประมาณ 6.5 ms และ 5.0 ms เมื่อมีสูตรและหน่วยถูกต้อง; อย่าใช้ $10^{-3}$ วินาทีแทน 10 ms ซึ่งจริง ๆ เท่ากับ $10^{-2}$ วินาที
-\par\medskip
+\noindent OPT ให้ EAT ต่ำสุดในชุดนี้เพราะมี page faults น้อยที่สุด; FIFO กับ LRU ได้จำนวน fault เท่ากันโดยบังเอิญจาก reference string นี้ ไม่ได้แปลว่าจะเท่ากันทุกชุด. ถ้ารายงานโดยปัดเลข ได้ประมาณ 6.5 ms สำหรับ FIFO/LRU และ 5.0 ms สำหรับ OPT.\par\medskip
 \noindent\textbf{Rubric รวม 8 คะแนน}
 \begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
 \item ตาราง frames รวม 6 คะแนน: แต่ละ policy 2 คะแนน ให้ตาม frame contents 20 คอลัมน์ คอลัมน์ละ .1; ไม่หักเพราะไม่มีแถว hit/fault หรือการรายงาน counts แยกต่างหาก
