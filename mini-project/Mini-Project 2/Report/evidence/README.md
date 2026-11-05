@@ -16,17 +16,20 @@
 
 ## หลักฐานที่รวมในรายงาน
 
-| ไฟล์ | การใช้ |
-|---|---|
-| `02-demo-terminal-capture.txt` | Transcript รอบล่าสุด มี workload checkpoints, samples พร้อม rates และ exit summary; แสดง inline ในเนื้อหา |
-| `terminal/04-regression-terminal.png` | ภาพ Terminal ของผล regression; แสดงข้างตาราง regression |
-| `terminal/05-pfstat-report-terminal.png` | ตัวอย่าง `pfstat` พร้อม VMA, virtual size, RSS, fault counts และ mapping groups; แสดงข้างคำอธิบาย |
-| `experiment-results/` | Raw results ของ E1–E8 ซึ่งรองรับตารางและคำอธิบายในเนื้อหา |
-| `04-sigchld-cleanup.txt` | Output ของ process summary และสถานะ idle หลัง cleanup; แสดง inline |
+ภาพทั้งหกใบครอปเฉพาะผลลัพธ์ใน Terminal ไม่มีภาพเต็มเดสก์ท็อป ภาพแสดงหลักฐานสำคัญของแต่ละช่วง ส่วนคำสั่งและ output ฉบับเต็มเก็บเป็นไฟล์ข้อความเพื่อให้อ่าน ค้นหา และเทียบตัวเลขได้ครบ
 
-Transcript demo เป็นข้อความที่บันทึกจาก Terminal ไม่ใช่ภาพหน้าจอ ส่วนภาพที่รวมไว้เป็นภาพ Terminal ที่ใช้ในรายงานโดยตรง
+| ไฟล์ | หลักฐานที่แสดง | ตำแหน่งในรายงาน |
+|---|---|---|
+| `terminal/01-kernel-options-terminal.png` | kernel options ที่จำเป็นสำหรับ kprobes และ process accounting; kernel version กับ architecture อยู่ใน environment log | Problem 2, Step 1: Test environment and method |
+| `terminal/02-build-load-terminal.png` | การโหลดโมดูลและ proc interfaces | Problem 2, Step 1: Build and load |
+| `terminal/03-demo-terminal.png` | exit summary จาก demo อีกรอบหนึ่ง (16,649 minor / 6,145 major); ไม่ใช่ตัวเลขจาก transcript รอบล่าสุด | Problem 2, Step 1: End-to-end demo |
+| `terminal/04-regression-terminal.png` | ผล retarget, PID reuse, thread exit, lifetime reads และ unload | Problem 2, Step 3: Post-merge checks |
+| `terminal/05-pfstat-report-terminal.png` | VMA, virtual size, RSS, fault counts และ mapping groups | Problem 1, Step 2: How the tool works |
+| `terminal/06-experiments-terminal.png` | รายการกรณี E1–E8 ที่สคริปต์ทดลองเรียกใช้ | Problem 2, Step 1: How we checked the results |
 
-ไฟล์จับหน้าจอเต็มเดสก์ท็อป, ภาพ Terminal ที่ตัดมาไม่ครบหรือมีตัวเลขจากรอบเก่า และ log ก่อน merge เป็นหลักฐานระหว่างทำงานเท่านั้น จึงเก็บไว้ในเครื่องและไม่รวมในชุดรายงานของ repo
+`02-demo-terminal-capture.txt` เป็นแหล่งตัวเลขหลักของ demo รอบล่าสุด: 16,782 minor และ 4,097 major faults พร้อม workload checkpoints, interval samples และ rates ภาพ `03-demo-terminal.png` เป็นตัวอย่างจากอีกรอบซึ่งมีผลต่างกันตาม cache state จึงติดป้ายแยกไว้ในรายงาน รายละเอียด E1–E8 อยู่ใน `experiment-results/` และ `04-sigchld-cleanup.txt` เก็บผลตรวจ cleanup ที่รับ `SIGCHLD=SIG_IGN` มาจาก parent
+
+ไฟล์จับหน้าจอเต็มเดสก์ท็อป ภาพจากรอบเก่าที่ตัวเลขไม่ตรงกับ post-merge run และ log review ก่อน merge ถูกตัดออกจากชุดส่งงาน
 
 ## ข้อจำกัด
 

@@ -42,8 +42,6 @@
 \pagestyle{fancy}\fancyhf{}
 \fancyfoot[C]{\fontsize{10}{12}\selectfont\thepage}
 \renewcommand{\headrulewidth}{0pt}
-\renewcommand{\contentsname}{Contents}
-\setcounter{tocdepth}{2}
 \AtBeginDocument{\fontsize{12}{15.6}\selectfont}
 \begin{document}
 \newgeometry{top=1.7cm,bottom=2.35cm,left=2.5cm,right=2.5cm,headheight=16pt}
@@ -80,7 +78,6 @@ King Mongkut's University of Technology Thonburi\\
 Semester 1, Academic Year 2026\par}
 \end{titlepage}
 \restoregeometry
-\pagenumbering{alph}\renewcommand{\thepage}{i}\thispagestyle{plain}{\fontsize{12.5}{15.5}\selectfont\tableofcontents}
 \clearpage\pagenumbering{arabic}
 
 \Needspace{6\baselineskip}
@@ -88,7 +85,7 @@ Semester 1, Academic Year 2026\par}
 
 The project is a Linux tool for inspecting a process's \keyterm{memory regions}, \keyterm{virtual address space}, and \keyterm{minor and major page faults}. It combines the \code{pfcount} kernel module, the \code{pfstat} command-line program, and the \code{faultgen} workload generator. We tested the merged PR \#11 source on Ubuntu 24.04.5 with Linux 6.8.0-142-generic on ARM64. The build, demo, regression suite, and experiments E1 to E8 all completed in that environment.
 
-The measurements need to be read separately. A process can reserve a large virtual range before its pages become resident, and file cache, readahead, fault-around, and Transparent Huge Pages (THP) can all change the recorded fault counts. These results describe the tested kernel configuration. They do not establish compatibility with other kernels or measure probe overhead.
+These measurements describe different things. A process can reserve a large virtual range before its pages become resident, and file cache, readahead, fault-around, and Transparent Huge Pages (THP) can all change the recorded fault counts. The results describe the tested kernel configuration; they do not establish compatibility with other kernels or measure probe overhead.
 
 \begin{table}[H]\centering
 {\fontsize{12}{15.6}\selectfont\arrayrulecolor{RuleGray}
@@ -238,7 +235,7 @@ Source revision & PR \#11 merge commit \code{5fbcb767} \\ \hline
 \end{tabular}}
 \end{table}
 
-The saved environment record identifies the guest kernel, required kernel options, and exact merge commit used for the post-merge measurements.
+The saved environment record identifies the guest kernel, required kernel options, and exact merge commit used for the post-merge measurements. The capture below isolates the three required kernel options so they remain readable at print size; the kernel version and architecture are recorded in the terminal output above.
 
 \begin{lstlisting}
 commit: 5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800
@@ -247,6 +244,11 @@ CONFIG_BSD_PROCESS_ACCT=y
 CONFIG_KPROBES=y
 CONFIG_KRETPROBES=y
 \end{lstlisting}
+
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{evidence/post-merge-5fbcb76/terminal/01-kernel-options-terminal.png}
+\caption{Terminal output confirming the kernel options required by the module.}
+\end{figure}
 
 We kept raw outputs and environment details in the \code{evidence/} directory so the post-merge measurements remain separate from earlier PR tests. The program labels sizes as MB and KB but uses a base of 1,024. This report uses MiB and KiB when stating exact sizes; for example, \code{anon:64} means 64 MiB.
 
@@ -281,6 +283,11 @@ Test binaries compiled: faultgen, threadexit, threadchurn, uffdblock
 /proc/pfcount/: maps, stats, target
 \end{lstlisting}
 
+\begin{figure}[H]\centering
+\includegraphics[width=.92\linewidth]{evidence/post-merge-5fbcb76/terminal/02-build-load-terminal.png}
+\caption{Terminal output confirming that the loaded module exposes its proc interfaces.}
+\end{figure}
+
 \Needspace{40\baselineskip}
 \subsubsection{End-to-end demo}
 
@@ -314,11 +321,21 @@ pfcount run: tests/faultgen ... (pid 1935, 4.54s, exit 0)
   fault scope: process only
 \end{lstlisting}
 
+\begin{figure}[H]\centering
+\includegraphics[width=.95\linewidth]{evidence/post-merge-5fbcb76/terminal/03-demo-terminal.png}
+\caption{Terminal capture from a separate demo run. Fault totals vary with cache state; the latest transcript above supplies the values used in the analysis.}
+\end{figure}
+
 \subsubsection{How we checked the results}
 
 We compared region counts and address-space sizes using a process that remained stable while the module and procfs were read. In run mode, we compared the final live counters with the child usage returned after exit, after subtracting the lifetime baseline. Agreement between these interfaces supports the observed behavior in the tested cases; both still rely on counters maintained by the same Linux kernel.
 
 E1 compared the report with procfs. E2 to E6 varied anonymous mappings, file cache, readahead, and THP. E7 recorded virtual size and RSS over time and then unmapped the regions. E8 compared ordinary programs with and without descendant tracking. The post-merge regression suite covered retargeting, PID reuse, simultaneous thread exit, lifetime counter reads, module unload during a blocked fault, and cleanup after inherited SIGCHLD settings. Permission checks and interval parameters were present in earlier PR evidence; the post-merge suite summarized here did not rerun the non-root permission case.
+
+\begin{figure}[H]\centering
+\includegraphics[width=.95\linewidth]{evidence/post-merge-5fbcb76/terminal/06-experiments-terminal.png}
+\caption{Terminal summary of the E1 to E8 cases run by the experiment script. Numeric results appear in the following tables and discussion.}
+\end{figure}
 
 \Needspace{12\baselineskip}
 \subsection{Step 2: Results}
@@ -544,27 +561,104 @@ The build, demo, regression suite, and experiments E1 to E8 passed in the docume
 \Needspace{6\baselineskip}
 \section*{Appendix: Reproduction steps and evidence}\addcontentsline{toc}{section}{Appendix: Reproduction steps and evidence}
 
-The main results use the post-merge evidence bundle. It contains the recorded environment, build/load and demo results, regression and cleanup logs, and raw E1 to E8 outputs from the merged revision. The two terminal captures included in this report appear beside their related discussion. Earlier review captures and pre-merge logs are kept out of this package.
+The report uses the merged source at commit \code{5fbcb767}. The source code and its build, experiment, and regression scripts are in the team's \href{https://github.com/beambeambeam/cpe333/tree/5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800/mini-project-02}{Mini-Project 2 source folder}. The steps below reproduce the recorded Linux run from a macOS host with Homebrew and Lima.
+
+\begingroup
+\setlength{\parskip}{2.5pt}
+\titlespacing*{\subsection}{0pt}{5pt}{1pt}
+\lstset{basicstyle=\fontspec{Menlo}\fontsize{9}{10.5}\selectfont,aboveskip=3pt,belowskip=3pt}
+
+\subsection{Step 1: Check out the tested source}
+
+Clone the team repository and select the exact merge commit used for the report. This keeps later changes on \code{main} from changing the source under test.
 
 \begin{lstlisting}[language=sh]
-# Select and inspect a stable process inside the VM
+git clone https://github.com/beambeambeam/cpe333.git
+cd cpe333/mini-project-02
+git checkout 5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800
+\end{lstlisting}
+
+\subsection{Step 2: Create and prepare the Lima VM}
+
+Run the project helper from the \code{mini-project-02/} directory. If Lima is not installed, the helper installs it with Homebrew. It creates an Ubuntu 24.04 VM, mounts the project directory read-write, and installs the compiler, Python, and headers for the guest kernel.
+
+\begin{lstlisting}[language=sh]
+./vm.sh setup
+./vm.sh run uname -a
+\end{lstlisting}
+
+The tested guest used Ubuntu 24.04.5, Linux 6.8.0-142-generic, and ARM64. The module needs \code{CONFIG\_KPROBES=y}, \code{CONFIG\_KRETPROBES=y}, and \code{CONFIG\_BSD\_PROCESS\_ACCT=y}; the recorded values are in \code{evidence/post-merge-5fbcb76/00-environment.txt}.
+
+\subsection{Step 3: Build and load the module}
+
+Run these commands from the source directory on the macOS host. The helper executes each Make target inside the VM. \code{make all} builds the module and the \code{faultgen} test program; \code{make load} inserts the module and checks that its proc entries exist.
+
+\begin{lstlisting}[language=sh]
+./vm.sh make clean
+./vm.sh make all
+./vm.sh make load
+./vm.sh run ls -l /proc/pfcount
+\end{lstlisting}
+
+The module exposes three interfaces under \code{/proc/pfcount}:
+
+\begin{lstlisting}[language=sh]
+/proc/pfcount/target
+/proc/pfcount/stats
+/proc/pfcount/maps
+\end{lstlisting}
+
+The recorded build skipped BTF because \code{vmlinux} was unavailable; compilation and module loading still completed.
+
+\Needspace{14\baselineskip}
+\subsection{Step 4: Inspect a live process}
+
+Open a VM shell, start a stable process, then compare \code{pfstat --maps} with \code{/proc/PID/maps}.
+
+\begin{lstlisting}[language=sh]
+./vm.sh shell
 sleep 300 &
 PID=$!
 sudo tools/pfstat "$PID" --maps
 sudo cat /proc/"$PID"/maps
 kill "$PID"
-
-# Reproduce build, demo, experiments, and regression suite
-make clean
-make all
-make load
-make demo
-sh scripts/experiments.sh
-sudo sh tests/regress.sh
-make unload
-make clean
+exit
 \end{lstlisting}
 
-The commands and tests were run inside the Linux guest in Lima using a separate checkout of the repository under review at commit \code{5fbcb767}. The included post-merge logs and selected terminal captures are available in the evidence folder for review.
+Check that the VMA count and summed ranges match \code{/proc/PID/maps}; compare virtual size with \code{VmSize} and lifetime faults with \code{/proc/PID/stat}.
 
+\subsection{Step 5: Run the demo and regression checks}
+
+The demo watches \code{faultgen}, then compares exit-time counts with \code{getrusage()}. The regression suite covers retargeting, PID reuse, thread exit, lifetime-counter reads, and unload during a blocked fault.
+
+\begin{lstlisting}[language=sh]
+./vm.sh make demo
+./vm.sh run sudo sh tests/regress.sh
+\end{lstlisting}
+
+The latest demo transcript and regression log are in \path{evidence/post-merge-5fbcb76/02-demo-terminal-capture.txt} and \path{evidence/post-merge-5fbcb76/03-regression.txt}; the demo screenshot is a separate, labeled run.
+
+\subsection{Step 6: Run experiments E1 to E8}
+
+The script rebuilds helpers, reloads the module, runs the procfs comparison and controlled workloads, records output in \code{results/}, then unloads the module.
+
+\begin{lstlisting}[language=sh]
+./vm.sh make experiments
+\end{lstlisting}
+
+E1 cross-checks procfs; E2 to E6 vary mapping type, cache state, readahead, and THP advice; E7 samples virtual size and RSS while the workload maps and frees memory; E8 compares process-only with descendant tracking. The report explains each result, and raw outputs are in \code{evidence/post-merge-5fbcb76/experiment-results/}.
+
+\subsection{Step 7: Unload and remove build artifacts}
+
+Unload the module, remove generated binaries, and stop Lima. These commands preserve the source and saved evidence.
+
+\begin{lstlisting}[language=sh]
+./vm.sh make unload
+./vm.sh make clean
+./vm.sh stop
+\end{lstlisting}
+
+The evidence bundle contains environment, build/load, demo, regression, cleanup, and E1 to E8 records, plus six Terminal captures. Full output remains in searchable text files.
+
+\endgroup
 \end{document}

@@ -10,6 +10,10 @@ This report presents the group’s Virtual Memory project: a Linux tool for insp
 - **Instructor:** Asst. Prof. Rajchawit Sarochawikasit
 - **Members:** Seven students; names and student IDs appear on the cover.
 
+## Source code
+
+The implementation, Lima helper, experiment runner, and regression tests are maintained in the team repository at the exact revision used for the report: [Mini-Project 2 source at merge commit 5fbcb767](https://github.com/beambeambeam/cpe333/tree/5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800/mini-project-02). The report repository keeps the write-up and reviewed evidence together without duplicating source files from the team repository.
+
 ## Report files
 
 | File | Purpose |
@@ -18,19 +22,19 @@ This report presents the group’s Virtual Memory project: a Linux tool for insp
 | `CPE333_MiniProject2_Report.tex` | LaTeX source |
 | `output/pdf/CPE333_MiniProject2_Report.pdf` | Final A4 print and reading copy |
 | `assets/` | KMUTT logo and report diagrams |
-| `evidence/post-merge-5fbcb76/` | Test logs, environment details, terminal captures, and the latest saved demo transcript |
+| `evidence/post-merge-5fbcb76/` | Test logs, environment details, six Terminal-only captures, and the latest saved demo transcript |
 
 ## Layout and typography
 
-The report follows the visual rhythm of the group’s PS04, PS06, and PS07 lab reports: a centered KMUTT logo and title, generous spacing around the author and course details, bold black Problem/Step headings, green emphasis for key terms, and blue italic captions. Body text uses Sarabun 12 pt, matching the lab reports; Menlo is used for commands and code. The cover lists all seven group members and the instructor.
+The report follows the visual rhythm of PS04, PS06, and PS07: a centered KMUTT logo and title, generous spacing around the author and course details, bold black Problem/Step headings, green emphasis for key terms, and blue italic captions. Body text uses Sarabun 12 pt; Menlo is used for commands and code. The cover lists all seven group members and the instructor.
 
-The print-ready PDF is 19 pages in A4 portrait. Body text is 12 pt Sarabun, with smaller Menlo type for terminal output and code; headings and the cover follow the hierarchy used in PS04, PS06, and PS07. Selected terminal captures, the full demo sample table, and experiment output excerpts sit beside the explanations they support. The appendix contains reproduction commands and pointers to complete raw logs; evidence is not collected into a screenshot-only appendix. The editable DOCX uses the same typography and portrait layout, though Word may paginate it differently. Use the PDF for the intended print layout. Original logs and captures remain in the evidence folders.
+The print-ready PDF is 20 pages in A4 portrait: cover, report and references on pages 1–18, followed by a two-page appendix. The report stays within the assignment's 25-page limit before the appendix. It uses the same Problem/Step hierarchy as the lab reports. Six cropped Terminal captures appear beside the related discussion, while the complete latest demo samples, experiment values, and raw command output remain in searchable text files. The appendix gives the full checkout, VM setup, build, live-process inspection, demo, regression, E1–E8 experiment, and cleanup sequence. The editable DOCX uses the same typography and portrait layout; Word or Google Docs may paginate it differently. Use the PDF for the intended print layout.
 
 ## Source and test results
 
 - The report records tests on the merged `beambeambeam/cpe333` source at commit `5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800`.
 - Build/load, demo, regression checks, and experiments E1–E8 passed in Lima with Ubuntu 24.04.5, Linux 6.8.0-142-generic, and ARM64.
-- The latest demo terminal capture supplies all interval samples, rates, workload checkpoints, and the exit summary in the main text. The report explains why `faultgen`'s cumulative counts differ from `pfstat`'s baseline-adjusted counts. E1–E8 are summarized beside their analysis, with the full E7 timeline and SIGCHLD cleanup output shown inline.
+- Six cropped Terminal captures show the required kernel options, module load, a clearly labeled separate demo run, the `pfstat` report, regression checks, and the E1–E8 run list. Kernel version and architecture are recorded in the environment log. The report includes the full latest demo samples, rates, workload checkpoints, E1–E8 results, E7 timeline, and SIGCHLD cleanup output beside the related discussion. It explains why `faultgen`'s cumulative counts differ from `pfstat`'s baseline-adjusted counts; the transcript is authoritative when the separate screenshot has different counts.
 - The build reported a compiler-name mismatch and shared-folder clock skew. BTF generation was skipped because `vmlinux` was unavailable; the module still built and loaded.
 - GitHub Actions were not configured for the reviewed branch. Results in the report are from manual runs in Lima.
 - The report describes the tested configuration and limitations, including the unmeasured probe overhead, descendant accounting scope, and the permission check that was not rerun after merge.
