@@ -6,9 +6,9 @@
 
 - Environment: Lima, Ubuntu 24.04.5, Linux 6.8.0-142-generic, ARM64, `CONFIG_KPROBES=y`, `CONFIG_KRETPROBES=y`, `CONFIG_BSD_PROCESS_ACCT=y`
 - Build/load: `make clean && make all && make load` สำเร็จ
-- Demo: จบด้วย exit 0 และ minor/major faults ตรงกับ `getrusage()` หลังหัก baseline
+- Demo: จบด้วย exit 0; ภาพ `03-demo-terminal.png` และ transcript แสดง run PID 2508, 16,521 minor และ 8,193 major faults ซึ่งตรงกับ `getrusage()` หลังหัก baseline
 - Regression: retarget, PID reuse, thread exit 100 รอบ, lifetime reads 20,000 ครั้ง และ unload ระหว่าง blocked fault ผ่าน
-- Cleanup: `SIGCHLD=SIG_IGN` ที่สืบทอดจาก parent ผ่าน; target กลับ idle และ follow กลับเป็น N
+- Cleanup: `SIGCHLD=SIG_IGN` ที่สืบทอดจาก parent ผ่าน; ภาพและ transcript ของ PID 2513 แสดง 125 minor faults, target กลับ idle และ follow กลับเป็น N
 - Experiments: E1–E8 จบด้วย exit status 0; ผลเทียบ process-only กับ waited descendants อธิบายตาม scope
 - Make clean: ลบ test binaries หลังจบการตรวจ
 
@@ -16,18 +16,20 @@
 
 ## หลักฐานที่รวมในรายงาน
 
-ภาพทั้งหกใบเป็นภาพจับหน้าจอจริงที่ครอปเฉพาะผลลัพธ์ใน Terminal ไม่มีภาพเต็มเดสก์ท็อป และแสดงหลักฐานตัวอย่างของแต่ละช่วง ไม่ได้มีภาพแยกครบทุกคำสั่ง `pfcount run` ส่วนไฟล์ `.txt` เป็น transcript ของ output จากการรันจริง เก็บคำสั่ง PID เวลา exit status และค่าผลลัพธ์ฉบับเต็มไว้ให้อ่าน ค้นหา และตรวจตัวเลขได้ครบ ไฟล์ข้อความจึงเป็นหลักฐานผลรันที่ครบถ้วน แต่ไม่ใช่ไฟล์ภาพจับหน้าจอ
+ภาพทั้งแปดใบเป็นภาพจับหน้าจอจริงที่ครอปเฉพาะผลลัพธ์ใน Terminal ไม่มีภาพเต็มเดสก์ท็อป และแสดงหลักฐานของแต่ละช่วง ภาพ demo, E7 และ SIGCHLD cleanup จับจากรอบเดียวกับ transcript ของแต่ละงาน โดย PID และผลลัพธ์ตรงกัน ส่วนไฟล์ `.txt` เก็บ output ฉบับเต็มของการรันจริง รวมคำสั่ง PID เวลา exit status และค่าผลลัพธ์ เพื่อให้อ่าน ค้นหา และตรวจตัวเลขได้ครบ
 
 | ไฟล์ | หลักฐานที่แสดง | ตำแหน่งในรายงาน |
 |---|---|---|
 | `terminal/01-kernel-options-terminal.png` | kernel options ที่จำเป็นสำหรับ kprobes และ process accounting; kernel version กับ architecture อยู่ใน environment log | Problem 2, Step 1: Test environment and method |
 | `terminal/02-build-load-terminal.png` | การโหลดโมดูลและ proc interfaces | Problem 2, Step 1: Build and load |
-| `terminal/03-demo-terminal.png` | exit summary จาก demo อีกรอบหนึ่ง (16,649 minor / 6,145 major); ไม่ใช่ตัวเลขจาก transcript รอบล่าสุด | Problem 2, Step 1: End-to-end demo |
+| `terminal/03-demo-terminal.png` | interval samples และ exit summary จาก demo run PID 2508 (16,521 minor / 8,193 major), ตรงกับ `02-demo-terminal-capture.txt` | Problem 2, Step 1: End-to-end demo |
 | `terminal/04-regression-terminal.png` | ผล retarget, PID reuse, thread exit, lifetime reads และ unload | Problem 2, Step 3: Post-merge checks |
 | `terminal/05-pfstat-report-terminal.png` | VMA, virtual size, RSS, fault counts และ mapping groups | Problem 1, Step 2: How the tool works |
 | `terminal/06-experiments-terminal.png` | รายการกรณี E1–E8 ที่สคริปต์ทดลองเรียกใช้ | Problem 2, Step 1: How we checked the results |
+| `terminal/07-e7-timeline-terminal.png` | interval samples และ exit summary จาก E7 run PID 2286, ตรงกับ `experiment-results/e7-timeline.txt` | Problem 2, Step 2: E7 virtual size and RSS over time |
+| `terminal/08-sigchld-cleanup-terminal.png` | `pfcount run` ของ PID 2513 และสถานะหลัง cleanup: `follow=N`, `pid: 0`, `state: idle` | Problem 2, Step 3: Post-merge checks |
 
-`02-demo-terminal-capture.txt` เป็นแหล่งตัวเลขหลักของ demo รอบล่าสุด: 16,782 minor และ 4,097 major faults พร้อม workload checkpoints, interval samples และ rates ภาพ `03-demo-terminal.png` เป็นตัวอย่างจากอีกรอบซึ่งมีผลต่างกันตาม cache state จึงติดป้ายแยกไว้ในรายงาน รายละเอียด E1–E8 อยู่ใน `experiment-results/` และ `04-sigchld-cleanup.txt` เก็บผลตรวจ cleanup ที่รับ `SIGCHLD=SIG_IGN` มาจาก parent
+`02-demo-terminal-capture.txt` เป็น transcript ฉบับเต็มของ demo run PID 2508 (16,521 minor / 8,193 major faults) พร้อม workload checkpoints, interval samples และ rates ภาพและ transcript เป็นการรันรอบเดียวกัน ส่วน `experiment-results/e7-timeline.txt` เป็น transcript ของ E7 run PID 2286 และ `04-sigchld-cleanup.txt` เก็บผล run PID 2513 ที่รับ `SIGCHLD=SIG_IGN` มาจาก parent; ทั้งสองรายการมีภาพ Terminal ที่ตรงกับตัวเลขและสถานะใน transcript
 
 ไฟล์จับหน้าจอเต็มเดสก์ท็อป ภาพจากรอบเก่าที่ตัวเลขไม่ตรงกับ post-merge run และ log review ก่อน merge ถูกตัดออกจากชุดส่งงาน
 
