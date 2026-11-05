@@ -1,67 +1,130 @@
 % Editable answer content; compile CPE333_Midterm_Solutions.tex in this directory.
-\sectiontitle{เฉลยและเกณฑ์ตรวจ: CPE333 Mock Midterm ชุดที่ 1}
-\noindent สำหรับตรวจหลังทำข้อสอบเท่านั้น ไม่ใช่เฉลยข้อสอบจริงของรายวิชา\\คะแนนรวม 50: ปรนัย $20c/41$ เมื่อ $c$ คือจำนวนข้อถูก; เติมคำ 10; อัตนัย $8+4+8=20$\\ไม่ปัดคะแนนรายข้อ; เมื่อสรุปผลจึงปัดคะแนนรวมเป็นทศนิยมสองตำแหน่ง ไม่มีการหักคะแนนตอบผิด\par\medskip
+\sectiontitle{เฉลยและสื่อทบทวน: CPE333 Operating Systems}
+\noindent วิชา Operating Systems | ขอบเขต Lecture 1--6 | พื้นฐาน: กำลังทบทวนตามบทเรียน | เป้าหมาย: เข้าใจแนวคิดและใช้เตรียมสอบกลางภาค\par
+\noindent เอกสารนี้สรุปแนวคิดที่เกี่ยวข้องกับข้อสอบจำลอง ไม่ใช่คำแปลหรือบทสรุปครบทุกสไลด์ของ Lecture 1--6. ใช้เอกสาร Lecture เป็นแหล่งหลัก และระบุชื่อไฟล์กับหน้า PDF ไว้ในแต่ละหัวข้อและตารางแหล่งอ้างอิง\par\medskip
+
+\sectiontitle{A. ภาพรวมและความเชื่อมโยงของบท}
+\noindent\textbf{คำอธิบายเสริม:} ระบบปฏิบัติการ (Operating System, OS) ทำให้โปรแกรมใช้ CPU และหน่วยความจำได้อย่างสะดวก โดยยังคงควบคุมและแยกการทำงานของแต่ละโปรเซสไว้. Lecture 1 วางพื้นฐานเรื่องสิทธิ์การทำงานและการป้องกัน; Lecture 2 อธิบายว่าโปรแกรมที่กำลังทำงานกลายเป็นโปรเซสและ OS สลับบริบทอย่างไร; Lecture 3 ใช้นโยบาย scheduling แบ่งเวลา CPU; ส่วน Lecture 4--6 ไล่จากการจัดสรรหน่วยความจำ ไปสู่ paging, virtual memory, page fault และการเลือก page ที่จะนำออก. ดังนั้นโจทย์ Scheduling ในข้อเขียนข้อ 1 และ page replacement ในข้อ 3 เป็นการนำกลไกเหล่านี้มาคำนวณจริง.\par
+\noindent แหล่งหลัก: \texttt{lectures/Lecture1\_IntroductionToOS.pdf}, \texttt{Lecture2\_ProcessAndProcessAPIs.pdf}, \texttt{Lecture3\_Scheduling.pdf}, \texttt{Lecture4\_MemoryConceptAndContiguousMemoryAllocation.pdf}, \texttt{Lecture5\_NoncontiguousMemoryAllocation.pdf} และ \texttt{Lecture6\_VirtualMemory.pdf}.\par\medskip
+
+\sectiontitle{B. สรุปเนื้อหาแบบเข้าใจ}
+\noindent\textbf{Lecture 1 -- OS, privilege และ isolation.} OS จัดการทรัพยากรและทำให้โปรแกรมใช้งานได้ผ่าน abstraction. การแยก user mode กับ kernel mode ช่วยไม่ให้โปรแกรมทั่วไปสั่งงานที่มีสิทธิ์สูงโดยตรง; เมื่อโปรแกรมขอบริการจาก OS จะเข้าสู่ kernel ผ่านกลไก trap. ตัวอย่างคือ system call ที่ขอให้ OS ทำงานแทน. Trap เป็นกลไกส่งการควบคุม ส่วน system call คือบริการ/คำขอ จึงเกี่ยวข้องกันแต่ไม่ใช่คำเดียวกัน. แหล่ง: \texttt{Lecture1\_IntroductionToOS.pdf}, pp. 2, 11, 13--15.\par
+\noindent\textbf{Lecture 2 -- process และ context switch.} Program คือชุดคำสั่งที่ยังไม่ทำงาน; process คือโปรแกรมที่กำลังทำงาน พร้อมข้อมูลและสถานะควบคุม. OS เก็บรายละเอียดของแต่ละ process ใน PCB และสลับ CPU จาก process หนึ่งไปอีก process ด้วยการบันทึก/กู้คืน context. สถานะหลักที่ใช้ในแบบจำลองคือ ready, running และ blocked: process ต้องกำลัง running ก่อนจึงจะ block จากการรอ I/O ได้. \texttt{fork()} สร้าง child และ \texttt{wait()} ให้ parent รอ child จบ. แหล่ง: \texttt{Lecture2\_ProcessAndProcessAPIs.pdf}, pp. 4--12, 22--24, 27, 29, 33--40.\par
+\noindent\textbf{Lecture 3 -- scheduling.} Scheduler เลือกงานที่พร้อมใช้ CPU. FIFO ทำตามลำดับเข้าคิว; SJF เลือกงานที่ใช้เวลาสั้นกว่าและอาจทำให้ turnaround เฉลี่ยดีเมื่อรู้เวลางาน แต่เสี่ยง starvation; RR แบ่ง CPU เป็น time slice จึงตอบสนองงานแรก ๆ ได้ไวขึ้น แต่การสลับถี่มี overhead. MLFQ ใช้หลายคิวและปรับ priority ตามพฤติกรรมของงาน โดยมีกฎ boost ช่วยไม่ให้งานรอนานเกินไป. อย่าสับสน turnaround time (เวลาตั้งแต่มาถึงจนเสร็จ) กับ response time (เวลาตั้งแต่มาถึงจนได้ CPU ครั้งแรก). แหล่ง: \texttt{Lecture3\_Scheduling.pdf}, pp. 6--18, 24--35.\par
+\noindent\textbf{Lecture 4 -- contiguous allocation.} Base/bound ใช้ตรวจว่า virtual address อยู่ในช่วงที่ process ได้รับอนุญาตหรือไม่; ตรวจ bound ก่อน แล้วจึงบวก base เพื่อหา physical address. Fixed-size partition อาจเสียพื้นที่ภายในช่องที่จัดสรร (internal fragmentation); flexible-size partition ลดปัญหานี้ได้ แต่เกิดช่องว่างภายนอกที่นำไปใช้ต่อไม่ได้ (external fragmentation) และอาจต้อง compaction. คำว่า \texttt{register} ใน C เป็น storage class ไม่ได้รับประกันว่า compiler จะทำให้ตัวแปรเร็วที่สุด. แหล่ง: \texttt{Lecture4\_MemoryConceptAndContiguousMemoryAllocation.pdf}, pp. 10--11, 17--18, 27--31, 34--35.\par
+\noindent\textbf{Lecture 5 -- segmentation และ paging.} Segmentation แบ่ง address space ตามส่วนที่มีความหมาย; paging แบ่ง logical memory เป็น page ขนาดเท่ากัน และ physical memory เป็น frame ขนาดเท่ากัน. Page table ใช้แปลเลข page ไปเป็น frame; TLB เป็น cache ของผลแปล address. ดังนั้น TLB miss แปลว่าไม่พบ translation ใน cache เท่านั้น ยังอาจพบ page ใน RAM ผ่าน page table ได้; จึงไม่เท่ากับ page fault. แหล่ง: \texttt{Lecture5\_NoncontiguousMemoryAllocation.pdf}, pp. 5--10, 12--16, 20--22.\par
+\noindent\textbf{Lecture 6 -- virtual memory.} Demand paging นำ page เข้ามาเมื่อมีการอ้างถึงและ page ยังไม่อยู่ใน RAM. Page fault handler ตรวจเหตุการณ์และนำ page เข้ามาก่อนเริ่มคำสั่งเดิมใหม่; หากไม่มี frame ว่างจึงต้องเลือก victim. FIFO ดูลำดับที่เข้า, LRU ดูการใช้งานครั้งล่าสุด, ส่วน OPT มองการใช้งานในอนาคตจึงเป็นเกณฑ์เปรียบเทียบเชิงอุดมคติ. EAT ขึ้นกับสัดส่วน hit/fault และเวลาเข้าถึงตามแบบจำลองใน Lecture; หาก page fault เกิดถี่เพราะมี frame ไม่พอ ระบบอาจเกิด thrashing. แหล่ง: \texttt{Lecture6\_VirtualMemory.pdf}, pp. 9--14, 18--24, 29--34.\par\medskip
+
+\sectiontitle{C. ศัพท์สำคัญ}
+{\small\begin{center}\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|p{3.5cm}|p{3.6cm}|p{8.1cm}|}\hline
+English & คำไทยที่ใช้ & ความหมายในวิชานี้\\\hline
+Operating System (OS) & ระบบปฏิบัติการ & ซอฟต์แวร์ที่จัดการทรัพยากรและให้บริการแก่โปรแกรม\\\hline
+Program / Process & โปรแกรม / โปรเซส & ชุดคำสั่งที่ยังไม่ทำงาน / โปรแกรมที่กำลังทำงานพร้อมสถานะ\\\hline
+Process Control Block (PCB) & บล็อกควบคุมโปรเซส & โครงสร้างเก็บข้อมูลสถานะและการจัดการของโปรเซส\\\hline
+Context switch & การสลับบริบท & บันทึกสถานะงานเดิมและกู้สถานะงานที่จะได้ใช้ CPU\\\hline
+Trap / System call & แทรป / การเรียกใช้บริการ OS & กลไกโอนการควบคุมเข้า OS / คำขอบริการจากโปรแกรม\\\hline
+Scheduler & ตัวจัดตารางงาน & ส่วนที่เลือก process จากคิวพร้อมทำงาน\\\hline
+Turnaround time & เวลาตั้งแต่มาถึงจนเสร็จ & $C_i-A_i$; completion time ลบ arrival time\\\hline
+Response time & เวลารอจนได้ CPU ครั้งแรก & $S_i-A_i$; first start time ลบ arrival time\\\hline
+Multilevel Feedback Queue (MLFQ) & คิวป้อนกลับหลายระดับ & scheduler ที่ปรับระดับ priority ของงานตามพฤติกรรม\\\hline
+Internal / External fragmentation & เศษเหลือภายใน / ภายนอก & พื้นที่เหลือในช่องที่จองแล้ว / ช่องว่างระหว่างพื้นที่จัดสรร\\\hline
+Base / Bound & ฐาน / ขอบเขต & ค่าเริ่มต้นของ physical memory / ขนาดช่วง virtual address ที่อนุญาต\\\hline
+Segmentation & การแบ่งส่วน & แบ่ง address space ตามส่วน เช่น code, stack หรือ heap\\\hline
+Paging: page / frame & เพจ / เฟรม & หน่วย logical memory / หน่วย physical memory ที่มีขนาดเท่ากัน\\\hline
+Page table / TLB & ตารางเพจ / บัฟเฟอร์แปลที่อยู่ & ตารางแปล page เป็น frame / cache ของ translation\\\hline
+Page fault & เพจฟอลต์ & เหตุการณ์ที่อ้างถึง page ซึ่งยังไม่อยู่ใน physical memory\\\hline
+Page replacement & การแทนที่เพจ & เลือก page ที่อยู่ใน frame เพื่อนำออกเมื่อจำเป็นต้องมี frame\\\hline
+Thrashing & การสลับเพจถี่เกินไป & ภาวะที่ระบบเสียเวลาส่วนใหญ่ไปกับการย้าย page เข้า-ออก แทนการทำงาน\\\hline
+Effective Access Time (EAT) & เวลาเข้าถึงเฉลี่ย & เวลาเฉลี่ยตามโอกาส hit/fault และต้นทุนที่กำหนด\\\hline
+\end{tabular}\end{center}}\par\medskip
+
+\sectiontitle{D. คำอธิบายเสริม: โพยทบทวนเร็ว (1 หน้า)}
+{\small
+\noindent\textbf{สถานะและ CPU:} Ready = พร้อมแต่ยังไม่ได้ CPU; Running = กำลังใช้ CPU; Blocked = รอเหตุการณ์ เช่น I/O. การ block เกิดจากงานที่กำลัง running ไม่ใช่กระโดดจาก ready โดยตรง. PCB เก็บ state และ context; context switch คือการบันทึก/กู้สถานะ.\par
+\noindent\textbf{Scheduling:} $T_i=C_i-A_i$ (turnaround), $R_i=S_i-A_i$ (response). FIFO ตามคิว; SJF เลือก burst สั้น; RR แบ่ง time slice; MLFQ เลือกคิว priority สูงก่อน, ใช้ RR ในคิวเดียวกัน, งานใหม่เริ่มบนสุด, ใช้ allotment ครบแล้วลดระดับ และ boost เป็นระยะ.\par
+\noindent\textbf{Base/bound:} address ถูกต้องเมื่อ $0\leq VA<bound$; ถ้าถูกต้อง $PA=base+VA$. ตรวจขอบเขตก่อนบวก base.\par
+\noindent\textbf{Paging/VM:} page อยู่ใน logical memory, frame อยู่ใน physical memory; page และ frame ขนาดเท่ากัน. TLB เก็บ translation ไม่ใช่ page contents. TLB miss ให้ตรวจ page table; page fault เกิดเมื่อ page ที่ต้องใช้ไม่อยู่ใน RAM.\par
+\noindent\textbf{Replacement/EAT:} FIFO = เข้าเก่าก่อนออก; LRU = ไม่ได้ใช้นานสุดออก; OPT = จะถูกใช้อีกช้าที่สุดในอนาคตออก. $EAT=(1-p_f)m_a+p_f d_a$ ตาม Lecture 6; แปลงหน่วยให้ตรงกันก่อนแทนค่า.\par
+\noindent\textbf{ข้อควรระวัง:} response time ไม่ใช่เวลารอรวม; page fault ไม่เท่ากับ TLB miss; internal fragmentation อยู่ในพื้นที่ที่จองแล้ว ส่วน external fragmentation เป็นช่องว่างระหว่างพื้นที่; OPT ใช้ข้อมูลอนาคตจึงทำจริงไม่ได้.\par}
+
+\sectiontitle{E. คำอธิบายเสริม: คำถามฝึกทบทวน 10 ข้อ}
+\noindent ลองตอบก่อนเปิดเฉลยท้ายเอกสาร. คำถามชุดนี้เขียนใหม่จากหัวข้อใน Lecture 1--6 เพื่อทบทวนแนวคิด ไม่ใช่ข้อสอบเก่าที่คัดลอกมา.\par
+\begin{enumerate}[leftmargin=1.4em,itemsep=.12cm]
+\item อธิบายความต่างระหว่าง program กับ process ให้ได้ใจความหนึ่งประโยค.
+\item process ที่อยู่ในสถานะ ready เปลี่ยนเป็น blocked ได้โดยตรงหรือไม่? อธิบายเส้นทางสถานะที่เกี่ยวข้อง.
+\item ยกตัวอย่างข้อมูล CPU สองอย่างที่ต้องบันทึกตอน context switch และบอกว่า PCB ใช้ทำอะไร.
+\item มีงาน A, B, C มาถึงพร้อมกันตามลำดับและใช้ CPU 4, 2, 1 ms ตามลำดับ จงเรียงงานแบบ FIFO และ SJF (ไม่แทรกงาน) แล้วหา average turnaround time ของแต่ละแบบ.
+\item process หนึ่งมาถึงเวลา 2 ms ได้ CPU ครั้งแรกเวลา 5 ms และเสร็จเวลา 9 ms จงหา response time และ turnaround time.
+\item MLFQ ใช้ priority queue อย่างไร และมีกลไกใดช่วยลดโอกาส starvation?
+\item มี 3 frames และอ้างถึงหน้า $1,2,3,1,4$. เมื่ออ้างถึงหน้า 4, FIFO กับ LRU เลือก victim ต่างกันอย่างไร เพราะเหตุใด?
+\item base = 16 KiB, bound = 4 KiB และ virtual address = 3000 bytes. address นี้ใช้ได้หรือไม่ และ physical address เป็นเท่าไร?
+\item อธิบายว่า TLB miss ต่างจาก page fault อย่างไร และเหตุใดอย่างแรกจึงไม่จำเป็นต้องทำให้เกิดอย่างหลัง.
+\item ถ้า $m_a=10$ ns, $d_a=10$ ms และ $p_f=0.001$, จงหา EAT ตามสูตรใน Lecture 6 แล้วรายงานเป็น ns และประมาณเป็น $\mu$s.
+\end{enumerate}
+\newpage\sectiontitle{เฉลยข้อสอบจำลอง: ส่วนที่ 1}
+\noindent สำหรับตรวจหลังทำข้อสอบเท่านั้น ไม่ใช่เฉลยข้อสอบจริงของรายวิชา. คะแนนรวม 50: ปรนัย $20c/41$ เมื่อ $c$ คือจำนวนข้อถูก; เติมคำ 10 คะแนน; อัตนัย $8+4+8=20$ คะแนน. ไม่ปัดคะแนนรายข้อ; ปัดคะแนนรวมเป็นทศนิยมสองตำแหน่งเมื่อสรุปผล และไม่มีการหักคะแนนตอบผิด.\par\medskip
 \sectiontitle{เฉลยส่วนที่ 1: คำตอบเดียวที่ดีที่สุด}
-\noindent คงถ้อยคำตัวเลือกจากข้อสอบเก่าตามต้นฉบับ; หมายเหตุด้านล่างแยกการตรวจแนวคิดออกจากการแก้ข้อความต้นฉบับ.\par
+\noindent คงข้อความโจทย์และตัวเลือกไว้ในเล่มข้อสอบตามแหล่งเดิม. เฉลยด้านล่างบอกทั้งเหตุผลและจุดที่ต้นฉบับอาจกำกวม โดยไม่แก้ถ้อยคำต้นฉบับเงียบ ๆ.\par
 \begin{enumerate}[leftmargin=1.4em,start=1,itemsep=0.14cm]
-\item \textbf{(a)} This is the option highlighted in the old exam. Technically, a trap transfers control to an OS handler; a system call may invoke a trap, so the source wording equates related but distinct concepts. {\small [L1; E09 Q1]}
-\item \textbf{(c)} Without user/kernel-mode separation, a process may bypass memory protection and access another process's data. {\small [L1; E09 Q2]}
-\item \textbf{(e)} The Lecture 2 model is Process = (Program, Data, Control state, Process state); all four are components. {\small [L2; E09 Q4]}
-\item \textbf{(b)} Isolation protects one application from unauthorized access by another. {\small [L1; E09 Q5]}
-\item \textbf{(b)} The source marks Timer interrupt and the original stem says ``non-preemptive''. Those two details conflict with the usual distinction that timer preemption is used by a preemptive scheduler; both are retained here to match the source. {\small [L2; E09 Q6]}
-\item \textbf{(d)} The process descriptor/PCB is maintained in kernel space; code, data, and stack are user-space regions. {\small [L2; E09 Q7]}
-\item \textbf{(c)} In the conventional layout used in the course, the stack grows opposite to the heap. {\small [L2; E09 Q8]}
-\item \textbf{(d)} A process must be running before it can request I/O or another operation that blocks it; there is no direct Ready-to-Blocked transition. The source key's ``reads a file'' answer was corrected. {\small [L2; E09 Q9]}
-\item \textbf{(d)} Process creation, I/O completion, and a timer-driven preemption can all place a process in the ready state in this model. {\small [L2; E09 Q10]}
-\item \textbf{(d)} A zombie has terminated but remains represented until its parent collects its exit status. {\small [L2; E09 Q12]}
-\item \textbf{(a)} The PCB stores per-process control information such as state and saved CPU context. {\small [L2; E09 Q13]}
-\item \textbf{(a)} This is the option highlighted in the old exam. Read it as the parent still being alive after the child exits and before the parent collects the child's exit status; the printed choice is abbreviated and imprecise. {\small [L2; E09 Q31]}
-\item \textbf{(e)} This is the answer indicated by the old lab question: the parent prints after the child finishes. A call to \texttt{wait()} alone does not guarantee that the child itself printed; that detail depends on the referenced lab program. {\small [L2; E09 Q14]}
-\item \textbf{(d)} Two successful fork calls leave four processes to execute the print statement once each. {\small [L2; E03 Q7]}
-\item \textbf{(e)} Timer preemption, blocking for I/O or wait, and yielding can each release the CPU. {\small [L2; E09 Q16]}
-\item \textbf{(a)} This is the answer marked in the source. The original wording and choices are retained; interpret ``arrival order'' as selecting the next job in arrival order. {\small [L3; E09 Q15]}
-\item \textbf{(b)} In the C storage-class model covered in class, \texttt{register} requests register storage for a local variable; the source's ``fastest'' claim is not guaranteed by C. {\small [L4; E09 Q19]}
-\item \textbf{(c)} Fixed-size partitions can waste unused space inside an allocated partition, which is internal fragmentation. The scanned source marks this choice; a separate typed key saying ``none'' is incorrect. {\small [L4; E09 Q20]}
-\item \textbf{(b)} The short-term scheduler selects a ready process to run. {\small [L3; E09 Q21]}
-\item \textbf{(c)} Page replacement chooses a resident page to remove when a frame is needed. {\small [L6; E09 Q22]}
-\item \textbf{(e)} Paging uses page tables, segmentation uses segment tables, and a TLB may cache translations; these mechanisms are not all required simultaneously. {\small [L5; E09 Q23]}
-\item \textbf{(d)} This is the answer marked in the source. The source wording and choices are retained; note that (c), external fragmentation, is also a standard disadvantage of contiguous allocation, so the original item is not unambiguous on technical grounds. {\small [L5; E09 Q24]}
-\item \textbf{(a)} Demand paging loads a page when it is referenced and is not already resident. {\small [L6; E09 Q26]}
-\item \textbf{(e)} Context saving, victim selection when needed, page-in, and page-table update can all occur while handling a valid page fault. {\small [L6; E09 Q27]}
-\item \textbf{(e)} The source asks which information is stored in the segment table and marks ``All choices''; Base, Bound, Direction, and Valid are the fields listed in the source. {\small [L5; E09 Q29]}
-\item \textbf{(c)} With a fixed virtual address space, a larger page means fewer virtual pages and therefore a smaller page table. {\small [L5; E09 Q30]}
-\item \textbf{(c)} Round robin is considered fair because it shares CPU time among active jobs on a short time scale. {\small [L3; E09 Q33]}
-\item \textbf{(a)} FIFO does not use time-slice preemption; it runs the current job until completion or blocking. {\small [L3; E09 Q34]}
-\item \textbf{(e)} This is the answer marked in the old exam: the memory image is kept on secondary storage. The original distractor ``virtual storage'' is retained as printed. {\small [L6; E09 Q35]}
-\item \textbf{(c)} Response time is the interval from arrival until the process first gets the CPU. {\small [L3; E09 Q36]}
-\item \textbf{(b)} Turnaround time is completion time minus arrival time. {\small [L3; E09 Q37]}
-\item \textbf{(d)} This is the answer marked in the source. The wording is retained as printed; ``Need compacting'' refers to the compaction needed to address external fragmentation from flexible-size partitions. {\small [L4; E09 Q38]}
-\item \textbf{(a)} A larger virtual address space requires more page-table entries when page and PTE sizes are fixed. {\small [L5; E09 Q39]}
-\item \textbf{(e)} A multilevel page table can omit lower-level tables for unused regions; this is how it saves memory for sparse address spaces. {\small [L5; E09 Q40]}
-\item \textbf{(a)} In the simplified state model used here, a newly created process is placed in the ready state. {\small [L2; E09 Q41]}
-\item \textbf{(b)} A process using the processor is in the running state. {\small [L2; E09 Q42]}
-\item \textbf{(e)} A long job can starve under SJF if shorter jobs keep arriving. {\small [L3; E09 Q44]}
-\item \textbf{(d)} Round robin improves response time by giving each ready job a time slice promptly. {\small [L3; E09 Q46]}
-\item \textbf{(d)} Pages are units of logical memory; page frames are equal-sized units of physical memory. {\small [L5; E09 Q48]}
-\item \textbf{(a)} OPT is an ideal benchmark because it requires knowledge of future page references. {\small [L6; E09 Q49]}
-\item \textbf{(a)} This is the option highlighted in the old exam. Read ``not valid in page table'' as a valid virtual page whose entry indicates it is not resident; strictly, an illegal virtual address is not the same as a not-present page and may cause a protection fault instead. {\small [L6; E09 Q50]}
+\item \textbf{(a)} ข้อนี้เป็นตัวเลือกที่ทำเครื่องหมายไว้ในข้อสอบเก่า. ตามหลักการ trap คือกลไกส่งการควบคุมไปยัง OS handler; system call อาจเรียกใช้ trap จึงเกี่ยวข้องกันแต่ไม่ใช่สิ่งเดียวกันพอดี. {\small [L1 p.2; E09 Q1]}
+\item \textbf{(c)} หากไม่มีการแยก user mode กับ kernel mode โปรเซสอาจข้ามการป้องกันหน่วยความจำและเข้าถึงข้อมูลของโปรเซสอื่นได้. {\small [L1 pp.2,14; E09 Q2]}
+\item \textbf{(e)} แบบจำลองใน Lecture 2 มอง process ว่าประกอบด้วย Program, Data, Control state และ Process state ดังนั้นทั้งสี่ข้อเป็นองค์ประกอบ. {\small [L2 p.4; E09 Q4]}
+\item \textbf{(b)} Isolation คือการแยกแอปพลิเคชันออกจากกัน เพื่อป้องกันไม่ให้แอปหนึ่งเข้าถึงหรือรบกวนอีกแอปโดยไม่ได้รับอนุญาต. {\small [L1 p.11; E09 Q5]}
+\item \textbf{(b)} ข้อสอบเก่าทำเครื่องหมาย Timer interrupt แต่โจทย์พิมพ์ว่า ``non-preemptive''. สองส่วนนี้ขัดกัน เพราะ timer interrupt ใช้ยึด CPU คืนในระบบ preemptive; เฉลยนี้คงคำตอบตามเครื่องหมายต้นฉบับและชี้ข้อขัดแย้งไว้. {\small [L2 p.29; E09 Q6]}
+\item \textbf{(d)} Process descriptor หรือ PCB เป็นข้อมูลที่ OS ดูแลใน kernel space; ส่วน code, data และ stack เป็นพื้นที่ของ process. {\small [L2 p.11; E09 Q7]}
+\item \textbf{(c)} ตามผังหน่วยความจำแบบที่ใช้สอน stack เติบโตสวนทางกับ heap. {\small [L4 p.11; E09 Q8]}
+\item \textbf{(d)} process ต้องอยู่สถานะ running ก่อนจึงจะร้องขอ I/O หรือทำสิ่งที่ทำให้ต้อง block ได้; ไม่มีการเปลี่ยนจาก Ready ไป Blocked โดยตรง. เฉลยพิมพ์ของต้นฉบับที่เลือก ``reads a file'' ไม่สอดคล้องกับสถานะในโจทย์. {\small [L2 pp.6--8; E09 Q9]}
+\item \textbf{(d)} ในแบบจำลองนี้ ทั้งการสร้าง process, การเสร็จของ I/O และการถูก timer interrupt แย่ง CPU ทำให้ process ไปอยู่ใน ready state ได้. {\small [L2 pp.6--8,29,34; E09 Q10]}
+\item \textbf{(d)} Zombie คือ process ที่จบแล้ว แต่ยังมีรายการสถานะคงอยู่จนกว่า parent จะมาเก็บ exit status. {\small [L2 pp.33,37--40; E09 Q12]}
+\item \textbf{(a)} PCB เก็บข้อมูลควบคุมของ process เช่น state และ CPU context ที่บันทึกไว้. {\small [L2 p.11; E09 Q13]}
+\item \textbf{(a)} เป็นตัวเลือกที่ทำเครื่องหมายไว้ในข้อสอบเก่า. ให้อ่านว่า parent ยังมีชีวิตอยู่ หลัง child จบแต่ก่อน parent จะเก็บ exit status; ข้อความตัวเลือกเดิมย่อและไม่ชัดนัก. {\small [L2 pp.37--40; E09 Q31]}
+\item \textbf{(e)} ตามโจทย์ lab ที่อ้างถึง parent จะพิมพ์หลังจาก child เสร็จ. อย่างไรก็ตาม การเรียก \texttt{wait()} เพียงอย่างเดียวไม่ได้ยืนยันว่า child พิมพ์ข้อความใด; ส่วนนั้นขึ้นกับโปรแกรม lab ที่ใช้. {\small [L2 pp.37--38; E09 Q14]}
+\item \textbf{(d)} เมื่อเรียก \texttt{fork()} สำเร็จสองครั้ง จะมี process ทั้งหมด 4 ตัวที่ทำงานต่อและพิมพ์ข้อความคนละหนึ่งครั้ง. {\small [L2 pp.34--35; E03 Q7]}
+\item \textbf{(e)} Timer interrupt, การร้องขอ I/O, การเรียก wait และการ yield ล้วนทำให้ process ปล่อย CPU ได้. {\small [L2 pp.27,29; E09 Q16]}
+\item \textbf{(a)} ข้อสอบเก่าทำเครื่องหมาย FIFO. ให้ตีความว่า scheduler เลือกงานถัดไปตามลำดับที่มาถึง; ถ้าหมายถึงลำดับการได้ CPU ทุก time slice ตัวเลือก RR ก็อาจทำให้โจทย์อ่านได้อีกแบบ จึงควรระวังความกำกวมของ stem. {\small [L3 p.7; E09 Q15]}
+\item \textbf{(b)} ใน storage class ของ C คำว่า \texttt{register} ใช้ระบุตัวแปร local ที่ร้องขอให้เก็บใน register; แต่ภาษา C ไม่รับประกันว่าตัวแปรนั้นจะเร็วที่สุดจริง. {\small [L4 p.34; E09 Q19]}
+\item \textbf{(c)} Fixed-size partition อาจเหลือพื้นที่ไม่ได้ใช้ภายใน partition ที่จัดให้ process ซึ่งเรียกว่า internal fragmentation. ภาพข้อสอบเก่าทำเครื่องหมายข้อนี้; เฉลยตัวพิมพ์อีกชุดที่ตอบ none ไม่ตรงกับภาพ. {\small [L4 pp.27,31; E09 Q20]}
+\item \textbf{(b)} Short-term scheduler เลือก process จาก ready queue เพื่อให้ได้ใช้ CPU. {\small [L3 pp.3--4; E09 Q21]}
+\item \textbf{(c)} Page replacement เลือก page ที่อยู่ใน frame แล้วเพื่อนำออก เมื่อจำเป็นต้องใช้ frame นั้น. {\small [L6 pp.13--24; E09 Q22]}
+\item \textbf{(e)} Paging ใช้ page table, segmentation ใช้ segment table และอาจใช้ TLB เร่งการแปล address; แต่ไม่ได้จำเป็นต้องใช้กลไกเหล่านี้พร้อมกันทุกแบบ. {\small [L5 pp.8--9,14--15,22; E09 Q23]}
+\item \textbf{(d)} ข้อสอบเก่าทำเครื่องหมายข้อนี้และคงข้อความเดิมไว้. อย่างไรก็ดี (c) เรื่อง external fragmentation ก็เป็นข้อเสียของการจัดสรรแบบ contiguous ได้ จึงไม่ใช่คำถามที่มีคำตอบเดียวชัดเจนในเชิงเทคนิค. {\small [L4 pp.29--31; L5 p.11; E09 Q24]}
+\item \textbf{(a)} Demand paging นำ page เข้ามาเมื่อมีการอ้างถึงและ page นั้นยังไม่อยู่ในหน่วยความจำหลัก. {\small [L6 pp.9--12; E09 Q26]}
+\item \textbf{(e)} การบันทึก context, การเลือก victim เมื่อไม่มี frame ว่าง, การอ่าน page จาก disk และการปรับ page table ล้วนเป็นขั้นตอนที่อาจเกิดระหว่างจัดการ page fault ที่ถูกต้อง. {\small [L6 pp.10--11; E09 Q27]}
+\item \textbf{(e)} ข้อสอบต้นฉบับทำเครื่องหมาย ``All choices''; ฟิลด์ที่ระบุคือ Base, Bound, Direction และ Valid. {\small [L5 pp.8--9; E09 Q29]}
+\item \textbf{(c)} เมื่อขนาด address space คงที่ page ที่ใหญ่ขึ้นทำให้จำนวน page ลดลง จึงลดจำนวน entry ที่ต้องใช้ใน page table. {\small [L5 pp.12--16; E09 Q30]}
+\item \textbf{(c)} RR แบ่งเวลา CPU ให้ process ที่พร้อมทำงานทีละช่วงสั้น ๆ จึงช่วยให้แต่ละงานได้เริ่มตอบสนองเร็วและแบ่งเวลาได้เป็นธรรมในระยะสั้น. {\small [L3 pp.14--16; E09 Q33]}
+\item \textbf{(a)} FIFO ไม่ต้องแย่ง CPU ด้วย time slice; งานปัจจุบันทำต่อจนเสร็จหรือ block. {\small [L3 p.7; E09 Q34]}
+\item \textbf{(e)} ข้อสอบเก่าทำเครื่องหมาย secondary storage ว่าเป็นที่เก็บภาพหน่วยความจำ; คงตัวเลือก ``virtual storage'' ตามต้นฉบับ ไม่แก้ข้อความตัวเลือก. {\small [L6 pp.5--8; E09 Q35]}
+\item \textbf{(c)} Response time คือเวลาตั้งแต่งานมาถึงจนได้ใช้ CPU ครั้งแรก. {\small [L3 p.13; E09 Q36]}
+\item \textbf{(b)} Turnaround time เท่ากับ completion time ลบ arrival time. {\small [L3 p.6; E09 Q37]}
+\item \textbf{(d)} ข้อสอบเก่าทำเครื่องหมาย ``Need compacting''. การ compact ช่วยรวบช่องว่างภายนอกที่เกิดกับ flexible-size partition ให้เป็นพื้นที่ต่อเนื่อง. {\small [L4 pp.29--31; E09 Q38]}
+\item \textbf{(a)} ถ้าขนาด page และ page-table entry คงเดิม address space ที่ใหญ่ขึ้นต้องใช้ page-table entries มากขึ้น. {\small [L5 p.16; E09 Q39]}
+\item \textbf{(e)} Multilevel page table ประหยัดพื้นที่ได้โดยไม่ต้องสร้างตารางระดับล่างสำหรับช่วง address ที่ไม่ได้ใช้. {\small [L5 pp.17,19; E09 Q40]}
+\item \textbf{(a)} ใน state model แบบย่อที่ใช้ในบทเรียน process ใหม่จะเข้าสู่ ready state. {\small [L2 p.6; E09 Q41]}
+\item \textbf{(b)} process ที่กำลังใช้ CPU อยู่ใน running state. {\small [L2 p.6; E09 Q42]}
+\item \textbf{(e)} SJF อาจทำให้งานยาวรอนานมากหรือ starvation หากมีงานสั้นเข้ามาแซงอย่างต่อเนื่อง. {\small [L3 pp.9--10; E09 Q44]}
+\item \textbf{(d)} RR ให้แต่ละงานที่พร้อมทำงานได้ใช้ CPU ใน time slice ของตน จึงช่วยลดเวลารอจนได้ตอบสนองครั้งแรก. {\small [L3 pp.14--16; E09 Q46]}
+\item \textbf{(d)} Page เป็นหน่วยของ logical memory ส่วน page frame เป็นหน่วยของ physical memory และทั้งสองมีขนาดเท่ากัน. {\small [L5 p.12; E09 Q48]}
+\item \textbf{(a)} OPT ใช้เป็นเกณฑ์อ้างอิงเชิงอุดมคติ เพราะต้องรู้ลำดับ page references ในอนาคตก่อนเลือก victim. {\small [L6 p.22; E09 Q49]}
+\item \textbf{(a)} เป็นตัวเลือกที่ทำเครื่องหมายไว้ในข้อสอบเก่า. ให้อ่าน ``not valid in page table'' ว่า entry ของ virtual page ที่ถูกต้องระบุว่ายังไม่อยู่ใน RAM; หาก address นั้นผิดกฎหมายจริง จะเป็นคนละกรณีกับ page ที่ยังไม่ present และอาจเกิด protection fault. {\small [L6 pp.9--11; E09 Q50]}
 \end{enumerate}
 \newpage\sectiontitle{เฉลยส่วนที่ 2: เติมคำ / ตอบสั้น}
-\noindent ข้อละ 1 คะแนน ให้ partial credit ตามองค์ประกอบในแต่ละข้อ; รับถ้อยคำอื่นที่มีความหมายถูกต้อง ไม่บังคับจำประโยคเฉลย\par\smallskip
+\noindent ข้อละ 1 คะแนน. ให้คะแนนตามองค์ประกอบที่ตอบถูก และยอมรับถ้อยคำอื่นที่มีความหมายเดียวกัน ไม่ต้องท่องประโยคเฉลยตามนี้ทุกคำ.\par\smallskip
 \begin{enumerate}[leftmargin=1.4em,itemsep=.25cm]
-\item \textbf{MLFQ: Multilevel Feedback Queue. STCF: Shortest Time-to-Completion First.}\\0.5 for each correct full name. Accept Multi-level and equivalent hyphenation.; สองคำย่อที่ใช้จริงใน Lecture 3 และโจทย์ scheduling ไม่ใช่คำย่ออุปกรณ์พื้นฐานเรียงหลายข้อ
-\item \textbf{A program is passive code; a process is a program in execution.}\\0.5 for passive code; 0.5 for a program in execution. No resource list or additional explanation required.; Process ไม่ใช่แค่ไฟล์ program ใน disk; program เดียวมีหลาย process ได้
-\item \textbf{Memory Management Unit; translates virtual addresses to physical addresses.}\\0.5 for the full name; 0.5 for virtual-to-physical translation. No protection details required.; แทนข้อ cooperative ที่ซ้ำปรนัย เพื่อเพิ่มคำย่อและความเข้าใจกลไกหน่วยความจำ
-\item \textbf{Program counter (PC) and stack pointer (SP).}\\0.5 each for two distinct valid items, such as PC, SP, a general-purpose register, or the processor status register. No switching steps required.; ปรับจากแนว context switch ให้ถามเพียงตัวอย่าง 2 อย่าง ไม่บังคับอธิบายขั้นตอนเพิ่ม
-\item \textbf{Process ID (PID) and process state.}\\0.5 each for two distinct non-register information types, such as PID, state, scheduling information, or memory-management information. No PCB expansion required.; ถามข้อมูล 2 ประเภท ไม่ถามชื่อเต็มพ่วงอีกส่วน และแยกจากตัวอย่าง register ในข้อก่อนหน้า
+\item \textbf{MLFQ = Multilevel Feedback Queue; STCF = Shortest Time-to-Completion First.}\\ให้ 0.5 คะแนนต่อชื่อเต็มที่ถูกต้อง ยอมรับการเขียน Multi-level แบบมีขีดกลาง. {\small [Lecture3\_Scheduling.pdf, pp. 12, 24--35]}
+\item \textbf{Program คือชุดคำสั่งที่ยังไม่ทำงาน; process คือ program ที่กำลังทำงาน.}\\ให้ 0.5 คะแนนต่อใจความ. ไม่ต้องแจกแจงทรัพยากรหรืออธิบายเพิ่ม. {\small [Lecture2\_ProcessAndProcessAPIs.pdf, p. 4]}
+\item \textbf{MMU = Memory Management Unit; ใช้แปล virtual address เป็น physical address.}\\ให้ 0.5 คะแนนสำหรับชื่อเต็ม และ 0.5 คะแนนสำหรับหน้าที่แปล address. ไม่ต้องอธิบายเรื่อง protection เพิ่ม. {\small [Lecture5\_NoncontiguousMemoryAllocation.pdf, pp. 14--15]}
+\item \textbf{ตัวอย่าง: program counter (PC) และ stack pointer (SP).}\\ให้ 0.5 คะแนนต่อข้อมูล CPU ที่แตกต่างกัน เช่น PC, SP, general-purpose register หรือ processor status register. ไม่ต้องอธิบายลำดับการสลับงาน. {\small [Lecture2\_ProcessAndProcessAPIs.pdf, pp. 23--24]}
+\item \textbf{ตัวอย่าง: Process ID (PID) และ process state.}\\ให้ 0.5 คะแนนต่อข้อมูลคนละประเภทที่ไม่ใช่ค่า CPU register เช่น PID, state, scheduling information หรือ memory-management information. {\small [Lecture2\_ProcessAndProcessAPIs.pdf, p. 11]}
 \end{enumerate}\newpage\sectiontitle{เฉลยส่วนที่ 2: Short Answer (ต่อ)}\begin{enumerate}[leftmargin=1.4em,start=6,itemsep=.25cm]
-\item \textbf{Zombie process.}\\1 point for zombie or zombie process. No reason required; do not substitute orphan.; ข้อนี้ถาม keyword เท่านั้น ไม่หักคะแนนเพราะไม่ได้อธิบายเหตุผลที่โจทย์ไม่ได้ถาม
-\item \textbf{I/O-intensive: copying a large file; CPU-intensive: matrix multiplication.}\\0.5 for each correctly labelled task. Accept equivalent examples; no definitions or burst analysis required.; ปรับถ้อยคำให้ตรงกับแนว workload ใน Lecture 3 มากกว่าคำว่า I/O-bound ซึ่งไม่ได้ใช้เป็นคำหลักในสไลด์
-\item \textbf{Thrashing occurs when a process is busy swapping pages in and out.}\\1 point for describing repeated page swapping between memory and disk; a high page-fault rate alone is not the definition. No working-set calculation required.; ใช้นิยามตรงจาก Lecture 6 แทน LJF ซึ่งไม่อยู่ในเนื้อหา Lecture 1–6 โดยตรง
-\item \textbf{No; 4200 exceeds the 4096-byte bound.}\\0.5 for No; 0.5 for the correct bounds comparison. No physical-address calculation or fault-handling steps required.; ต้องตรวจ bounds ก่อนบวก base; คำตอบ 20584 เป็นการคำนวณโดยข้าม protection check
-\item \textbf{Translation Lookaside Buffer; the translation may be uncached while the page is still in RAM.}\\0.5 for the full name; 0.5 for cached-translation miss versus nonresident-page distinction.; TLB เป็น cache ของ translations ไม่ใช่ page contents จึง miss ได้ทั้งที่ page ยังอยู่ RAM
+\item \textbf{Zombie process.}\\รับคำว่า zombie หรือ zombie process ได้เต็ม 1 คะแนน; ไม่ต้องอธิบายเหตุผล และอย่าสับสนกับ orphan. {\small [Lecture2\_ProcessAndProcessAPIs.pdf, pp. 33, 37--40]}
+\item \textbf{I/O-intensive: คัดลอกไฟล์ขนาดใหญ่; CPU-intensive: คูณเมทริกซ์.}\\ให้ 0.5 คะแนนต่อประเภทงานที่ยกตัวอย่างและระบุถูกต้อง รับตัวอย่างอื่นที่สมเหตุสมผล ไม่ต้องนิยามหรือวิเคราะห์ burst. {\small [Lecture3\_Scheduling.pdf, pp. 19--21]}
+\item \textbf{Thrashing คือภาวะที่ระบบย้าย page เข้า-ออกระหว่าง RAM กับ disk ซ้ำ ๆ จนเสียเวลาส่วนใหญ่ไปกับการสลับ page.}\\ให้ 1 คะแนนเมื่ออธิบายการสลับ page ซ้ำได้ถูกต้อง; การบอกเพียงว่า page fault rate สูงยังไม่ใช่นิยามครบ. {\small [Lecture6\_VirtualMemory.pdf, pp. 33--34]}
+\item \textbf{ไม่ถูกต้อง เพราะ $4200>4096$ bytes ซึ่งเกิน bound.}\\ให้ 0.5 คะแนนสำหรับคำตอบ No และ 0.5 คะแนนสำหรับการเทียบกับ bound. ยังไม่ต้องบวก base หรือคำนวณ physical address. {\small [Lecture4\_MemoryConceptAndContiguousMemoryAllocation.pdf, pp. 17--18]}
+\item \textbf{TLB = Translation Lookaside Buffer; TLB miss อาจเกิดได้แม้ page ยังอยู่ใน RAM.}\\ให้ 0.5 คะแนนสำหรับชื่อเต็ม และ 0.5 คะแนนสำหรับแยก translation ที่ไม่อยู่ใน cache ออกจาก page ที่ไม่อยู่ใน RAM. {\small [Lecture5\_NoncontiguousMemoryAllocation.pdf, pp. 21--22; Lecture6\_VirtualMemory.pdf, pp. 9--11]}
 \end{enumerate}\newpage\sectiontitle{เฉลยอัตนัยข้อ 1: CPU Scheduling (8 คะแนน)}
-\noindent Burst = (10,1,2,1,5) ms; arrival = 0 ทุกงาน; quantum = 1 ms; เฉลยใช้ overhead 0 และให้ SJF ตัดสินงานยาวเท่ากันตามลำดับมาถึง เป็นข้อตกลงในการทำเฉลย ไม่ใช่ข้อความที่เพิ่มในโจทย์ รับลำดับ tie อื่นที่สอดคล้องกับ SJF และคำนวณถูกต้อง\par
+\noindent CPU burst ของ $P_1$--$P_5$ เท่ากับ 10, 1, 2, 1 และ 5 ms ตามลำดับ; ทุกงานมาถึงเวลา 0 และ RR ใช้ quantum 1 ms. การคำนวณนี้ไม่นับ overhead จากการสลับงาน. เมื่อ SJF เจองานที่ใช้เวลาเท่ากัน ให้เรียงตามลำดับมาถึงเพื่อทำเฉลย; นี่เป็นข้อตกลงในการคำนวณ ไม่ใช่เงื่อนไขที่เพิ่มลงในโจทย์. หากใช้ tie-break แบบอื่นที่ยังถูกต้องตาม SJF และคำนวณสอดคล้องกัน ให้รับคำตอบนั้นได้.\par
 \noindent\textbf{FIFO}
 \begin{center}\begin{tikzpicture}[x=0.75cm,y=0.65cm]
 \draw (0,0) rectangle (10,1);\node at (5.0,.5) {$P_1$};
@@ -132,32 +195,32 @@
 \node[below,font=\scriptsize] at (18,0) {18};
 \node[below,font=\scriptsize] at (19,0) {19};
 \end{tikzpicture}\end{center}
-\noindent RR ยังคงมีจุดแบ่ง quantum แม้เหลือเพียง $P_1$; จะรวมช่วงติดกันของ $P_1$ ตอนท้ายก็ได้ถ้าระบุ quantum ถูกต้อง\par\medskip
-\noindent\textbf{นิยามที่ใช้}\\$T_i=C_i-A_i$; $R_i=S_i-A_i$; $W_i=T_i-B_i$ (กรณีมี CPU burst เดียว ไม่มี I/O)\\$C$: completion, $A$: arrival, $S$: first start, $B$: CPU burst\\Response time ไม่ใช่ total waiting time โดยเฉพาะเมื่อใช้ RR\par
+\noindent แม้ช่วงท้ายจะเหลือ $P_1$ งานเดียว RR ก็ยังแบ่งเวลาเป็น quantum ละ 1 ms. ใน Gantt chart จะวาดช่วง $[14,19)$ เป็นกล่องเดียวได้ หากทำเครื่องหมายจุดแบ่ง quantum ที่ 15, 16, 17 และ 18 ms ไว้ด้วย.\par\medskip
+\noindent\textbf{นิยามที่ใช้}\\$T_i=C_i-A_i$ คือ turnaround time; $R_i=S_i-A_i$ คือ response time; $W_i=T_i-B_i$ คือเวลารอรวม เมื่อมี CPU burst เดียวและไม่มี I/O.\\$C$ คือเวลาจบงาน, $A$ คือเวลามาถึง, $S$ คือเวลาได้ CPU ครั้งแรก และ $B$ คือ CPU burst.\\Response time นับถึงครั้งแรกที่ได้ CPU เท่านั้น จึงไม่รวมช่วงที่ process กลับไปรอระหว่าง quantum ของ RR.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 1: ไล่ FIFO และ SJF}
-\noindent\textbf{FIFO:} ทุก process มาถึงเวลาเดียวกัน ลำดับตามโจทย์จึงเป็น $P_1,P_2,P_3,P_4,P_5$. FIFO ทำงานจนจบทีละตัว ดังนั้นเวลาสิ้นสุดได้จาก burst สะสม:
+\noindent\textbf{FIFO:} ทุก process มาถึงพร้อมกัน จึงใช้ลำดับตามโจทย์ $P_1,P_2,P_3,P_4,P_5$. FIFO ปล่อยให้งานปัจจุบันทำจนเสร็จ ดังนั้นเวลาจบของแต่ละงานหาได้จากผลรวม burst ก่อนหน้า:
 \[0+10=10,\qquad 10+1=11,\qquad 11+2=13,\qquad 13+1=14,\qquad 14+5=19.\]
 \begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|r|c|r|r}
-Process & Burst (ms) & CPU interval & First start $S_i$ & Completion $C_i$\\\hline
+โปรเซส & Burst (ms) & ช่วงใช้ CPU & เริ่มครั้งแรก $S_i$ & เวลาจบ $C_i$\\\hline
 $P_1$ & 10 & $[0,10)$ & 0 & 10\\
 $P_2$ & 1 & $[10,11)$ & 10 & 11\\
 $P_3$ & 2 & $[11,13)$ & 11 & 13\\
 $P_4$ & 1 & $[13,14)$ & 13 & 14\\
 $P_5$ & 5 & $[14,19)$ & 14 & 19\\
 \end{tabular}\end{center}
-\noindent เช่น $P_3$ เริ่มหลัง $P_1$ และ $P_2$ จบที่ $10+1=11$; ทำงาน 2 ms จึงเสร็จที่ $11+2=13$.\par\medskip
-\noindent\textbf{SJF แบบไม่แทรกงาน:} เนื่องจากทุกงานพร้อมตั้งแต่ $t=0$, เลือก burst สั้นที่สุดก่อน. เรียงได้ $P_2(1),P_4(1),P_3(2),P_5(5),P_1(10)$. $P_2$ กับ $P_4$ ยาวเท่ากัน จึงใช้ลำดับมาถึงเป็น tie-break.\par
+\noindent ตัวอย่างเช่น $P_3$ เริ่มเมื่อ $P_1$ และ $P_2$ จบแล้ว คือ $10+1=11$ ms; ใช้ CPU อีก 2 ms จึงจบที่ $11+2=13$ ms.\par\medskip
+\noindent\textbf{SJF แบบไม่แทรกงาน:} ทุกงานพร้อมตั้งแต่ $t=0$ จึงเลือก burst ที่สั้นที่สุดก่อน. ลำดับคือ $P_2(1),P_4(1),P_3(2),P_5(5),P_1(10)$. $P_2$ และ $P_4$ ใช้เวลาเท่ากัน จึงใช้ลำดับมาถึงตัดสิน.\par
 \begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|r|c|r|r}
-Process & Burst (ms) & CPU interval & First start $S_i$ & Completion $C_i$\\\hline
+โปรเซส & Burst (ms) & ช่วงใช้ CPU & เริ่มครั้งแรก $S_i$ & เวลาจบ $C_i$\\\hline
 $P_2$ & 1 & $[0,1)$ & 0 & 1\\
 $P_4$ & 1 & $[1,2)$ & 1 & 2\\
 $P_3$ & 2 & $[2,4)$ & 2 & 4\\
 $P_5$ & 5 & $[4,9)$ & 4 & 9\\
 $P_1$ & 10 & $[9,19)$ & 9 & 19\\
 \end{tabular}\end{center}
-\noindent ตัวอย่าง: เมื่อ $P_2$ และ $P_4$ จบที่เวลา 2, งานสั้นที่สุดที่เหลือคือ $P_3$; จึงจบที่ $2+2=4$. ทั้ง FIFO และ SJF ไม่หยุดกลาง burst ในโจทย์นี้; ตัวเลข Priority ไม่เกี่ยวกับสองนโยบายนี้.\par
+\noindent เช่น เมื่อ $P_2$ และ $P_4$ จบที่เวลา 2 ms งานสั้นที่สุดที่เหลือคือ $P_3$ จึงจบที่ $2+2=4$ ms. โจทย์นี้ใช้ FIFO และ SJF แบบไม่แทรกงาน; คอลัมน์ Priority ไม่เกี่ยวกับสองนโยบายนี้.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): ไล่ Round Robin}
-\noindent เริ่มด้วย ready queue $[P_1,P_2,P_3,P_4,P_5]$. ในแต่ละรอบหยิบหัวคิวมาใช้ CPU ไม่เกิน 1 ms. ถ้าทำเสร็จให้ออกจากระบบ; ถ้ายังเหลือ burst ให้นำไปต่อท้ายคิว. ตัวอย่างรอบแรก: $P_1$ ใช้ 1 ms จาก 10 ms เหลือ 9 ms แล้วต่อท้าย; จากนั้น $P_2$ ใช้ 1 ms จบงาน.\par\smallskip
+\noindent เริ่มจาก ready queue $[P_1,P_2,P_3,P_4,P_5]$. แต่ละงานได้ใช้ CPU ไม่เกิน 1 ms ต่อรอบ; ถ้ายังไม่เสร็จให้นำกลับไปต่อท้ายคิว. รอบแรก $P_1$ ใช้ไป 1 ms เหลือ 9 ms จึงกลับไปท้ายคิว ส่วน $P_2$ ใช้ 1 ms แล้วเสร็จ.\par\smallskip
 {\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|r|l}
 เวลา (ms) & Process & Burst ที่เหลือ & ผลหลังจบ quantum\\\hline
 $[0,1)$ & $P_1$ & 9 & กลับไปท้ายคิว\\
@@ -180,12 +243,12 @@ $[16,17)$ & $P_1$ & 2 & ทำต่ออีกหนึ่ง quantum\\
 $[17,18)$ & $P_1$ & 1 & ทำต่ออีกหนึ่ง quantum\\
 $[18,19)$ & $P_1$ & 0 & เสร็จที่ $t=19$\\
 \end{tabular}\end{center}}
-\noindent เมื่อเหลือ $P_1$ เพียงงานเดียว CPU ยังแบ่งเวลาเป็น quantum ละ 1 ms; ใน Gantt chart จะรวมช่วงท้าย $[14,19)$ เป็นกล่องเดียวก็ได้ แต่จุดแบ่งที่ 15, 16, 17 และ 18 ยังคงมีอยู่.\par
+\noindent เมื่อเหลือ $P_1$ เพียงงานเดียว มันยังถูกจัดสรร CPU ครั้งละ 1 ms. ใน Gantt chart รวมช่วงท้าย $[14,19)$ เป็นกล่องเดียวได้ แต่ควรแสดงจุดแบ่งที่ 15, 16, 17 และ 18 ms ไว้.\par
 
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): คำนวณเวลาและค่าเฉลี่ย}
-\noindent นิยามที่ใช้คือ $T_i=C_i-A_i$ และ $R_i=S_i-A_i$, โดย $S_i$ เป็นเวลาได้ CPU ครั้งแรก. ทุก process มาถึงเวลา $A_i=0$, ดังนั้น turnaround เท่ากับ completion time และ response เท่ากับ first-start time.\par\smallskip
+\noindent ใช้ $T_i=C_i-A_i$ สำหรับ turnaround time และ $R_i=S_i-A_i$ สำหรับ response time โดย $S_i$ คือเวลาได้ CPU ครั้งแรก. เนื่องจากทุก process มาถึงเวลา $A_i=0$, turnaround จึงเท่ากับเวลาจบงาน ส่วน response เท่ากับเวลาเริ่มครั้งแรก.\par\smallskip
 {\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|r|r|r|r}
-Policy & Process & $S_i$ & $C_i$ & $T_i=C_i$ & $R_i=S_i$\\\hline
+นโยบาย & โปรเซส & $S_i$ & $C_i$ & $T_i=C_i$ & $R_i=S_i$\\\hline
 FIFO & $P_1$ & 0 & 10 & 10 & 0\\
  & $P_2$ & 10 & 11 & 11 & 10\\
  & $P_3$ & 11 & 13 & 13 & 11\\
@@ -202,9 +265,9 @@ RR & $P_1$ & 0 & 19 & 19 & 0\\
  & $P_4$ & 3 & 4 & 4 & 3\\
  & $P_5$ & 4 & 14 & 14 & 4\\
 \end{tabular}\end{center}}
-\noindent\textbf{ตัวอย่างแทนค่าสูตร}\\
-FIFO: $P_5$ จบที่ 19 จึงได้ $T_5=19-0=19$ ms; เริ่มครั้งแรกที่ 14 จึงได้ $R_5=14-0=14$ ms.\\
-RR: $P_3$ จบที่ 7 แม้ใช้ CPU รวม 2 ms จึงได้ $T_3=7-0=7$ ms; เริ่มครั้งแรกที่ 2 จึงได้ $R_3=2-0=2$ ms. เวลารอระหว่าง quantum หลังจากได้ CPU ครั้งแรกไม่ถูกนับซ้ำใน response time.\par\medskip
+\noindent\textbf{ตัวอย่างแทนค่า}\\
+FIFO: $P_5$ จบที่ 19 ms จึงมี $T_5=19-0=19$ ms และเริ่มใช้ CPU ครั้งแรกที่ 14 ms จึงมี $R_5=14-0=14$ ms.\\
+RR: $P_3$ จบที่ 7 ms แม้ใช้ CPU รวมเพียง 2 ms จึงมี $T_3=7-0=7$ ms; ส่วนเวลาเริ่มครั้งแรกคือ 2 ms ทำให้ $R_3=2-0=2$ ms. การกลับไปรอหลังได้ CPU ครั้งแรกไม่ถูกรวมใน response time.\par\medskip
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 1 (ต่อ): ค่าเฉลี่ยและเกณฑ์ตรวจ}
 \noindent\textbf{คำนวณค่าเฉลี่ย}
 \begin{itemize}[leftmargin=1.4em,itemsep=.16cm]
@@ -212,51 +275,51 @@ RR: $P_3$ จบที่ 7 แม้ใช้ CPU รวม 2 ms จึงไ�
 \item SJF: $\overline{T}=(19+1+4+2+9)/5=35/5=7.0$ ms; $\overline{R}=(9+0+2+1+4)/5=16/5=3.2$ ms.
 \item RR: $\overline{T}=(19+2+7+4+14)/5=46/5=9.2$ ms; $\overline{R}=(0+1+2+3+4)/5=10/5=2.0$ ms.
 \end{itemize}
-\noindent\textbf{สรุปข้อ (d):} SJF ให้ average turnaround ต่ำสุดที่ 7.0 ms; RR ให้ average response ต่ำสุดที่ 2.0 ms. เป็นผลเฉพาะ burst และ arrival ชุดนี้ ไม่ได้แปลว่า scheduler เดิมจะชนะทุก workload.\par\medskip
+\noindent\textbf{สรุปข้อ (d):} สำหรับชุดงานนี้ SJF ให้ turnaround time เฉลี่ยต่ำสุดที่ 7.0 ms ส่วน RR ให้ response time เฉลี่ยต่ำสุดที่ 2.0 ms. ผลนี้ขึ้นกับ burst และเวลามาถึงชุดนี้ ไม่ได้หมายความว่านโยบายเดียวกันจะดีที่สุดกับทุก workload.\par\medskip
 \noindent\textbf{เกณฑ์ตรวจ 8 คะแนน}
 \begin{itemize}[leftmargin=1.4em,itemsep=.14cm]
-\item (a) 3 คะแนน: FIFO, SJF, RR อย่างละ 1 คะแนน; ดูลำดับงานและขอบเวลาบน Gantt chart.
-\item (b) 2 คะแนน: turnaround 15 ค่า; ให้ตามค่าที่คำนวณสม่ำเสมอจาก $C_i-A_i$.
-\item (c) 2 คะแนน: response 15 ค่า; ใช้เวลาได้ CPU ครั้งแรก $S_i-A_i$, ไม่ใช่เวลารอรวม.
-\item (d) 1 คะแนน: SJF สำหรับ minimum average turnaround (.5) และ RR สำหรับ minimum average response (.5).
+\item (a) 3 คะแนน: FIFO, SJF และ RR อย่างละ 1 คะแนน พิจารณาลำดับงานและเวลาบน Gantt chart.
+\item (b) 2 คะแนน: turnaround time ทั้ง 15 ค่า ให้คะแนนตามการใช้ $C_i-A_i$ อย่างสม่ำเสมอ.
+\item (c) 2 คะแนน: response time ทั้ง 15 ค่า โดยใช้เวลาได้ CPU ครั้งแรก $S_i-A_i$ ไม่ใช่เวลารอรวม.
+\item (d) 1 คะแนน: เลือก SJF สำหรับ turnaround time เฉลี่ยต่ำสุด (0.5) และ RR สำหรับ response time เฉลี่ยต่ำสุด (0.5).
 \end{itemize}
-\noindent หากคำนวณพลาดหนึ่งจุดแต่ใช้วิธีถูกในขั้นถัดไป ให้ follow-through credit และไม่หักความผิดเดิมซ้ำ.\par
+\noindent หากคำนวณพลาดจุดหนึ่ง แต่ใช้ค่าที่ได้ต่ออย่างถูกต้องในขั้นถัดไป ให้คะแนนวิธีทำต่อเนื่อง และไม่หักความผิดเดิมซ้ำ.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 2: MLFQ กับธนาคาร (4 คะแนน)}
-\noindent\textbf{คำตอบตัวอย่างแบบเรียงความสั้น}
+\noindent\textbf{คำอธิบายเสริม: ตัวอย่างคำตอบตามโจทย์}
 {\small\begin{quote}
-ช่วงลูกค้าแน่น ธนาคารอาจใช้ MLFQ โดยให้ลูกค้าใหม่เริ่มคิวความสำคัญสูง และเลือกบริการจากคิวสูงสุดที่ยังมีคนรอ หากอยู่คิวเดียวกันให้ผลัดกันแบบ RR; รายการที่ยังไม่เสร็จเมื่อใช้เวลาในระดับนั้นครบจึงเลื่อนไปคิวล่างซึ่งให้ช่วงบริการยาวขึ้น และควรเลื่อนผู้ที่รอนานกลับขึ้นคิวบนเป็นระยะเพื่อไม่ให้ถูกทิ้งไว้นาน การคัดแยกรายการ เตรียมเอกสาร และเพิ่มช่องบริการตามภาระงานช่วยลดเวลาเฉลี่ยตั้งแต่เข้าคิวจนจบรายการ ทั้งนี้ควรพักธุรกรรมเฉพาะจุดปลอดภัย บันทึกความคืบหน้า และปรับนโยบายจากเวลาที่วัดได้จริง.
+ช่วงลูกค้าแน่น ธนาคารอาจใช้ MLFQ โดยให้ลูกค้าใหม่เริ่มที่คิวความสำคัญสูง และเลือกบริการจากคิวที่มี priority สูงสุดก่อน หากลูกค้าอยู่คิวเดียวกันให้ผลัดกันใช้ช่องบริการแบบ RR. รายการที่ยังไม่เสร็จหลังใช้เวลาในคิวนั้นครบโควตาจึงเลื่อนไปคิวล่าง ซึ่งอาจกำหนดช่วงบริการให้ยาวขึ้น พร้อมเลื่อนผู้ที่รอนานกลับขึ้นคิวบนเป็นระยะเพื่อลดโอกาสถูกทิ้งค้าง. การคัดแยกรายการและเตรียมเอกสารล่วงหน้าช่วยลดเวลาที่ช่องบริการหยุดรอข้อมูล; การเพิ่มช่องบริการควรอิงกับภาระงานและกำลังคนจริง. ธุรกรรมควรหยุดได้เฉพาะจุดปลอดภัยและต้องบันทึกความคืบหน้า. จากนั้นจึงใช้เวลาที่วัดได้มาปรับนโยบาย โดยดูทั้งเวลาเฉลี่ยและความเป็นธรรม.
 \end{quote}}\medskip
-\noindent\textbf{แยกกฎออกมาเพื่อให้เห็นว่าใช้ MLFQ อย่างไร}
+\noindent\textbf{เทียบกับกฎของ MLFQ}
 \begin{enumerate}[leftmargin=1.4em,itemsep=.18cm]
-\item \textbf{เลือกคิวที่มี priority สูงสุดก่อน.} ถ้า Q0 มีลูกค้าพร้อมบริการ ให้เลือก Q0 ก่อน Q1 หรือ Q2; คิวล่างทำงานเมื่อไม่มีงานในคิวที่สูงกว่า.
-\item \textbf{ใช้ RR ภายในคิวเดียวกัน.} ลูกค้าในระดับเดียวกันได้ช่วงบริการสั้น ๆ ตามลำดับ แล้ววนไปคนถัดไป จึงไม่ให้รายการเดียวครองช่องบริการตลอด.
-\item \textbf{ให้รายการใหม่เริ่มคิวบนสุด.} ระบบยังไม่ทราบเวลาทำรายการจริงก่อนเริ่ม; รายการสั้นอาจจบจาก Q0 ส่วนรายการยาวจะใช้เวลาในคิวสูงต่อเนื่องมากกว่า.
-\item \textbf{ลดระดับเมื่อใช้ allotment ครบ.} ถ้ารายการยังไม่จบหลังใช้เวลาสะสมครบโควตาของระดับนั้น จึงลดลงหนึ่งคิว; การ yield หรือพักก่อนหมด slice ไม่ควรล้างเวลาที่ใช้ไปแล้ว.
-\item \textbf{ทำ priority boost เป็นระยะ.} เลื่อนงานที่ยังไม่เสร็จกลับขึ้นคิวสูงตามรอบ เพื่อไม่ให้งานซับซ้อนถูกงานสั้นแซงซ้ำจนแทบไม่ได้รับบริการ.
+\item \textbf{เลือกคิว priority สูงสุดก่อน.} ถ้า Q0 ยังมีลูกค้ารอ ให้บริการ Q0 ก่อน Q1 หรือ Q2; คิวล่างได้ใช้ช่องบริการเมื่อคิวที่สูงกว่าว่าง.
+\item \textbf{ใช้ RR ภายในคิวเดียวกัน.} ลูกค้าในระดับเดียวกันได้ใช้ช่องบริการเป็นรอบ ๆ จึงไม่ปล่อยให้รายเดียวครองบริการตลอด.
+\item \textbf{ให้ลูกค้าใหม่เริ่มคิวบนสุด.} ระบบยังไม่รู้เวลาที่แต่ละธุรกรรมต้องใช้ล่วงหน้า; งานสั้นอาจเสร็จในคิวบน ส่วนงานยาวจะใช้โควตาในคิวสูงต่อเนื่องมากกว่า.
+\item \textbf{ใช้โควตาเวลา (time allotment) เพื่อลดระดับ.} ถ้ารายการยังไม่เสร็จหลังใช้เวลาสะสมครบโควตาของระดับนั้น ให้ย้ายลงหนึ่งคิว. การพักหรือ yield ก่อนหมด time slice ไม่ควรล้างเวลาที่ใช้ไปแล้ว.
+\item \textbf{ทำ priority boost เป็นระยะ.} เลื่อนรายการที่ยังไม่เสร็จกลับขึ้นคิวบนตามรอบ เพื่อลดโอกาสที่งานซับซ้อนจะถูกงานสั้นแซงจนแทบไม่ได้รับบริการ.
 \end{enumerate}
-\noindent\textbf{ตัวอย่างการเดินคิว (ตัวเลขสมมติ ไม่ใช่ค่าที่โจทย์กำหนด)}\\
-พิจารณาช่องบริการเดียว มี A, B, C มาพร้อมกันและใช้เวลา 1, 5, 3 นาทีตามลำดับ; Q0 ให้ slice 2 นาทีและ Q1 ให้ slice 4 นาที.
+\noindent\textbf{ตัวอย่างการทำงานของคิว}\ (ตัวเลขต่อไปนี้สมมติขึ้นเพื่ออธิบาย ไม่ใช่ข้อมูลจากโจทย์)\\
+สมมติมีช่องบริการเดียว และลูกค้า A, B, C มาถึงพร้อมกัน ใช้เวลาทำรายการ 1, 5 และ 3 นาทีตามลำดับ. Q0 ให้เวลา 2 นาทีต่อครั้ง ส่วน Q1 ให้ 4 นาที.
 \begin{center}\renewcommand{\arraystretch}{1.2}\begin{tabular}{c|c|l|l}
-เวลา & คิว/ลูกค้า & เวลาที่เหลือ & ผล\\\hline
+เวลา (นาที) & คิว/ลูกค้า & เวลาที่เหลือ & ผล\\\hline
 0--1 & Q0 / A & 0 นาที & A เสร็จที่นาที 1\\
 1--3 & Q0 / B & 3 นาที & ใช้ Q0 ครบ 2 นาที จึงย้ายไป Q1\\
 3--5 & Q0 / C & 1 นาที & ใช้ Q0 ครบ 2 นาที จึงย้ายไป Q1\\
-5--8 & Q1 / B & 0 นาที & B ใช้ต่อ 3 นาทีและเสร็จที่นาที 8\\
-8--9 & Q1 / C & 0 นาที & C ใช้ต่อ 1 นาทีและเสร็จที่นาที 9\\
+5--8 & Q1 / B & 0 นาที & B ใช้ต่ออีก 3 นาทีและเสร็จที่นาที 8\\
+8--9 & Q1 / C & 0 นาที & C ใช้ต่ออีก 1 นาทีและเสร็จที่นาที 9\\
 \end{tabular}\end{center}
-\noindent เมื่อทุกคนมาถึงเวลา 0, turnaround ของ A, B, C จึงเป็น 1, 8, 9 นาที. ตัวอย่างนี้แสดงว่าคิวสูงช่วยให้งานสั้นเสร็จเร็ว ขณะที่การลดระดับยังเปิดโอกาสให้งานยาวค่อย ๆ ทำต่อจนจบ.\par\medskip
-\newpage\noindent\textbf{ข้อเสนอปรับปรุงและข้อจำกัด}
+\noindent เมื่อลูกค้าทั้งหมดมาถึงเวลา 0, turnaround time ของ A, B, C คือ 1, 8 และ 9 นาทีตามลำดับ. ตัวอย่างนี้แสดงว่าคิวสูงช่วยให้งานสั้นเสร็จเร็ว ส่วนการลดระดับยังเปิดโอกาสให้งานยาวทำต่อจนจบ.\par\medskip
+\newpage\noindent\textbf{คำอธิบายเสริม: ข้อเสนอปรับปรุงและข้อจำกัด}
 \begin{itemize}[leftmargin=1.4em,itemsep=.15cm]
-\item ตรวจเอกสารและคัดประเภทบริการก่อนเข้าคิว เพื่อลดเวลาที่ช่องบริการหยุดรอข้อมูล; จัดผู้เชี่ยวชาญหรือเพิ่ม counter เฉพาะช่วงที่ข้อมูลชี้ว่าคุ้มกับกำลังคน.
-\item ตั้ง slice คิวสูงสั้นพอให้งานง่ายเริ่มเร็ว แต่ไม่สั้นจนเสียเวลาเปลี่ยนงานมาก; คิวต่ำให้ช่วงยาวขึ้นเพื่อลด overhead.
-\item บันทึกเวลา arrival, เริ่มบริการ, พัก, กลับมาทำต่อ และ completion แล้วคำนวณ turnaround จริงเพื่อปรับ slice, allotment และรอบ boost.
-\item ธุรกรรมธนาคารหยุดสลับไม่ได้ทุกจุดเหมือน CPU: ต้องพัก ณ checkpoint ที่ปลอดภัยและเก็บ progress; หลาย counter ทำให้บริการขนานได้แต่มีต้นทุนเพิ่ม.
+\item ตรวจเอกสารและคัดประเภทบริการก่อนเข้าคิว เพื่อลดเวลาที่ช่องบริการต้องหยุดรอข้อมูล; เพิ่มผู้เชี่ยวชาญหรือช่องบริการเฉพาะช่วงที่ข้อมูลชี้ว่าคุ้มกับกำลังคน.
+\item กำหนด time slice ของคิวบนให้สั้นพอที่งานง่ายจะเริ่มได้เร็ว แต่ไม่สั้นจนเสียเวลาสลับงานมากเกินไป; คิวล่างอาจให้ช่วงยาวขึ้นเพื่อลด overhead.
+\item บันทึกเวลามาถึง เริ่มบริการ พัก กลับมาทำต่อ และเสร็จงาน แล้วใช้ turnaround time ที่วัดได้จริงมาปรับ time slice, allotment และรอบ boost.
+\item ธุรกรรมธนาคารไม่สามารถหยุดสลับได้ทุกจุดเหมือน CPU จึงควรกำหนดจุดพักที่ปลอดภัยและบันทึกความคืบหน้า. การเพิ่ม counter ช่วยทำงานขนาน แต่มีต้นทุนด้านบุคลากรและพื้นที่.
 \end{itemize}
-\noindent MLFQ ไม่รับประกัน average turnaround ต่ำที่สุดทุกชุดงานเพราะไม่ทราบเวลาบริการล่วงหน้า; ควรประเมินทั้ง turnaround, ความเป็นธรรม และความถูกต้องของธุรกรรม.\par\medskip
-\noindent\textbf{เกณฑ์ตรวจ 4 คะแนน:} ความเข้าใจและการเทียบกฎ MLFQ 2 คะแนน; policy ที่นำไปใช้ได้ 1 คะแนน; ข้อเสนอปรับปรุงพร้อมเหตุผลหรือข้อจำกัด 1 คะแนน. รับตัวอย่างอื่นที่อธิบายสอดคล้อง ไม่บังคับจำนวนคิวหรือเวลาเหมือนตัวอย่างนี้.
+\noindent MLFQ ไม่ได้รับประกันว่าจะทำให้ turnaround time เฉลี่ยต่ำที่สุดสำหรับทุกชุดงาน เพราะระบบไม่รู้เวลาบริการล่วงหน้า. ควรประเมินทั้งเวลารอ ความเป็นธรรม และความถูกต้องของธุรกรรม.\par\medskip
+\noindent\textbf{เกณฑ์ตรวจ 4 คะแนน:} อธิบายและเทียบกฎ MLFQ 2 คะแนน; เสนอนโยบายที่นำไปใช้ได้ 1 คะแนน; เสนอวิธีปรับปรุงพร้อมเหตุผลหรือข้อจำกัด 1 คะแนน. รับตัวอย่างอื่นที่สอดคล้อง ไม่บังคับจำนวนคิวหรือเวลาให้ตรงกับตัวอย่างนี้. {\small [Lecture3\_Scheduling.pdf, pp. 24--35; โจทย์อ้างอิง \texttt{ยำรวมมิตรข้อเขียน.pdf}, pp. 4--6, 10]}
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: Page Replacement (8 คะแนน)}
 \noindent\textbf{ตาราง FIFO, LRU และ OPT (6 คะแนน)}\\
-เริ่มด้วย 3 frames ว่าง; แต่ละคอลัมน์คือสถานะหลังรับ page reference นั้นแล้ว. H (hit) หมายถึง page อยู่ใน RAM อยู่ก่อน จึงไม่เปลี่ยน frame; F (fault) หมายถึง page ไม่อยู่ใน frame และต้องนำเข้ามา. เครื่องหมาย -- คือ frame ยังว่าง. ตารางย่อยจะไล่เหตุผลเฉพาะจังหวะที่ต้องเลือก victim.\par\medskip
+เริ่มจาก frame ว่าง 3 ช่อง. แต่ละคอลัมน์แสดงสถานะหลังอ้างถึง page แล้ว. H (hit) หมายถึง page อยู่ใน RAM อยู่ก่อน จึงไม่ต้องเปลี่ยน frame; F (fault) หมายถึง page ยังไม่อยู่ใน frame จึงต้องนำเข้ามา. เครื่องหมาย -- แสดงว่า frame ยังว่าง. ตารางเหตุผลด้านล่างไล่เฉพาะครั้งที่ต้องเลือก page ที่จะนำออก (victim). {\small [Lecture6\_VirtualMemory.pdf, pp. 13--24, 29; โจทย์อ้างอิง \texttt{ยำรวมมิตรข้อเขียน.pdf}, p. 10]}\par\medskip
 
 \noindent\textbf{FIFO: 13 faults, 7 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
@@ -275,7 +338,7 @@ Frame 2 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
 Frame 3 & 4 & 3 & 3 & 3 & 3 & 0 & 0 & 0 & 0 & 0\\
 H/F & F & F & F & F & H & F & H & F & H & H\\
 \end{tabular}\end{center}}
-\noindent\textbf{FIFO: ทำไมแต่ละ page จึงถูกนำออก}\quad Queue เรียงจาก page ที่เข้าก่อนสุดไปหลังสุด. References 1--3 เติม frame; เมื่อเกิด hit ลำดับ FIFO ไม่เปลี่ยน.\par\smallskip
+\noindent\textbf{FIFO: เหตุผลที่เลือก page ออก}\quad Queue เรียงจาก page ที่เข้าก่อนสุดไปหลังสุด. การ hit ไม่ทำให้ลำดับ FIFO เปลี่ยน. การอ้างอิงครั้งที่ 1--3 ใช้เติม frame ให้ครบก่อนเริ่มแทนที่.\par\smallskip
 {\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|c|l}
 Reference no. & Page เข้า & Victim & Queue หลังแทนที่ (เก่า $\rightarrow$ ใหม่)\\\hline
 4 & 3 & 7 & $[0,1,3]$\\
@@ -289,9 +352,9 @@ Reference no. & Page เข้า & Victim & Queue หลังแทนที�
 16 & 0 & 3 & $[2,1,0]$\\
 18 & 4 & 2 & $[1,0,4]$\\
 \end{tabular}\end{center}}
-\noindent มี fault ตอนเติม frame 3 ครั้งแรกและ fault ที่ทำให้แทนที่อีก 10 ครั้ง รวม 13 faults; references ที่เหลือ 7 ครั้งเป็น hits.\par
+\noindent มี page fault 3 ครั้งระหว่างเติม frame ครั้งแรก และอีก 10 ครั้งที่ต้องแทนที่ page รวมเป็น 13 faults; อีก 7 references เป็น hits.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: LRU และเหตุผลเลือก victim}
-\noindent LRU (Least Recently Used) แทนที่ page ที่ไม่ได้ถูกใช้นานที่สุด ณ ตอนเกิด fault. ทุก hit ต้องปรับข้อมูลว่า page นั้นเพิ่งถูกใช้; ต่างจาก FIFO ตรงที่ hit เปลี่ยนลำดับความเก่า-ใหม่ได้.\par\smallskip
+\noindent LRU (Least Recently Used) เลือกแทนที่ page ที่ไม่ได้ถูกใช้นานที่สุด ณ ตอนเกิด page fault. ทุกครั้งที่ hit ต้องอัปเดตว่า page นั้นเพิ่งถูกใช้ จึงต่างจาก FIFO ซึ่งลำดับไม่เปลี่ยนเมื่อ hit.\par\smallskip
 \noindent\textbf{LRU: 13 faults, 7 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
 Ref. no. & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
@@ -309,7 +372,7 @@ Frame 2 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
 Frame 3 & 2 & 3 & 3 & 3 & 3 & 0 & 0 & 0 & 0 & 0\\
 H/F & F & F & F & F & H & F & H & F & H & H\\
 \end{tabular}\end{center}}
-\noindent\textbf{ตรวจ victim ของ LRU}\quad ตัวเลขในคอลัมน์สุดท้ายคือ reference ครั้งล่าสุดที่ page นั้นถูกใช้ก่อนการแทนที่; เลือก page ที่เลขน้อยที่สุด.\par\smallskip
+\noindent\textbf{ตรวจการเลือก page ออกของ LRU}\quad ตัวเลขในคอลัมน์สุดท้ายคือลำดับครั้งล่าสุดที่ page นั้นถูกอ้างถึงก่อนเกิด fault; เลือก page ที่ถูกใช้นานที่สุดแล้ว หรือมีเลขน้อยที่สุด.\par\smallskip
 {\small\begin{center}\renewcommand{\arraystretch}{1.12}\begin{tabular}{c|c|c|c}
 Reference no. & Page เข้า & Victim & ครั้งล่าสุดของ victim\\\hline
 4 & 3 & 7 & 1\\
@@ -323,9 +386,9 @@ Reference no. & Page เข้า & Victim & ครั้งล่าสุด�
 16 & 0 & 3 & 12\\
 18 & 4 & 2 & 15\\
 \end{tabular}\end{center}}
-\noindent ตัวอย่างที่ reference 8: frames มี 3, 0, 2; ครั้งล่าสุดคือ 6, 5, 7 ตามลำดับ จึงแทนที่ 0 ซึ่งเก่าสุด. รวมกับ fault ตอนเติม frame ครั้งแรก 3 ครั้งจะได้ 13 faults และ 7 hits.\par
+\noindent ตัวอย่างที่ reference 8: frames มี 3, 0, 2 และถูกใช้ครั้งล่าสุดที่ลำดับ 6, 5, 7 ตามลำดับ จึงนำ page 0 ออกเพราะไม่ได้ถูกใช้นานที่สุด. รวมกับ page fault 3 ครั้งแรกที่เติม frame จะได้ 13 faults และ 7 hits.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3: ตาราง OPT (ต่อ)}
-\noindent OPT แทนที่ page ที่จะถูกใช้อีกครั้งช้าที่สุดในอนาคต; ถ้าไม่ถูกใช้อีกเลย ให้ถือว่าไกลที่สุด. จึงต้องมอง reference string ที่เหลือไปข้างหน้า.\par\smallskip
+\noindent OPT นำ page ที่จะถูกใช้อีกครั้งช้าที่สุดในอนาคตออก; ถ้า page ใดไม่ถูกใช้อีกเลย ก็ถือว่าการใช้งานครั้งต่อไปอยู่ไกลที่สุด. วิธีนี้ต้องรู้ reference string ที่เหลือ จึงใช้เป็นเกณฑ์เปรียบเทียบมากกว่าจะนำไปใช้จริง.\par\smallskip
 \noindent\textbf{OPT: 10 faults, 10 hits}
 {\setlength{\tabcolsep}{5pt}\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{l|cccccccccc}
 Ref. no. & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
@@ -344,7 +407,7 @@ Frame 3 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 4 & 4 & 4\\
 H/F & F & F & H & F & H & H & H & F & H & H\\
 \end{tabular}\end{center}}
 \noindent\textbf{ไล่การตัดสินใจเมื่อ OPT เกิด fault}\\
-References 1--3 เติม frame ว่าง. เลขหลัง @ คือหมายเลข reference ที่ page นั้นจะปรากฏอีกครั้ง; "ไม่มี" หมายถึงไม่ปรากฏในส่วนที่เหลือ.\par\smallskip
+ครั้งที่อ้างอิง 1--3 ใช้เติม frame ว่าง. เลขหลัง @ คือลำดับครั้งถัดไปที่ page นั้นจะถูกอ้างถึง; คำว่า ``ไม่มี'' หมายถึงไม่พบ page นั้นอีกในส่วนที่เหลือ.\par\smallskip
 {\small\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{c|c|c|p{5.2cm}|c}
 Ref. no. & Page เข้า & Frames ก่อน fault & การใช้ครั้งถัดไปของ resident pages & Victim\\\hline
 4 & 3 & $7,0,1$ & $7@10,\ 0@5,\ 1@14$ & 1\\
@@ -355,20 +418,20 @@ Ref. no. & Page เข้า & Frames ก่อน fault & การใช้ค
 14 & 1 & $0,3,2$ & $0@16,\ 3$ ไม่มี, $2@15$ & 3\\
 18 & 4 & $0,1,2$ & $0@19,\ 1@20,\ 2$ ไม่มี & 2\\
 \end{tabular}\end{center}}
-\noindent ตัวอย่างที่ reference 4: จาก frames $7,0,1$ นั้น 7 จะกลับมาใช้ที่ 10, 0 ที่ 5 และ 1 ที่ 14; จึงนำ 1 ออกเพราะต้องรอนานที่สุด. OPT ได้ 3 faults ตอนเติม frame และอีก 7 faults ตามตาราง รวม 10 faults; ที่เหลือเป็น 10 hits. หากมี tie ระหว่าง page ที่ไม่ถูกใช้อีก เลือก victim ตัวใดก็ได้ที่ให้ผล optimal.\par
+\noindent ตัวอย่างที่ reference 4: ใน frames $7,0,1$, page 7 จะถูกใช้อีกที่ลำดับ 10, page 0 ที่ลำดับ 5 และ page 1 ที่ลำดับ 14. จึงนำ page 1 ออกเพราะต้องรอนานที่สุด. OPT เกิด fault 3 ครั้งตอนเติม frame และอีก 7 ครั้งตามตาราง รวม 10 faults; ที่เหลือ 10 ครั้งเป็น hits. ถ้ามี page หลายหน้าที่ไม่ถูกใช้อีกเลย จะเลือกหน้าใดออกก็ได้และยังให้ผล optimal.\par
 \newpage\sectiontitle{เฉลยอัตนัยข้อ 3 (ต่อ): EAT และเกณฑ์ตรวจ}
-\noindent\textbf{ขั้นที่ 1: ทำหน่วยให้ตรงกัน}\\
-Memory access time $m=10$ ns $=0.00001$ ms. Disk access time $D=10$ ms $=10{,}000{,}000$ ns. จะใช้หน่วย ns ทั้งหมดหรือแปลงเป็น ms ทั้งหมดก็ได้ แต่ห้ามบวก ns กับ ms โดยตรง.\par\medskip
-\noindent\textbf{ขั้นที่ 2: หาโอกาส hit และ fault}\\
-มี references ทั้งหมด 20 ครั้ง. ให้ $p=\text{faults}/20$ เป็นโอกาสเกิด page fault และ $h=\text{hits}/20=1-p$ เป็นโอกาส hit. ใช้โมเดล Lecture 6:
+\noindent\textbf{ขั้นที่ 1: แปลงหน่วยให้ตรงกัน}\\
+เวลาเข้าถึงหน่วยความจำ $m=10$ ns $=0.00001$ ms. เวลาเข้าถึง disk $D=10$ ms $=10{,}000{,}000$ ns. คำนวณโดยใช้ ns ทั้งหมดหรือ ms ทั้งหมดก็ได้ แต่อย่านำ ns ไปบวกกับ ms โดยตรง.\par\medskip
+\noindent\textbf{ขั้นที่ 2: หาโอกาส hit และ page fault}\\
+มีการอ้างถึง page ทั้งหมด 20 ครั้ง. ให้ $p=\text{จำนวน faults}/20$ เป็นโอกาสเกิด page fault และ $h=\text{จำนวน hits}/20=1-p$ เป็นโอกาส hit. ใช้สูตรจาก Lecture 6:
 \[\mathrm{EAT}=hm+pD=(1-p)m+pD.\]
-\noindent ในที่นี้ $D$ แทน disk access time ตามที่โจทย์ให้; ไม่เพิ่มต้นทุนอื่นที่โจทย์ไม่ได้ระบุ.\par\medskip
-\noindent\textbf{ขั้นที่ 3: แทนค่าและคำนวณ}
+\noindent ในข้อนี้ $D$ ใช้แทนเวลาเข้าถึง disk ตามที่โจทย์กำหนด และไม่บวกต้นทุนอื่นที่โจทย์ไม่ได้ให้มา.\par\medskip
+\noindent\textbf{ขั้นที่ 3: แทนค่าในสูตร}
 \begin{itemize}[leftmargin=1.4em,itemsep=.2cm]
 \item \textbf{FIFO:} $p=13/20=0.65$ และ $h=7/20=0.35$.\\
 $\mathrm{EAT}=0.35(10\,\mathrm{ns})+0.65(10{,}000{,}000\,\mathrm{ns})$\\
 $=3.5+6{,}500{,}000=6{,}500{,}003.5$ ns $=6.5000035$ ms $\approx 6.5$ ms.
-\item \textbf{LRU:} fault/hit counts เท่ากับ FIFO สำหรับ string นี้, จึง $p=0.65$, $h=0.35$ และ EAT $=6{,}500{,}003.5$ ns $=6.5000035$ ms $\approx 6.5$ ms.
+\item \textbf{LRU:} สำหรับ reference string นี้ จำนวน faults และ hits เท่ากับ FIFO จึงได้ $p=0.65$, $h=0.35$ และ EAT $=6{,}500{,}003.5$ ns $=6.5000035$ ms $\approx 6.5$ ms.
 \item \textbf{OPT:} $p=10/20=0.5$ และ $h=10/20=0.5$.\\
 $\mathrm{EAT}=0.5(10\,\mathrm{ns})+0.5(10{,}000{,}000\,\mathrm{ns})$\\
 $=5+5{,}000{,}000=5{,}000{,}005$ ns $=5.000005$ ms $\approx 5.0$ ms.
@@ -380,37 +443,55 @@ FIFO & 13 & 7 & 0.65 & $6.5000035$ ms\\
 LRU & 13 & 7 & 0.65 & $6.5000035$ ms\\
 OPT & 10 & 10 & 0.50 & $5.0000050$ ms\\
 \end{tabular}\end{center}
-\noindent OPT ให้ EAT ต่ำสุดในชุดนี้เพราะมี page faults น้อยที่สุด; FIFO กับ LRU ได้จำนวน fault เท่ากันโดยบังเอิญจาก reference string นี้ ไม่ได้แปลว่าจะเท่ากันทุกชุด. ถ้ารายงานโดยปัดเลข ได้ประมาณ 6.5 ms สำหรับ FIFO/LRU และ 5.0 ms สำหรับ OPT.\par\medskip
-\noindent\textbf{Rubric รวม 8 คะแนน}
+\noindent OPT ให้ EAT ต่ำที่สุดในชุดนี้ เพราะเกิด page fault น้อยที่สุด. FIFO และ LRU ได้จำนวน fault เท่ากันโดยบังเอิญจาก reference string นี้ ไม่ได้หมายความว่าจะเท่ากันทุกชุด. เมื่อตอบโดยปัดเศษ ให้รายงานประมาณ 6.5 ms สำหรับ FIFO/LRU และ 5.0 ms สำหรับ OPT.\par\medskip
+\noindent\textbf{เกณฑ์ตรวจรวม 8 คะแนน}
 \begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
-\item ตาราง frames รวม 6 คะแนน: แต่ละ policy 2 คะแนน ให้ตาม frame contents 20 คอลัมน์ คอลัมน์ละ .1; ไม่หักเพราะไม่มีแถว hit/fault หรือการรายงาน counts แยกต่างหาก
-\item EAT รวม 2 คะแนน: สูตร .5; แปลงหน่วย .5; EAT แต่ละ policy ค่าละ $1/3$ ไม่บังคับเขียนข้อสรุปเพิ่มเติมที่โจทย์ไม่ได้ถาม
+\item ตาราง frame รวม 6 คะแนน: policy ละ 2 คะแนน ให้คะแนนตามสถานะ frame ทั้ง 20 คอลัมน์ คอลัมน์ละ 0.1. ไม่หักคะแนนหากไม่ได้เพิ่มแถว H/F หรือสรุปจำนวน hit/fault แยกต่างหาก.
+\item EAT รวม 2 คะแนน: ตั้งสูตร 0.5 คะแนน, แปลงหน่วย 0.5 คะแนน และคำนวณ EAT ของแต่ละ policy ข้อละ $1/3$ คะแนน. ไม่ต้องเขียนข้อสรุปเพิ่มหากโจทย์ไม่ได้ถาม.
 \end{itemize}
-\noindent ให้ follow-through credit สำหรับ EAT ที่ใช้จำนวน fault จากตารางของผู้สอบอย่างถูกวิธี แม้ตารางก่อนหน้าผิด โดยหักข้อผิดเดิมในตาราง/จำนวน faults; ต้องไม่ให้คะแนนเต็มหากแทนค่าคนละหน่วยในสมการเดียวกัน
-\newpage\sectiontitle{แผนผังเนื้อหาและแหล่งอ้างอิงสำหรับตรวจทบทวน}
-\noindent\textbf{ความครอบคลุมของปรนัย}
+\noindent หากตารางก่อนหน้ามีข้อผิดพลาด แต่ผู้สอบนำจำนวน fault ของตนไปคำนวณ EAT ต่อได้ถูกวิธี ให้คะแนนขั้นคำนวณต่อเนื่อง โดยหักข้อผิดพลาดเดิมที่ตารางหรือจำนวน fault เท่านั้น. ห้ามให้คะแนนเต็มหากนำค่าคนละหน่วยมาบวกกันในสมการเดียว.
+\newpage\sectiontitle{F. จุดที่ควรยืนยันกับอาจารย์ และการตรวจความครบถ้วน}
+\noindent\textbf{ข้อที่ต้นฉบับหรือเครื่องหมายเฉลยยังมีความกำกวม}
+\begin{itemize}[leftmargin=1.4em,itemsep=.14cm]
+\item \textbf{ปรนัย 1 (แหล่ง E09 Q1):} โจทย์เรียก trap ว่า system call. ในเนื้อหาวิชา system call เป็นคำขอบริการ ส่วน trap เป็นกลไกที่อาจใช้ส่งการควบคุมเข้า OS; เฉลยคงตัวเลือกที่ทำเครื่องหมายไว้ แต่ควรถามว่าต้องการใช้สองคำนี้แทนกันหรือไม่.
+\item \textbf{ปรนัย 5 (E09 Q6):} stem ระบุ non-preemptive แต่ตัวเลือกที่ทำเครื่องหมายคือ timer interrupt ซึ่งใช้กับการแย่ง CPU ในระบบ preemptive. ควรถามว่าคำว่า non-preemptive พิมพ์คลาดเคลื่อนหรือไม่.
+\item \textbf{ปรนัย 16 (E09 Q15):} ``ทำงานตามลำดับที่มาถึง'' อาจหมายถึงเลือกงานถัดไปแบบ FIFO หรือหมายถึงลำดับที่งานได้ CPU ในแต่ละรอบ ซึ่งทำให้ RR ถูกตีความรวมได้. เฉลยคง FIFO ตามเครื่องหมายเดิมและระบุการตีความไว้.
+\item \textbf{ปรนัย 17 (E09 Q19):} ข้อสอบเก่าทำเครื่องหมาย \texttt{register} ว่าเร็วที่สุด แต่ C ไม่รับประกันว่า compiler จะเก็บตัวแปรไว้ใน register หรือทำให้เร็วกว่าเสมอ. เฉลยเก็บคำตอบตามแหล่งและบอกข้อจำกัด.
+\item \textbf{ปรนัย 22 (E09 Q24):} เฉลยต้นฉบับทำเครื่องหมาย (d) แต่ external fragmentation ใน (c) ก็เป็นข้อเสียของ contiguous allocation ได้. จึงไม่ควรยืนยันว่ามีคำตอบเดียวโดยไม่มีคำชี้แจงเพิ่ม.
+\item \textbf{ปรนัย 41 (E09 Q50):} ``not valid in page table'' แยกไม่ชัดระหว่าง virtual page ที่ถูกต้องแต่ยังไม่ present กับ address ที่ผิดกฎหมาย. เฉลยตีความตามเครื่องหมายว่าเป็นกรณี page ยังไม่อยู่ใน RAM.
+\item \textbf{ปรนัย 13 (E09 Q14):} ผลว่า parent พิมพ์หลัง child ขึ้นกับโปรแกรม lab ที่อ้างถึง; การเรียก \texttt{wait()} อย่างเดียวบอกได้เพียงว่า parent รอจน child จบ.
+\item \textbf{อัตนัยข้อ 1:} โจทย์ไม่ได้กำหนด tie-break เมื่องาน SJF ยาวเท่ากัน. เฉลยใช้ลำดับมาถึง และควรรับคำตอบที่ใช้ tie-break อื่นอย่างถูกต้องด้วย.
+\item \textbf{อัตนัยข้อ 3:} ใช้สูตร EAT ตาม Lecture 6 และต้นทุนที่โจทย์ให้เท่านั้น; ไม่เพิ่มเวลาอื่นของ page-fault handling ที่โจทย์ไม่ได้ระบุ.
+\end{itemize}
 
-\begin{center}\renewcommand{\arraystretch}{1.15}\begin{tabular}{lcl}
-Lecture & จำนวนปรนัย & หัวข้อ\\\hline
-1 & 3 & Privilege, trap, isolation\\
-2 & 14 & Process, state, context switch, wait\\
-3 & 8 & FIFO/SJF/STCF/RR, MLFQ, metrics\\
-4 & 3 & C storage class, partition fragmentation\\
-5 & 7 & Segmentation, paging, address translation\\
-6 & 6 & Virtual memory, demand paging, replacement\\
-\end{tabular}\end{center}
-\noindent\textbf{แหล่งเนื้อหา (path เทียบกับ root ของ repository)}
-\begin{itemize}[leftmargin=1.4em,itemsep=.18cm]
-\item lectures/CPE333\_OS\_Midterm\_StudyNotes.pdf และ Lecture1--Lecture6: ใช้กำหนดขอบเขต ไม่รวม threads/locks/deadlock ที่อยู่นอกชุด Lecture 1--6
-\item ปรนัย 1 ข้ออิงข้อสอบ CPE326 ปี 2561 (E03, ข้อ 7) และ 40 ข้ออิงชุดคำถามปี 2022 (E09); ตรวจตัวเลือกที่ไหลต่อข้ามหน้าจากไฟล์เต็ม 16 หน้า และใช้ Lecture 1--6 ตัดสินเฉลยเมื่อ annotation ขัดกับเนื้อหา
-\item quiz-and-exam/midterm/Backroom.pdf และข้อสอบปี 2558/2561: เทียบหัวข้อและแนวคำถาม ไม่คัดลอกหน้าที่มีคำตอบเขียนกำกับ; เมื่อเครื่องหมายเฉลยขัดกับ Lecture ให้ยึดแนวคิดใน Lecture (เช่น E09 Q6 และ Q24)
-\item quiz-and-exam/midterm/ยำรวมมิตรข้อเขียน.pdf หน้า 4--6 และ 10: Scheduling, bank analogy และ MLFQ rules; ตัวเลข burst ใช้ 10,1,2,1,5 รวม 19 ms ตามโจทย์ชุดนี้ ไม่ใช่ Quiz อีกชุดที่ $P_4=2$
-\item E09: \texttt{os midterm exam.pdf} หน้า 1--16 เป็น bank ปรนัยฉบับเต็ม; ตรวจภาพครบทุกหน้าและตามตัวเลือกที่ไหลข้ามหน้าใน Q4, Q7, Q10, Q17, Q20, Q27, Q30, Q40, Q43 และ Q50. E05 เป็นไฟล์สรุป quiz ปี 2022 ซึ่งมีเฉลยถึง Q40 แต่ไม่มีชุดตัวเลือกครบ
-\item E09 Q15 ใช้โดยระบุให้ชัดว่าเรียงตามลำดับการทำงานจนเสร็จ จึงตอบ FIFO; ตัวเลือก ``Both FIFO and RR'' คงตามต้นฉบับ แต่ไม่ได้ใช้เป็นเฉลยของ stem ที่ปรับให้แคบลง. Q45 ซ้ำกับ Q44 และตัดข้อที่อยู่นอกขอบเขตหรือยังมีคำตอบกำกวมออก
-\item quiz-and-exam/midterm/Quiz\_BeforeMidterm.pdf: เทียบรูปแบบโจทย์ Scheduling และ fit policy
+\noindent\textbf{ตรวจความครบถ้วนเทียบกับข้อสอบจำลอง}\\
+เฉลยมีคำตอบครบทั้งปรนัย 41/41 ข้อ, ตอบสั้น 10/10 ข้อ และอัตนัย 3/3 ข้อ. ข้อเขียนข้อ 1 มี Gantt chart ของ FIFO/SJF/RR, turnaround และ response time ราย process, ค่าเฉลี่ย และเกณฑ์ตรวจ; ข้อ 2 มีตัวอย่างคำตอบ, กฎ MLFQ ทั้งห้าข้อ, ตัวอย่างเดินคิว, ข้อเสนอปรับปรุงและข้อจำกัด; ข้อ 3 มีตาราง frame ครบ 20 references สำหรับ FIFO/LRU/OPT, จำนวน hit/fault, เหตุผลเลือก victim และ EAT พร้อมแปลงหน่วย. คะแนนย่อยรวม $8+4+8=20$ และทั้งฉบับรวม 50 คะแนน.\par
+\noindent การตรวจนี้ยืนยันความครบถ้วนเมื่อเทียบกับข้อสอบจำลองชุดนี้ ไม่ได้หมายความว่าครอบคลุมทุกหัวข้อในสไลด์ Lecture 1--6. ข้อความในภาพประกอบที่ไม่เกี่ยวกับโจทย์และไม่ชัดจากการดึงข้อความไม่ได้ถูกเดาหรือเติมเพิ่ม; จุดกำกวมที่มีผลต่อคำตอบระบุไว้ด้านบน.\par\medskip
+
+\noindent\textbf{แผนที่เนื้อหาและหน้า PDF ของแหล่งหลัก}\\
+รหัส L1--L6 ที่อยู่ท้ายเฉลยหมายถึงหน้า PDF ในไฟล์ต่อไปนี้ (เลขหน้าเป็นเลขหน้า PDF):
+\begin{itemize}[leftmargin=1.4em,itemsep=.10cm]
+\item L1 = \texttt{lectures/Lecture1\_IntroductionToOS.pdf}: trap และ privilege p. 2; isolation p. 11; system call และ memory protection pp. 13--15. ครอบคลุมปรนัย 1, 2, 4.
+\item L2 = \texttt{lectures/Lecture2\_ProcessAndProcessAPIs.pdf}: process components p. 4; states pp. 6--8; PCB pp. 10--12; context switch pp. 22--24; cooperative/yield p. 27; timer interrupt p. 29; fork pp. 34--36; wait pp. 37--38; termination/exit status pp. 40. ครอบคลุมปรนัย 3, 5--15, 35--36 และตอบสั้น 2, 4--6.
+\item L3 = \texttt{lectures/Lecture3\_Scheduling.pdf}: metrics pp. 6, 13; FIFO p. 7; SJF pp. 9--10; STCF p. 12; RR pp. 14--16; MLFQ pp. 24--35. ครอบคลุมปรนัย 16, 19, 27--28, 30--31, 37--38; ตอบสั้น 1, 7; อัตนัยข้อ 1--2.
+\item L4 = \texttt{lectures/Lecture4\_MemoryConceptAndContiguousMemoryAllocation.pdf}: C storage classes pp. 34--35; base/bound pp. 17--18; fixed/flexible partitions pp. 20--21; internal fragmentation p. 27; external fragmentation and compaction pp. 29--31. ครอบคลุมปรนัย 7, 17--18, 22, 32; ตอบสั้น 9.
+\item L5 = \texttt{lectures/Lecture5\_NoncontiguousMemoryAllocation.pdf}: segmentation pp. 5--10; paging/page table pp. 12--19; address translation pp. 14--16; TLB pp. 20--22. ครอบคลุมปรนัย 21--22, 25--26, 33--34, 39; ตอบสั้น 3, 10.
+\item L6 = \texttt{lectures/Lecture6\_VirtualMemory.pdf}: virtual memory/page mapping pp. 3--9; page fault/handler pp. 10--11; page selection/demand paging pp. 12--13; FIFO/LRU/OPT pp. 13--24; EAT p. 29; working set/thrashing pp. 33--34. ครอบคลุมปรนัย 20, 23--24, 29, 40--41; ตอบสั้น 8; อัตนัยข้อ 3.
 \end{itemize}
-\noindent\textbf{แม่แบบการพิมพ์}\\
-Palapluem/cpe222-past-exam-main, commit e87b379d09fdeb54f964d968c9599efdea68ba5d; main wrapper, cover และ chapter templates\\
-คงการประกอบ PDF, ฟอนต์ THSarabunNew, margin, student header และกล่องหน้าปก; บรรทัดดอกจันบนปกใช้ข้อความตามแม่แบบที่ผู้ใช้ขอ ไม่ใช่การตรวจยืนยันการรับรองจริง
-\par\medskip
-\noindent วันและเวลาตามข้อมูลที่ผู้ใช้ให้: 26 ตุลาคม 2569, 09.00--12.00 น. รายละเอียดคะแนนย่อยและเฉลยเป็นเกณฑ์ฝึกซ้อมแยกเล่ม แหล่งข้อสอบเก่าที่ใช้ระบุไว้ข้างต้น
+\noindent\textbf{แหล่งข้อสอบที่ใช้ตรวจข้อความและเฉลย}\\
+\texttt{E09} หมายถึง \texttt{quiz-and-exam/midterm/os midterm exam.pdf}, หน้า 1--16; ปรนัย 40 ข้ออิงคลังคำถามนี้ โดยตรวจโจทย์และตัวเลือกที่ต่อข้ามหน้า. \texttt{E03} หมายถึง \texttt{quiz-and-exam/midterm/20181029161937\_CPE\_326\_Operating\_System\_2561.pdf}; ใช้เทียบโจทย์ fork หนึ่งข้อ. ข้อเขียนเทียบกับ \texttt{quiz-and-exam/midterm/ยำรวมมิตรข้อเขียน.pdf}, pp. 4--6, 10. ต้นฉบับโจทย์ที่เฉลยชุดนี้ตอบอยู่ใน \texttt{quiz-and-exam/mock-exam/midterm/output/pdf/CPE333\_Midterm\_Mock\_Exam.pdf}.\par
+\noindent Lecture PDF บางหน้าเป็นภาพสไลด์ที่มีตัวหนังสือประกอบหรือ annotation ซึ่งดึงเป็นข้อความไม่ได้ครบ. ใช้เฉพาะแนวคิดและตัวเลขที่ตรวจอ่านได้จากแหล่งหลัก; หากเฉลยจากข้อสอบเก่าขัดกับหลักใน Lecture จะระบุความต่างแทนการแก้หรือเดาเงียบ ๆ.\par
+
+\newpage\sectiontitle{คำอธิบายเสริม: เฉลยคำถามฝึกทบทวน 10 ข้อ}
+\begin{enumerate}[leftmargin=1.4em,itemsep=.18cm]
+\item Program คือชุดคำสั่งที่เก็บไว้และยังไม่ทำงาน; process คือการทำงานของ program หนึ่ง instance พร้อมข้อมูลและสถานะของมัน.
+\item เปลี่ยนจาก ready ไป blocked โดยตรงไม่ได้. process ต้องได้ CPU และเข้าสู่ running ก่อน แล้วจึง block เมื่อร้องขอ I/O หรือรอเหตุการณ์; เมื่อเหตุการณ์เสร็จจึงกลับไป ready.
+\item ตัวอย่างค่าที่บันทึก ได้แก่ program counter และ stack pointer. PCB เก็บข้อมูลที่ OS ต้องใช้ติดตามและจัดการ process เช่น state, PID, scheduling information และ saved CPU context.
+\item FIFO ทำงาน A, B, C จึงมี turnaround 4, 6, 7 ms และค่าเฉลี่ย $(4+6+7)/3=17/3\approx5.67$ ms. SJF ทำงาน C, B, A จึงมี turnaround 1, 3, 7 ms และค่าเฉลี่ย $(1+3+7)/3=11/3\approx3.67$ ms.
+\item Response time $=5-2=3$ ms. Turnaround time $=9-2=7$ ms.
+\item MLFQ เลือกคิว priority สูงสุดก่อน และใช้ RR เมื่อมีหลายงาน priority เท่ากัน. Priority boost เป็นระยะช่วยให้งานที่อยู่คิวล่างนานกลับมามีโอกาสใช้ CPU; การคิดเวลาตาม allotment สะสมช่วยป้องกันการหลบกฎด้วยการ yield ก่อนหมด slice.
+\item ก่อนอ้างถึง page 4 มี page 1, 2, 3 อยู่ใน frame. FIFO ยังถือว่า page 1 เก่าที่สุด จึงนำ page 1 ออก. LRU รู้ว่า page 1 เพิ่งถูกอ้างถึง จึงนำ page 2 ซึ่งไม่ได้ถูกใช้นานที่สุดออก.
+\item $16$ KiB $=16{,}384$ bytes และ $4$ KiB $=4{,}096$ bytes. เนื่องจาก $0\leq3000<4096$, address ใช้ได้; physical address คือ $16{,}384+3000=19{,}384$ bytes.
+\item TLB miss หมายถึงไม่พบ translation ใน cache; hardware/OS ยังตรวจ page table ได้. ถ้า page table ระบุว่า page อยู่ใน RAM ก็แปล address ต่อได้โดยไม่เกิด page fault. Page fault เกิดเมื่อ page ที่ต้องใช้ยังไม่อยู่ใน RAM.
+\item $d_a=10$ ms $=10{,}000{,}000$ ns.\\$EAT=(1-0.001)(10)+0.001(10{,}000{,}000)=9.99+10{,}000=10{,}009.99$ ns $=10.00999\ \mu$s $\approx10.01\ \mu$s.
+\end{enumerate}
