@@ -1,0 +1,20 @@
+*.aux
+*.log
+*.out
+*.toc
+*.xdv
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+!evidence/**/*.log
+~$*.docx
+
+# Local review artifacts excluded from the report package
+/evidence/pr11-6122d3c/
+/evidence/pr11-be83bdc/
+/evidence/post-merge-5fbcb76/02-demo.txt
+/evidence/post-merge-5fbcb76/07-post-merge-summary.png
+/evidence/post-merge-5fbcb76/terminal/01-lima-environment.png
+/evidence/post-merge-5fbcb76/terminal/02-build-load-terminal.png
+/evidence/post-merge-5fbcb76/terminal/03-demo-terminal.png
+/evidence/post-merge-5fbcb76/terminal/06-experiments-terminal.png
