@@ -28,6 +28,7 @@
 \renewcommand{\thesection}{}
 \renewcommand{\thesubsection}{}
 \renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
+\setcounter{tocdepth}{2}
 \titleformat{\section}{\color{black}\fontsize{16}{19.2}\selectfont\bfseries}{}{0pt}{}
 \titleformat{\subsection}{\color{black}\fontsize{14}{17.5}\selectfont\bfseries}{}{0pt}{}
 \titleformat{\subsubsection}{\color{black}\fontsize{12}{15.6}\selectfont\bfseries}{}{0pt}{}
@@ -53,7 +54,7 @@
 \vspace{2.20cm}
 {\fontsize{12.5}{15.5}\selectfont Prepared by\par}
 \vspace{.10cm}
-{\thaifont\fontsize{12}{15}\selectfont มูลนิธิทนายตั้ม ช่วยสู้\par}
+{\fontsize{12}{15}\selectfont Group: }{\thaifont\fontsize{12}{15}\selectfont มูลนิธิทนายตั้ม ช่วยสู้\par}
 \vspace{1.00cm}
 {\fontsize{12}{15}\selectfont
 \renewcommand{\arraystretch}{1.70}
@@ -78,6 +79,8 @@ King Mongkut's University of Technology Thonburi\\
 Semester 1, Academic Year 2026\par}
 \end{titlepage}
 \restoregeometry
+\clearpage\pagenumbering{roman}
+\tableofcontents
 \clearpage\pagenumbering{arabic}
 
 \Needspace{6\baselineskip}
