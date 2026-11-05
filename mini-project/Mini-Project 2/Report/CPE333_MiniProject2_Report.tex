@@ -96,11 +96,11 @@ These measurements describe different things. A process can reserve a large virt
 \begin{tabular}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
 \hline
 \rowcolor{SoftGreen} \textbf{Requirement} & \textbf{Implementation} & \textbf{Check} \\ \hline
-Select a process & \code{pfstat PID} writes the target PID to \code{/proc/pfcount/target} & Read the report for a stable process \\ \hline
+Select a process & \code{pfstat PID} writes the target PID to \code{/proc/pfcount/target} & Confirm the reported PID and process name \\ \hline
 Count memory regions & Walk the process's VMAs & Compare with \code{/proc/PID/maps} \\ \hline
 Measure virtual address space & Sum \code{vm\_end - vm\_start} for every VMA & Compare with maps, \code{mm->total\_vm}, and VmSize \\ \hline
 Count minor and major faults & Read lifetime counters and count live faults with a kretprobe & Compare with kernel counters using the same process scope \\ \hline
-Explain Virtual Memory behavior & Relate VMAs, demand paging, cache, and THP to E1 to E8 & Analyze the measured results in Problem 2, Step 2 \\ \hline
+Explain virtual memory behavior & Relate VMAs, demand paging, cache, and THP to E1 to E8 & Analyze the measured results in Problem 2, Step 2 \\ \hline
 \end{tabular}}
 \end{table}
 
@@ -373,7 +373,7 @@ For both targets, the region count and summed address ranges matched \code{maps}
 
 \begin{table}[H]\centering
 {\fontsize{12}{15.6}\selectfont\arrayrulecolor{RuleGray}
-\caption{Live fault counts compared with wait4() after baseline subtraction}
+\caption{E2 to E6 process-only counts compared with getrusage()}
 \begin{tabular}{|>{\raggedright\arraybackslash}p{.9cm}|>{\raggedright\arraybackslash}p{5.4cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{3.1cm}|}
 \hline
 \rowcolor{SoftGreen} \textbf{Test} & \textbf{Workload} & \textbf{Minor} & \textbf{Major} & \textbf{Comparison} \\ \hline
@@ -424,7 +424,7 @@ This is the terminal record used for the timeline figure and the values above. I
 \begin{table}[H]\centering
 {\fontsize{12}{15.6}\selectfont\arrayrulecolor{RuleGray}
 \caption{E8 results under different fault scopes}
-\begin{tabular}{|>{\raggedright\arraybackslash}p{6.0cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{3.8cm}|}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{3.8cm}|}
 \hline
 \rowcolor{SoftGreen} \textbf{Command} & \textbf{Minor} & \textbf{Major} & \textbf{Reference comparison} \\ \hline
 \code{python3 -c pass} & 1,234 & 0 & Matches \code{getrusage()} \\ \hline
