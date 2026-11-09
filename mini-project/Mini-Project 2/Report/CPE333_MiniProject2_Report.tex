@@ -172,7 +172,7 @@ This snippet shows the main sequence. The implementation also handles a missing 
 
 \subsubsection{Lifetime and live fault counters}
 
-Lifetime counters combine \code{min\_flt} and \code{maj\_flt} values from live threads with totals transferred to \code{signal\_struct} when threads exit. The reviewed source uses \code{sig->stats\_lock} and a sequence/retry pattern like \code{/proc/PID/stat}. This avoids counting a thread twice or reading it while its totals are being transferred [2, 7]. These counters cover the thread group from process start.
+Lifetime counters combine \code{min\_flt} and \code{maj\_flt} values from live threads with totals transferred to \code{signal\_struct} when threads exit. The reviewed source uses \code{sig->stats\_lock} and a sequence/retry pattern like \code{/proc/PID/stat}. This avoids counting a thread twice or reading it while its totals are being transferred [2, 5]. These counters cover the thread group from process start.
 
 Live counters start when the user selects a target. On entry to the \code{handle\_mm\_fault()} kretprobe, the module checks whether the faulting process is in scope and saves the flags and backing type for that invocation. On return, it uses the completed result to update minor, major, anonymous, file-backed, or error counters. Keeping entry data with its invocation prevents the module from classifying a fault from a CPU error code before the kernel has handled it [2, 5, 8].
 
@@ -184,7 +184,7 @@ The module compares the thread-group \code{struct pid}, not only the numeric TGI
 
 \subsubsection{Exit snapshots and permissions}
 
-For a short-lived process that exits before the user reads its stats, the module captures the region count, virtual size, and peak size through a kprobe on \code{acct\_collect(exitcode, group\_dead)}. The kernel calls this function after \code{atomic\_dec\_and\_test()} identifies the last thread and before \code{exit\_mm()}, while the address-space counters are still available. The probe uses \code{group\_dead} rather than guessing that a thread is last from \code{signal->live == 1} at the start of \code{do\_exit()} [2, 9].
+For a short-lived process that exits before the user reads its stats, the module captures the region count, virtual size, and peak size through a kprobe on \code{acct\_collect(exitcode, group\_dead)}. The kernel calls this function after \code{atomic\_dec\_and\_test()} identifies the last thread and before \code{exit\_mm()}, while the address-space counters are still available. The probe uses \code{group\_dead} rather than guessing that a thread is last from \code{signal->live == 1} at the start of \code{do\_exit()} [2, 5].
 
 The module sets permissions to 0600 for \code{/proc/pfcount/target} and 0400 for \code{stats} and \code{maps}. The interface can inspect the address space of a PID that the caller could not otherwise read, so the files are restricted to root. Our tests invoked the tool with \code{sudo}.
 
@@ -411,7 +411,7 @@ E7 comes from a separate run of the same command (PID 2286), not from the script
 
 The shell and GCC launch other processes. In process-only mode, \code{pfstat} counts the selected process but not its children. The reference returned by \code{wait4()} can include usage from waited children. In these runs, enabling follow mode brought the \code{ls} and GCC results into agreement with their waited-descendant references. Python did not create a child and matched \code{getrusage()} in process-only mode. The differences in the table reflect the scope used by each counter; they do not by themselves show a counting error.
 
-\code{wait4()} does not always include every descendant. A child may be auto-reaped when its parent sets \code{SIGCHLD} to \code{SIG\_IGN}. A child reparented before it is waited for may also be absent from the reference [4, 9]. The CLI therefore labels the reference as waited descendants only and explains when the live count exceeds it. The post-merge cleanup test covers the inherited \code{SIGCHLD=SIG\_IGN} case.
+\code{wait4()} does not always include every descendant. A child may be auto-reaped when its parent sets \code{SIGCHLD} to \code{SIG\_IGN}. A child reparented before it is waited for may also be absent from the reference [4, 5]. The CLI therefore labels the reference as waited descendants only and explains when the live count exceeds it. The post-merge cleanup test covers the inherited \code{SIGCHLD=SIG\_IGN} case.
 
 The minor-fault lines from the saved E8 outputs show the scope difference for the same shell and compiler workloads. Only the column padding is shortened:
 
@@ -489,7 +489,7 @@ The results apply to Ubuntu 24.04.5, Linux 6.8.0-142-generic, ARM64, and the ker
 
 Live counters begin when a target is selected. Descendant tracking follows \code{real\_parent} ancestry up to 64 levels, and reparenting can change which processes are in scope. \code{wait4()} reports usage passed through waited children; auto-reaped or reparented children may be absent. Comparisons must use the same time window and process scope.
 
-The kretprobe runs on the page-fault path before filtering the target and uses \code{maxactive=64}. If more concurrent invocations occur than the probe can handle, the kernel increments \code{nmissed} [8]. The recorded runs showed no reported probe misses, but we did not measure overhead under sustained fault load. A follow-up measurement should compare the same workload with the module unloaded, loaded without a target, and loaded with a target.
+The kretprobe runs on the page-fault path before filtering the target and uses \code{maxactive=64}. If more concurrent invocations occur than the probe can handle, the kernel increments \code{nmissed} [7]. The recorded runs showed no reported probe misses, but we did not measure overhead under sustained fault load. A follow-up measurement should compare the same workload with the module unloaded, loaded without a target, and loaded with a target.
 
 The module, maps, status, and stat interfaces are read at different times. A process that changes mappings or creates threads during a comparison can produce differences due to timing. Stable or paused targets make structural comparisons easier to interpret. The report also retains byte-level values before converting them to rounded display units.
 
@@ -520,20 +520,14 @@ The build, demo, regression suite, and experiments E1 to E8 passed in the docume
 [4] Linux man-pages project. \code{getrusage(2)}: resource usage and child accounting.\\
 {\fontsize{12}{15.6}\selectfont\url{https://man7.org/linux/man-pages/man2/getrusage.2.html}}\par
 
-[5] Linux kernel v6.8 source. \code{mm/memory.c}: \code{handle\_mm\_fault()} and \code{mm\_account\_fault()}.\\
-{\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/mm/memory.c}}\par
+[5] Linux kernel v6.8 source: \code{mm/memory.c}, \code{fs/proc/array.c}, and \code{kernel/exit.c}.\\
+{\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/tree/v6.8}}\par
 
 [6] Linux man-pages project. \code{madvise(2)}: mapping and huge-page advice.\\
 {\fontsize{12}{15.6}\selectfont\url{https://man7.org/linux/man-pages/man2/madvise.2.html}}\par
 
-[7] Linux kernel v6.8 source. \code{fs/proc/array.c}: \code{do\_task\_stat()} and \code{stats\_lock}.\\
-{\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/fs/proc/array.c}}\par
-
-[8] Linux Kernel Documentation. Kernel Probes.\\
+[7] Linux Kernel Documentation. Kernel Probes.\\
 {\fontsize{12}{15.6}\selectfont\url{https://docs.kernel.org/trace/kprobes.html}}\par
-
-[9] Linux kernel v6.8 source. \code{kernel/exit.c}: \code{do\_exit()}, \code{group\_dead}, and waited-child accounting.\\
-{\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/kernel/exit.c}}\par
 
 \clearpage
 \Needspace{6\baselineskip}
