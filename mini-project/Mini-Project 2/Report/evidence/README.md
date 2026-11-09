@@ -16,26 +16,25 @@
 
 ## หลักฐานที่รวมในรายงาน
 
-ภาพทั้งแปดใบเป็นภาพจับหน้าจอจริงที่ครอปเฉพาะผลลัพธ์ใน Terminal ไม่มีภาพเต็มเดสก์ท็อป และแสดงหลักฐานของแต่ละช่วง ภาพ demo, E7 และ SIGCHLD cleanup จับจากรอบเดียวกับ transcript ของแต่ละงาน โดย PID และผลลัพธ์ตรงกัน ส่วนไฟล์ `.txt` เก็บ output ฉบับเต็มของการรันจริง รวมคำสั่ง PID เวลา exit status และค่าผลลัพธ์ เพื่อให้อ่าน ค้นหา และตรวจตัวเลขได้ครบ
+ภาพทั้งแปดใบเป็นภาพจับหน้าจอที่ครอปเฉพาะผลลัพธ์ใน Terminal ไม่มีภาพเต็มเดสก์ท็อป และแสดงหลักฐานของแต่ละช่วง ภาพ demo, E7 และ SIGCHLD cleanup จับจากรอบเดียวกับ transcript ของแต่ละงาน โดย PID และผลลัพธ์ตรงกัน ไฟล์ `.txt` เก็บผลที่บันทึกไว้ รวมคำสั่ง PID เวลา exit status และค่าผลลัพธ์เท่าที่มีในแต่ละรายการ ส่วนรายงาน `pfstat` ของ shell PID 1622 มีเฉพาะภาพ
 
 | ไฟล์ | หลักฐานที่แสดง | ตำแหน่งในรายงาน |
 |---|---|---|
 | `terminal/01-kernel-options-terminal.png` | kernel options ที่จำเป็นสำหรับ kprobes และ process accounting; kernel version กับ architecture อยู่ใน environment log | Problem 2, Step 1: Test environment and method |
 | `terminal/02-build-load-terminal.png` | การโหลดโมดูลและ proc interfaces | Problem 2, Step 1: Build and load |
 | `terminal/03-demo-terminal.png` | interval samples และ exit summary จาก demo run PID 2508 (16,521 minor / 8,193 major), ตรงกับ `02-demo-terminal-capture.txt` | Problem 2, Step 1: End-to-end demo |
-| `terminal/04-regression-terminal.png` | ผล retarget, PID reuse, thread exit, lifetime reads และ unload | Problem 2, Step 3: Post-merge checks |
-| `terminal/05-pfstat-report-terminal.png` | VMA, virtual size, RSS, fault counts และ mapping groups | Problem 1, Step 2: How the tool works |
+| `terminal/04-regression-terminal.png` | ผล retarget, PID reuse, thread exit, lifetime reads และ unload; ภาพแสดง PID 2613 ส่วน log แสดง PID 2579 | Problem 2, Step 3: Post-merge checks |
+| `terminal/05-pfstat-report-terminal.png` | VMA, virtual size, RSS, fault counts และ mapping groups ของ bash PID 1622 (มีเฉพาะภาพ ไม่มี transcript) | Problem 1, Step 2: How the tool works |
 | `terminal/06-experiments-terminal.png` | รายการกรณี E1–E8 ที่สคริปต์ทดลองเรียกใช้ | Problem 2, Step 1: How we checked the results |
 | `terminal/07-e7-timeline-terminal.png` | interval samples และ exit summary จาก E7 run PID 2286, ตรงกับ `experiment-results/e7-timeline.txt` | Problem 2, Step 2: E7 virtual size and RSS over time |
 | `terminal/08-sigchld-cleanup-terminal.png` | `pfcount run` ของ PID 2513 และสถานะหลัง cleanup: `follow=N`, `pid: 0`, `state: idle` | Problem 2, Step 3: Post-merge checks |
 
-`02-demo-terminal-capture.txt` เป็น transcript ฉบับเต็มของ demo run PID 2508 (16,521 minor / 8,193 major faults) พร้อม workload checkpoints, interval samples และ rates ภาพและ transcript เป็นการรันรอบเดียวกัน ส่วน `experiment-results/e7-timeline.txt` เป็น transcript ของ E7 run PID 2286 และ `04-sigchld-cleanup.txt` เก็บผล run PID 2513 ที่รับ `SIGCHLD=SIG_IGN` มาจาก parent; ทั้งสองรายการมีภาพ Terminal ที่ตรงกับตัวเลขและสถานะใน transcript
+`02-demo-terminal-capture.txt` เป็น transcript ฉบับเต็มของ demo run PID 2508 (16,521 minor / 8,193 major faults) พร้อม workload checkpoints, interval samples และ rates ภาพและ transcript เป็นการรันรอบเดียวกัน ส่วน `experiment-results/e7-timeline.txt` เป็น transcript ของ E7 run PID 2286 ซึ่งรันคำสั่งเดียวกันแยกจากรอบสคริปต์ที่ได้ E1–E6 และ E8 (PID 10605–10663) และ `04-sigchld-cleanup.txt` เก็บผล run PID 2513 ที่รับ `SIGCHLD=SIG_IGN` มาจาก parent; ทั้งสองรายการมีภาพ Terminal ที่ตรงกับตัวเลขและสถานะใน transcript
 
-ไฟล์จับหน้าจอเต็มเดสก์ท็อป ภาพจากรอบเก่าที่ตัวเลขไม่ตรงกับ post-merge run และ log review ก่อน merge ถูกตัดออกจากชุดส่งงาน
+log review ก่อน merge ไม่รวมอยู่ในชุดส่งงาน
 
 ## ข้อจำกัด
 
 - ไม่มี GitHub CI checks ตั้งไว้สำหรับ branch นี้ ผลเป็นการ build/test ด้วยตนเองใน Lima VM
 - ทดสอบเฉพาะ Linux 6.8 ARM64 และ configuration ที่บันทึกไว้
-- Build มี compiler-name/clock-skew warnings และข้าม BTF เพราะไม่มี `vmlinux`; build/load จบสำเร็จ
 - ไม่ได้ทดสอบใน UTM; โจทย์ไม่ได้กำหนดให้ใช้ UTM

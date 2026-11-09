@@ -260,7 +260,7 @@ We kept raw outputs and environment details in the \code{evidence/} directory so
 
 Inside Ubuntu, \code{vm.sh} prepared the Lima VM and installed build tools and headers matching \code{uname -r}. The build and load command, \code{make clean \&\& make all \&\& make load}, completed and created \code{/proc/pfcount/maps}, \code{/proc/pfcount/stats}, and \code{/proc/pfcount/target}.
 
-The build reported a compiler-name mismatch despite GCC 13.3.0, shared-folder clock skew, and skipped BTF because \code{vmlinux} was unavailable. Kbuild still completed and the module loaded. Other kernels and architectures were not tested.
+Kbuild compiled and linked the module, and the module loaded. The saved log shows a BTF step but does not establish whether BTF data was generated. Other kernels and architectures were not tested.
 
 \begin{lstlisting}
 ./vm.sh setup
@@ -305,11 +305,11 @@ The demo ran \code{sudo tools/pfstat -w 0.5 -- tests/faultgen} with the phases \
 
 We compared region counts and address-space sizes using a process that remained stable while the module and procfs were read. In run mode, we compared the final live counters with the child usage returned after exit, after subtracting the lifetime baseline. Agreement between these interfaces supports the observed behavior in the tested cases; both still rely on counters maintained by the same Linux kernel.
 
-E1 compared the report with procfs. E2 to E6 varied anonymous mappings, file cache, readahead, and THP. E7 recorded virtual size and RSS over time and then unmapped the regions. E8 compared ordinary programs with and without descendant tracking. The post-merge regression suite covered retargeting, PID reuse, simultaneous thread exit, lifetime counter reads, module unload during a blocked fault, and cleanup after inherited SIGCHLD settings. Permission checks and interval parameters were present in earlier PR evidence; the post-merge suite summarized here did not rerun the non-root permission case.
+E1 compared the report with procfs. E2 to E6 varied anonymous mappings, file cache, readahead, and THP. E7 recorded virtual size and RSS over time and then unmapped the regions. E8 compared ordinary programs with and without descendant tracking. The post-merge regression suite covered retargeting, PID reuse, simultaneous thread exit, lifetime counter reads, module unload during a blocked fault, and cleanup after inherited SIGCHLD settings. The post-merge suite did not test access by a non-root user, and the submitted evidence does not include that case.
 
 \begin{figure}[H]\centering
 \includegraphics[width=.95\linewidth]{evidence/post-merge-5fbcb76/terminal/06-experiments-terminal.png}
-\caption{Terminal summary of the E1 to E8 cases run by the experiment script. Numeric results appear in the following tables and discussion.}
+\caption{Terminal summary of the E1 to E8 cases run by the experiment script. Numeric results appear in the following tables and discussion; the E7 values come from a separate run of the same command.}
 \end{figure}
 
 \Needspace{12\baselineskip}
@@ -386,7 +386,7 @@ When the program created an anonymous mapping, virtual size grew from about 2.2 
 
 The first watch-mode sample can occur between fork and exec or while the address space is changing. A sampled maximum should therefore not be treated as the child program's peak without checking the exit-time snapshot. The module reads the peak from the mm counters when the process exits. The reported minor/second and major/second rates use the counter difference divided by elapsed time between samples.
 
-The Terminal capture shows the full sample sequence and the matching exit-time totals used for this timeline. The searchable transcript is in \code{evidence/post-merge-5fbcb76/experiment-results/e7-timeline.txt}.
+E7 comes from a separate run of the same command (PID 2286), not from the scripted batch that produced E1 to E6 and E8 (PIDs 10605 to 10663). The Terminal capture shows the full sample sequence and the matching exit-time totals used for this timeline. The searchable transcript is in \code{evidence/post-merge-5fbcb76/experiment-results/e7-timeline.txt}.
 
 \begin{figure}[H]\centering
 \includegraphics[width=.98\linewidth]{evidence/post-merge-5fbcb76/terminal/07-e7-timeline-terminal.png}
@@ -402,7 +402,7 @@ The Terminal capture shows the full sample sequence and the matching exit-time t
 \hline
 \rowcolor{SoftGreen} \textbf{Command} & \textbf{Minor} & \textbf{Major} & \textbf{Reference comparison} \\ \hline
 \code{python3 -c pass} & 1,234 & 0 & Matches \code{getrusage()} \\ \hline
-\code{sh + ls}, without \code{-f} & 258 & 0 & 135 below \code{wait4()} \\ \hline
+\code{sh + ls}, without \code{-f} & 258 & 0 & 135 below \code{getrusage()} \\ \hline
 \code{sh + ls}, with \code{-f} & 390 & 0 & Matches \code{wait4()} \\ \hline
 \code{gcc}, without \code{-f} & 287 & 0 & 5,700 below \code{getrusage()} \\ \hline
 \code{gcc}, with \code{-f} & 5,971 & 0 & Matches \code{wait4()} \\ \hline
@@ -413,17 +413,17 @@ The shell and GCC launch other processes. In process-only mode, \code{pfstat} co
 
 \code{wait4()} does not always include every descendant. A child may be auto-reaped when its parent sets \code{SIGCHLD} to \code{SIG\_IGN}. A child reparented before it is waited for may also be absent from the reference [4, 9]. The CLI therefore labels the reference as waited descendants only and explains when the live count exceeds it. The post-merge cleanup test covers the inherited \code{SIGCHLD=SIG\_IGN} case.
 
-The saved E8 outputs make the scope difference visible for the same shell and compiler workloads:
+The minor-fault lines from the saved E8 outputs show the scope difference for the same shell and compiler workloads. Only the column padding is shortened:
 
 \begin{lstlisting}
 $ sudo tools/pfstat -- sh -c 'ls -R /usr/include >/dev/null'
-  Minor faults 258; 135 below getrusage() because child usage is excluded
+  Minor page faults    258   differs by -135 vs getrusage()
 $ sudo tools/pfstat -f -- sh -c 'ls -R /usr/include >/dev/null'
-  Minor faults 390; matches wait4() for waited descendants
+  Minor page faults    390   match vs wait4(), waited descendants only
 $ sudo tools/pfstat -- gcc -O2 -o /tmp/fg tests/faultgen.c
-  Minor faults 287; 5,700 below getrusage() because child usage is excluded
+  Minor page faults    287   differs by -5700 vs getrusage()
 $ sudo tools/pfstat -f -- gcc -O2 -o /tmp/fg tests/faultgen.c
-  Minor faults 5,971; matches wait4() for waited descendants
+  Minor page faults  5,971   match vs wait4(), waited descendants only
 \end{lstlisting}
 
 \Needspace{6\baselineskip}
@@ -444,7 +444,7 @@ Cleanup & Run \code{make clean} after testing & Passed; test binaries were remov
 \end{tabular}}
 \end{table}
 
-The post-merge regression output is shown alongside these checks. It records the PID-reuse, concurrency, lifetime-counter, and unload cases completed by the suite.
+The regression screenshot and saved log show the same checks, with different reused PIDs: 2613 in the image and 2579 in the log.
 
 \begin{figure}[H]\centering
 \includegraphics[width=.95\linewidth]{evidence/post-merge-5fbcb76/terminal/04-regression-terminal.png}
@@ -468,7 +468,7 @@ Inherited SIGCHLD & Run \code{pfstat -f -- /bin/true} with parent \code{SIGCHLD=
 
 The merged source retains a reference to the session that accepted each fault until the return handler completes. It identifies targets by \code{struct pid}, uses \code{group\_dead} to detect the final thread, and protects lifetime totals with \code{stats\_lock}. It also releases sessions left by canceled probes during module unload [2]. In run mode, the program temporarily sets SIGCHLD to the default disposition while waiting and restores the child's inherited disposition before exec. The post-merge test confirmed that \code{wait4()} still collects the child status and that cleanup returns the target and follow state to idle and N.
 
-The source sets \code{0600} on \code{/proc/pfcount/target} and \code{0400} on \code{stats} and \code{maps}. A non-root permission check appears in the pre-merge evidence, but we did not rerun that case after merge, so it is not listed as a post-merge regression result.
+The source sets \code{0600} on \code{/proc/pfcount/target} and \code{0400} on \code{stats} and \code{maps}. We did not test access by a non-root user after merge, so the submitted evidence does not include that case.
 
 \clearpage
 The inherited SIGCHLD cleanup check also captured the process summary and the final idle state of the module. The full transcript is in \code{evidence/post-merge-5fbcb76/04-sigchld-cleanup.txt}.
@@ -509,7 +509,7 @@ The build, demo, regression suite, and experiments E1 to E8 passed in the docume
 \section*{References}\addcontentsline{toc}{section}{References}
 
 [1] CPE333 Mini-Project 2 assignment, Academic Year 2026, pp. 2-5.\\
-{\fontsize{12}{15.6}\selectfont\url{../CPE333_MiniProject2_2026.pdf}}\par
+{\fontsize{12}{15.6}\selectfont Course handout \path{CPE333_MiniProject2_2026.pdf}}\par
 
 [2] beambeambeam/cpe333, Mini-Project 02 source after PR \#11 was merged.\\
 {\fontsize{12}{15.6}\selectfont\url{https://github.com/beambeambeam/cpe333/tree/5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800/mini-project-02}}\par
@@ -589,7 +589,7 @@ The module exposes three interfaces under \code{/proc/pfcount}:
 /proc/pfcount/maps
 \end{lstlisting}
 
-The recorded build skipped BTF because \code{vmlinux} was unavailable; compilation and module loading still completed.
+The saved log records compilation and linking of \code{pfcount.ko}, followed by a BTF step and module loading. It does not establish whether BTF data was generated.
 
 \Needspace{14\baselineskip}
 \subsection{Step 4: Inspect a live process}
@@ -639,7 +639,7 @@ Unload the module, remove generated binaries, and stop Lima. These commands pres
 ./vm.sh stop
 \end{lstlisting}
 
-The evidence bundle contains environment, build/load, demo, regression, cleanup, and E1 to E8 records, plus eight Terminal captures. Full output remains in searchable text files; the demo, E7, and cleanup images match their transcripts by PID.
+The evidence bundle contains environment, build/load, demo, regression, cleanup, and E1 to E8 records, plus eight Terminal captures. The demo, E7, and cleanup images match their transcripts by PID. The shell \code{pfstat} example is available only as a screenshot.
 
 \endgroup
 \end{document}
