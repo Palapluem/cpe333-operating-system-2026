@@ -104,7 +104,7 @@ Explain virtual memory behavior & Relate VMAs, demand paging, cache, and THP to 
 \end{tabular}}
 \end{table}
 
-The required output is the four process-level measurements listed above. Watch mode, run mode, descendant tracking, RSS reporting, and exit-time snapshots are additional features. We tested the tool in one Linux VM with one kernel configuration, described in Problem 2, Step 1.
+The required output is the four process-level measurements listed above [1]. Watch mode, run mode, descendant tracking, RSS reporting, and exit-time snapshots are additional features. We tested the tool in one Linux VM with one kernel configuration, described in Problem 2, Step 1.
 
 \Needspace{6\baselineskip}
 \subsection{Step 1: Virtual memory and page faults}
@@ -478,7 +478,7 @@ The inherited SIGCHLD cleanup check also captured the process summary and the fi
 \caption{Terminal output for the inherited SIGCHLD ignore cleanup check (PID 2513), followed by the idle status.}
 \end{figure}
 
-GitHub Actions checks were not configured for the branch we reviewed. The build and regression results in this report came from manual runs inside Lima, not from an automated GitHub workflow [10].
+GitHub Actions checks were not configured for the branch we reviewed. The build and regression results in this report came from manual runs inside Lima, not from an automated GitHub workflow.
 
 \Needspace{6\baselineskip}
 \section{Problem 3: Limitations and conclusion}
@@ -508,35 +508,32 @@ The build, demo, regression suite, and experiments E1 to E8 passed in the docume
 \Needspace{6\baselineskip}
 \section*{References}\addcontentsline{toc}{section}{References}
 
-[1] CPE333 Mini-Project 2 assignment, Academic Year 2026, pp. 2-5.\\
-{\fontsize{12}{15.6}\selectfont Course handout \path{CPE333_MiniProject2_2026.pdf}}\par
+[1] CPE333 Mini-Project 2 assignment (Academic Year 2026), pp. 2--5.\\
+{\fontsize{12}{15.6}\selectfont Course handout: \path{CPE333_MiniProject2_2026.pdf}}\par
 
-[2] beambeambeam/cpe333, Mini-Project 02 source after PR \#11 was merged.\\
+[2] beambeambeam/cpe333. Mini-Project 02 source code at commit \code{5fbcb767}.\\
 {\fontsize{12}{15.6}\selectfont\url{https://github.com/beambeambeam/cpe333/tree/5fbcb7679298f36e2bae8b7cd3dbe6bf6a609800/mini-project-02}}\par
 
-[3] The Linux Kernel documentation, Process Addresses.\\
+[3] Linux Kernel Documentation. Process Addresses.\\
 {\fontsize{12}{15.6}\selectfont\url{https://docs.kernel.org/mm/process_addrs.html}}\par
 
-[4] Linux man-pages, \code{getrusage(2)}, resource usage and child accounting.\\
+[4] Linux man-pages project. \code{getrusage(2)}: resource usage and child accounting.\\
 {\fontsize{12}{15.6}\selectfont\url{https://man7.org/linux/man-pages/man2/getrusage.2.html}}\par
 
-[5] Linux v6.8 source, \code{mm/memory.c}: \code{handle\_mm\_fault()} and \code{mm\_account\_fault()}.\\
+[5] Linux kernel v6.8 source. \code{mm/memory.c}: \code{handle\_mm\_fault()} and \code{mm\_account\_fault()}.\\
 {\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/mm/memory.c}}\par
 
-[6] Linux man-pages, \code{madvise(2)}, mapping and huge-page advice.\\
+[6] Linux man-pages project. \code{madvise(2)}: mapping and huge-page advice.\\
 {\fontsize{12}{15.6}\selectfont\url{https://man7.org/linux/man-pages/man2/madvise.2.html}}\par
 
-[7] Linux v6.8 source, \code{fs/proc/array.c}: \code{do\_task\_stat()} and \code{stats\_lock}.\\
+[7] Linux kernel v6.8 source. \code{fs/proc/array.c}: \code{do\_task\_stat()} and \code{stats\_lock}.\\
 {\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/fs/proc/array.c}}\par
 
-[8] The Linux Kernel documentation, Kernel Probes.\\
+[8] Linux Kernel Documentation. Kernel Probes.\\
 {\fontsize{12}{15.6}\selectfont\url{https://docs.kernel.org/trace/kprobes.html}}\par
 
-[9] Linux v6.8 source, \code{kernel/exit.c}: \code{do\_exit()}, \code{group\_dead}, and waited-child accounting.\\
+[9] Linux kernel v6.8 source. \code{kernel/exit.c}: \code{do\_exit()}, \code{group\_dead}, and waited-child accounting.\\
 {\fontsize{12}{15.6}\selectfont\url{https://github.com/torvalds/linux/blob/v6.8/kernel/exit.c}}\par
-
-[10] PR \#11 review discussion and revisions.\\
-{\fontsize{12}{15.6}\selectfont\url{https://github.com/beambeambeam/cpe333/pull/11}}\par
 
 \clearpage
 \Needspace{6\baselineskip}
