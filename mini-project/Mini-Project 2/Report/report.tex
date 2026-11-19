@@ -46,38 +46,7 @@
 \AtBeginDocument{\fontsize{12}{15.6}\selectfont}
 \begin{document}
 \newgeometry{top=1.7cm,bottom=2.35cm,left=2.5cm,right=2.5cm,headheight=16pt}
-\begin{titlepage}\thispagestyle{empty}\centering
-\includegraphics[width=3.5cm]{assets/KMUTT_Logo.png}\par\vspace{.10cm}
-{\fontsize{14.5}{17.5}\selectfont MINI-PROJECT 2\par}
-\vspace{.04cm}
-{\fontsize{13.5}{16.5}\selectfont Virtual Memory\par}
-\vspace{2.20cm}
-{\fontsize{12.5}{15.5}\selectfont Prepared by\par}
-\vspace{.10cm}
-{\fontsize{12}{15}\selectfont Group: }{\thaifont\fontsize{12}{15}\selectfont มูลนิธิทนายตั้ม ช่วยสู้\par}
-\vspace{1.00cm}
-{\fontsize{12}{15}\selectfont
-\renewcommand{\arraystretch}{1.70}
-\begin{tabular}{>{\raggedright\arraybackslash}p{9.8cm}>{\raggedleft\arraybackslash}p{3.1cm}}
-Guntee Doungmanee & 67070501003\\
-Drarun Yookphan & 67070501016\\
-Natthawat Primsirikunawut & 67070501027\\
-Rattathamnoon Buranapattana & 67070501037\\
-Wisit Suwannao & 67070501042\\
-Supawit Marayat & 67070501045\\
-Polwarit Watthanahemmarat & 67070501067\\
-\end{tabular}\par}
-\vspace{1.40cm}
-{\fontsize{12}{15}\selectfont Submitted to\par}
-\vspace{.20cm}
-{\fontsize{12}{15}\selectfont Asst. Prof. Rajchawit Sarochawikasit\par}
-\vspace{.65cm}
-{\fontsize{12}{26.8}\selectfont
-This report is part of CPE333 Operating Systems\\
-Department of Computer Engineering, Faculty of Engineering\\
-King Mongkut's University of Technology Thonburi\\
-Semester 1, Academic Year 2026\par}
-\end{titlepage}
+\InputIfFileExists{frontpage/frontpage.tex}{}{\typeout{frontpage/frontpage.tex not found: building without the cover page}}
 \restoregeometry
 \clearpage\pagenumbering{roman}
 \tableofcontents
@@ -86,7 +55,7 @@ Semester 1, Academic Year 2026\par}
 \Needspace{6\baselineskip}
 \section{Problem 1: Project scope and design}
 
-The project is a Linux tool for inspecting a process's \keyterm{memory regions}, \keyterm{virtual address space}, and \keyterm{minor and major page faults}. It combines the \code{pfcount} kernel module, the \code{pfstat} command-line program, and the \code{faultgen} workload generator. We tested the merged PR \#11 source on Ubuntu 24.04.5 with Linux 6.8.0-142-generic on ARM64. The build, demo, regression suite, and experiments E1 to E8 all completed in that environment.
+The project is a Linux tool for inspecting a process's \keyterm{memory regions}, \keyterm{virtual address space}, and \keyterm{minor and major page faults}. It combines the \code{pfcount} kernel module, the \code{pfstat} command-line program, and the \code{faultgen} workload generator. The reported measurements came from the merged PR \#11 source on Ubuntu 24.04.5 with Linux 6.8.0-142-generic on ARM64. A full verification of revised PR head \code{ed0a7a6} passed on Linux 6.8.0-147-generic; its logs are in \code{evidence/recheck-2026-11-11/}. The measurement tables and chart retain the original run.
 
 These measurements describe different things. A process can reserve a large virtual range before its pages become resident, and file cache, readahead, fault-around, and Transparent Huge Pages (THP) can all change the recorded fault counts. The results describe the tested kernel configuration; they do not establish compatibility with other kernels or measure probe overhead.
 
@@ -174,7 +143,7 @@ This snippet shows the main sequence. The implementation also handles a missing 
 
 Lifetime counters combine \code{min\_flt} and \code{maj\_flt} values from live threads with totals transferred to \code{signal\_struct} when threads exit. The reviewed source uses \code{sig->stats\_lock} and a sequence/retry pattern like \code{/proc/PID/stat}. This avoids counting a thread twice or reading it while its totals are being transferred [2, 5]. These counters cover the thread group from process start.
 
-Live counters start when the user selects a target. On entry to the \code{handle\_mm\_fault()} kretprobe, the module checks whether the faulting process is in scope and saves the flags and backing type for that invocation. On return, it uses the completed result to update minor, major, anonymous, file-backed, or error counters. Keeping entry data with its invocation prevents the module from classifying a fault from a CPU error code before the kernel has handled it [2, 5, 8].
+Live counters start when the user selects a target. On entry to the \code{handle\_mm\_fault()} kretprobe, the module checks whether the faulting process is in scope and saves the flags and backing type for that invocation. On return, it uses the completed result to update minor, major, anonymous, file-backed, or error counters. Keeping entry data with its invocation prevents the module from classifying a fault from a CPU error code before the kernel has handled it [2, 5, 7].
 
 \subsubsection{Target sessions and process identity}
 
@@ -204,7 +173,7 @@ The module sets permissions to 0600 for \code{/proc/pfcount/target} and 0400 for
 \end{tabular}}
 \end{table}
 
-In run mode, the parent stops the child with SIGSTOP, selects it as the target, reads the lifetime baseline, and then allows it to exec the requested command. The program subtracts that baseline before comparing its live counters with \code{wait4()}. The child drops back to the invoking user's privileges before exec. After fork, the program restores the inherited SIGCHLD disposition in the child and uses a cleanup path to reset the target and follow state if execution or waiting fails. The post-merge test also covers a parent that inherited \code{SIGCHLD=SIG\_IGN}.
+In run mode, the child stops itself with SIGSTOP. The parent selects it as the target, reads the lifetime baseline, and then resumes it with SIGCONT so it can exec the requested command. The program subtracts that baseline before comparing its live counters with \code{wait4()}. The child drops back to the invoking user's privileges before exec. After fork, the program restores the inherited SIGCHLD disposition in the child and uses a cleanup path to reset the target and follow state if execution or waiting fails. The post-merge test also covers a parent that inherited \code{SIGCHLD=SIG\_IGN}.
 
 The terminal report below is a separate example for the current shell. It shows the VMA total, virtual size, fault counters, and mapping groups in one view; the E1 measurements that follow use the recorded \code{sleep} and PID 1 runs.
 
@@ -230,6 +199,7 @@ In this shell example, the report finds 36 VMAs and 8.7 MB of virtual space. Bot
 \rowcolor{SoftGreen} \textbf{Item} & \textbf{Value} \\ \hline
 Host and virtual machine & macOS host; Lima VM with 4 reported vCPUs and 3,905 MB guest memory \\ \hline
 Guest and kernel & Ubuntu 24.04.5 LTS; Linux 6.8.0-142-generic; aarch64 \\ \hline
+Follow-up regression & Linux 6.8.0-147-generic; five checks passed; PID 26873 reused \\ \hline
 Compiler & GCC 13.3.0 \\ \hline
 Page size and THP & 4,096 bytes; THP mode set to \code{madvise} \\ \hline
 Fault-around and readahead & 65,536 bytes and 128 KiB, respectively \\ \hline
@@ -268,8 +238,8 @@ Kbuild compiled and linked the module, and the module loaded. The saved log show
 ./vm.sh make all
 ./vm.sh make load
 ./vm.sh make demo
-./vm.sh make experiments
 ./vm.sh run sudo sh tests/regress.sh
+./vm.sh make experiments
 ./vm.sh make unload
 ./vm.sh make clean
 \end{lstlisting}
@@ -429,7 +399,7 @@ $ sudo tools/pfstat -f -- gcc -O2 -o /tmp/fg tests/faultgen.c
 \Needspace{6\baselineskip}
 \subsection{Step 3: Post-merge checks}
 
-We reviewed and tested the source at merge commit \code{5fbcb767}; the measurements below come from that revision, not from a pre-merge branch. The original review focused on target changes during faults, PID reuse, concurrent thread exit, lifetime-counter aggregation, and session cleanup during module unload.
+The kernel module under test is from merge commit \code{5fbcb767}. For the follow-up run, we updated \code{tests/regress.sh} to count new \code{dmesg} entries after unload instead of searching only the last five kernel-log lines. This makes the unload check robust to unrelated kernel messages. The regression suite covers target changes during faults, PID reuse, concurrent thread exit, lifetime-counter aggregation, and session cleanup during module unload.
 
 \begin{table}[H]\centering
 {\fontsize{12}{15.6}\selectfont\arrayrulecolor{RuleGray}
@@ -444,11 +414,13 @@ Cleanup & Run \code{make clean} after testing & Passed; test binaries were remov
 \end{tabular}}
 \end{table}
 
-The regression screenshot and saved log show the same checks, with different reused PIDs: 2613 in the image and 2579 in the log.
+The follow-up regression run used Linux 6.8.0-147-generic. All five checks passed, including PID reuse (PID 26873). The Terminal capture and \code{evidence/post-merge-5fbcb76/03-regression.txt} are from the same run.
+
+The current PR checkout was fully rechecked on 11 November 2026. Build/load, demo, regression, E1 to E8, live-process comparison, standalone E7, and inherited-SIGCHLD cleanup all exited successfully; the fresh records are in \code{evidence/recheck-2026-11-11/}. The E1 to E8 measurements and timeline above remain those collected on Linux 6.8.0-142-generic.
 
 \begin{figure}[H]\centering
 \includegraphics[width=.95\linewidth]{evidence/post-merge-5fbcb76/terminal/04-regression-terminal.png}
-\caption{Terminal results from the post-merge lifecycle and concurrency regression suite.}
+\caption{Follow-up regression results from Linux 6.8.0-147-generic; PID 26873 was reused and all five checks passed.}
 \end{figure}
 
 \begin{table}[H]\centering

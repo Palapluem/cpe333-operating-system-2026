@@ -1,0 +1,12 @@
+Local report rebuild from the synchronized PR source
+Date: 2026-11-19 (Asia/Bangkok)
+Source: report.tex, frontpage/frontpage.tex, and frontpage/assets/
+Command: latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tmp/pdfs/final-build-2026-11-19 report.tex
+latexmk exit status: 0
+Output: output/pdf/CPE333_MiniProject2_Report.pdf
+Pages: 21
+Page size: 595.28 x 841.89 pts (A4)
+File size: 909919 bytes
+SHA-256: 9bdc413edc269a0d29999f9c25d831198e7c7775774040a87c1e82cb4ae2e318
+Visual check: rendered all 21 pages; each page is pixel-identical to the prior verified local build after moving the cover into frontpage/.
+Scope: this is a local LaTeX/PDF rebuild only. The Lima VM, kernel module, demo, regression checks, and experiments were last rerun on 2026-11-11; those logs remain in this folder.

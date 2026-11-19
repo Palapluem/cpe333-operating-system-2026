@@ -36,6 +36,8 @@ currently collected in this repository.
 | [PS06](labs/PS06/) | Assignment, report, and kernel-development reference |
 | [PS07](labs/PS07/) | Assignment, report, and C source |
 | [PS08](labs/PS08/) | Assignment files and lock/kernel-module references |
+| [PS10](labs/PS10/) | Assignment and report |
+| [PS12](labs/PS12/) | Assignment and report covering three labs |
 
 ## Mini-projects
 
